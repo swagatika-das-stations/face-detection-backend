@@ -1,8 +1,11 @@
 package com.stations.facedetection.Auth.Controller;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,30 +22,52 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class FaceRegistrationController {
 
-	private final KloudspotFaceRegistrationService service;
+    private final KloudspotFaceRegistrationService service;
 
-	@PostMapping("/register")
-	public RegistrationResponseDto register(@RequestParam("faceImages") List<MultipartFile> images,
-		 @RequestParam String firstName, @RequestParam String lastName,
-			@RequestParam String email, @RequestParam String employeeId) throws Exception {
+    @PostMapping("/register")
+    public ResponseEntity<?> register(
+            @RequestParam("faceImages") MultipartFile[] images,  // ← MUST BE ARRAY
+            @RequestParam String firstName,
+            @RequestParam String lastName,
+            @RequestParam String email,
+            @RequestParam String employeeid) {
 
-		// Convert MultipartFile → File
-		List<File> files = images.stream().map(this::convertToFile).toList();
+        System.out.println("=".repeat(70));
+        System.out.println("REGISTRATION API HIT SUCCESSFULLY!");
+        System.out.println("Images count: " + images.length);
+        System.out.println("Name: " + firstName + " " + lastName);
+        System.out.println("Email: " + email);
+        System.out.println("Employee ID: " + employeeid);
+        System.out.println("=".repeat(70));
 
-		return service.registerPerson(files, firstName, lastName, email, employeeId);
-	}
+        try {
+            List<File> files = Arrays.stream(images)
+                .map(this::convertToFile)
+                .toList();
 
-	private File convertToFile(MultipartFile file) {
-		try {
-			String originalName = file.getOriginalFilename();
-			String extension = originalName.substring(originalName.lastIndexOf("."));
+            RegistrationResponseDto response = service.registerPerson(
+                files, firstName, lastName, email, employeeid);
 
-			File convFile = File.createTempFile("upload_", extension);
-			file.transferTo(convFile);
+            files.forEach(File::delete);
+            return ResponseEntity.ok(response);
 
-			return convFile;
-		} catch (Exception e) {
-			throw new RuntimeException("File conversion failed", e);
-		}
-	}
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError()
+                .body(Map.of("error", "Registration failed", "message", e.getMessage()));
+        }
+    }
+
+    private File convertToFile(MultipartFile file) {
+        try {
+            String originalName = file.getOriginalFilename();
+            String extension = originalName.substring(originalName.lastIndexOf("."));
+
+            File convFile = File.createTempFile("upload_", extension);
+            file.transferTo(convFile);
+            return convFile;
+        } catch (Exception e) {
+            throw new RuntimeException("File conversion failed", e);
+        }
+    }
 }

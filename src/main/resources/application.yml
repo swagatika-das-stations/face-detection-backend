@@ -24,7 +24,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     show-sql: true
 
   mongodb:
@@ -36,7 +36,6 @@ spring:
 jwt:
   secret: face_detection_super_secret_key_12345678901234567890
   expiration: 86400000
-
 logging:
   level:
     reactor:
@@ -54,3 +53,5 @@ logging:
         facedetection:
           integration:
             kloudspot: DEBUG
+pattern:
+   console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"

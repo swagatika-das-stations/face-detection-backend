@@ -15,6 +15,7 @@ public class TestController {
 
     @GetMapping("/test")
     public String test() {
-        return properties.getBaseUrl();
+        System.out.println("Swagatika");
+        return "successfull";
     }
 }

@@ -1,8 +1,38 @@
+# application-kloudspot.yml
+
+# Kloudspot API Configuration
 kloudspot:
+  # API Endpoints
   base-url: https://3c.zdotapps.in
   auth-url: /advanced/api/v1/auth/login
   registration-url: /advanced/api/v1/humans/registration/frs
   search-url: /advanced/api/v1/humans/search/{uniqueId}
-
+  
+  # Authentication
   id: 69b25fd924e41c75ab801262
-  secretKey: 3e983d987bc7751c
+  secret-key: 3e983d987bc7751c
+  
+  # Timeouts (milliseconds)
+  timeout:
+    connection: 120000  # 2 minutes
+    read: 180000        # 3 minutes
+    write: 180000       # 3 minutes
+  
+  # Retry Configuration
+  retry:
+    max-attempts: 3
+    backoff-delay: 2000  # 2 seconds
+  
+  # Image Upload Specifications (as per Kloudspot specs)
+  upload:
+    min-images: 1
+    max-images: 5
+    max-image-size-mb: 1
+    max-total-size-mb: 5
+    supported-formats:
+      - jpg
+      - jpeg
+      - png
+    auto-resize: true
+    target-max-dimension: 1920
+    jpeg-quality: 0.90
