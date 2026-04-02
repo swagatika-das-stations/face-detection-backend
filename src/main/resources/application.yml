@@ -3,7 +3,7 @@
 server:
   port: 9090
   tomcat:
-    connection-timeout: 120000
+    connection-timeout: 300000
     max-http-header-size: 65536
   servlet:
     multipart:
