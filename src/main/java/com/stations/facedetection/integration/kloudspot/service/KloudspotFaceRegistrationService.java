@@ -4,6 +4,10 @@ import java.io.File;
 import java.nio.file.Files;
 import java.util.Base64;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Service;
 
@@ -32,8 +36,9 @@ public class KloudspotFaceRegistrationService {
                                                   String employeeId) {
 
         File zipFile = null;
+
         try {
-            // 1️. Create ZIP
+            // 1️. Create ZIP from images
             zipFile = zipBuilder.createZip(images);
 
             // 2️. Convert ZIP → Base64
@@ -46,33 +51,41 @@ public class KloudspotFaceRegistrationService {
             human.setFirstName(firstName);
             human.setLastName(lastName);
             human.setEmailId(email);
-            human.setIdentity(email); // Confirm uniqueness requirement
+            human.setIdentity(email);
+
             KloudspotRegistrationRequestDTO.Meta meta = new KloudspotRegistrationRequestDTO.Meta();
-            meta.setEmployeeId(employeeId);
+            meta.setEmployeeid(employeeId);
             human.setMeta(meta);
-            human.setTags(List.of("Customer", "Employee")); // optionally make configurable
+            human.setTags(List.of("Customer", "Employee"));
             request.setHuman(human);
             request.setZipFile(base64Zip);
 
+            // 4️. Print JSON to console (truncate Base64)
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+            String jsonRequest = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(request);
+
+         // Truncate Base64 in logs
+            int maxLogLength = 100;
+            Pattern pattern = Pattern.compile("(\"zipFile\"\\s*:\\s*\")(.*?)(\")");
+            Matcher matcher = pattern.matcher(jsonRequest);
+            String safeJsonRequest;
+            if (matcher.find()) {
+                String truncatedBase64 = base64Zip.substring(0, Math.min(maxLogLength, base64Zip.length())) + "...";
+                safeJsonRequest = matcher.replaceAll("$1" + truncatedBase64 + "$3");
+            } else {
+                safeJsonRequest = jsonRequest;
+            }
+            System.out.println("Request JSON to Kloudspot (Base64 truncated):");
+            System.out.println(safeJsonRequest);
+
             System.out.println("ZIP size (bytes): " + zipBytes.length);
             System.out.println("Registering Human: " + firstName + " " + lastName + ", Email: " + email);
-              
 
-         // ... inside your method, after building the request DTO
-
-         try {
-             ObjectMapper mapper = new ObjectMapper();
-             mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL); // skip nulls
-             String jsonRequest = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(request);
-             System.out.println("Request JSON to Kloudspot:");
-             System.out.println(jsonRequest);
-         } catch (Exception e) {
-             System.err.println("Failed to serialize request to JSON: " + e.getMessage());
-         }
-            // 4️. Call Kloudspot API
+            // 5️. Call Kloudspot API
             RegistrationResponseDto response = registrationService.register(request);
 
-            // 5️. Save in DB if successful
+            // 6️. Save in DB if registration successful
             if (response != null && "SUCCESS".equalsIgnoreCase(response.getSTATUS())) {
                 FaceRegistryEntity user = new FaceRegistryEntity();
                 user.setFirstName(firstName);
@@ -89,14 +102,18 @@ public class KloudspotFaceRegistrationService {
             return response;
 
         } catch (Exception e) {
-            throw new RuntimeException("Failed to register person with Kloudspot", e);
+            System.err.println("Failed to register person with Kloudspot");
+            e.printStackTrace();
+            throw new RuntimeException("Registration failed", e);
 
         } finally {
-            // 6️. Clean up temporary ZIP file
-            if (zipFile != null && zipFile.exists()) {
-                boolean deleted = zipFile.delete();
-                if (!deleted) {
+            // 7️. Clean up temporary ZIP file safely
+            if (zipFile != null) {
+                try {
+                    Files.deleteIfExists(zipFile.toPath());
+                } catch (Exception e) {
                     System.err.println("Failed to delete temporary ZIP file: " + zipFile.getAbsolutePath());
+                    e.printStackTrace();
                 }
             }
         }

@@ -1,5 +1,14 @@
+# application.yml
+
 server:
   port: 9090
+  tomcat:
+    connection-timeout: 120000
+    max-http-header-size: 65536
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
 
 spring:
   application:
@@ -21,6 +30,27 @@ spring:
   mongodb:
     uri: mongodb://localhost:27017/camera_recording_face_detection
 
+  codec:
+    max-in-memory-size: 10MB
+
 jwt:
   secret: face_detection_super_secret_key_12345678901234567890
   expiration: 86400000
+
+logging:
+  level:
+    reactor:
+      netty:
+        http:
+          client: DEBUG
+    org:
+      springframework:
+        web:
+          reactive:
+            function:
+              client: DEBUG
+    com:
+      stations:
+        facedetection:
+          integration:
+            kloudspot: DEBUG

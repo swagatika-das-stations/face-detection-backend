@@ -1,10 +1,10 @@
 package com.stations.facedetection.integration.kloudspot.service;
 
 import java.time.Duration;
-
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import com.stations.facedetection.integration.kloudspot.DTO.KloudspotRegistrationRequestDTO;
 import com.stations.facedetection.integration.kloudspot.DTO.RegistrationResponseDto;
@@ -25,22 +25,28 @@ public class KloudspotRegistrationService {
         String token = authService.getToken();
         String url = properties.getBaseUrl() + properties.getRegistrationUrl();
 
-        return  webClient.post()
+        return webClient.post()
                 .uri(url)
                 .header("Authorization", "Bearer " + token)
+                .header("Accept", "application/json")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(request)
-                .retrieve()
-                .onStatus(
-                    status -> status.isError(),
-                    clientResponse -> clientResponse.bodyToMono(String.class).map(errorBody -> {
-                        System.err.println("HTTP Status: " + clientResponse.statusCode());
-                        System.err.println("Response Body: " + errorBody);
-                        return new RuntimeException("Kloudspot API Error: " + errorBody);
-                    })
-                )
-                .bodyToMono(RegistrationResponseDto.class)
-                .timeout(Duration.ofSeconds(30))
+                .exchangeToMono(response -> {
+                    System.out.println("Response Status Code: " + response.statusCode());
+                    System.out.println("Response Headers: " + response.headers().asHttpHeaders());
+                    
+                    if (response.statusCode().is2xxSuccessful()) {
+                        return response.bodyToMono(RegistrationResponseDto.class);
+                    } else {
+                        return response.bodyToMono(String.class)
+                                .flatMap(errorBody -> {
+                                    System.err.println("Error Response Body: " + errorBody);
+                                    return Mono.error(new RuntimeException("API Error: " + errorBody));
+                                });
+                    }
+                })
+                .timeout(Duration.ofMinutes(2))
+                .doOnError(error -> System.err.println("Request failed: " + error.getMessage()))
                 .block();
     }
 }

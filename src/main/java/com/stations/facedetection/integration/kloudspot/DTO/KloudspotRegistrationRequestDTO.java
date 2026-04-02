@@ -41,7 +41,7 @@ public class KloudspotRegistrationRequestDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Meta {
-    	@JsonProperty("employeeId")
-        private String employeeId;
+    	@JsonProperty("employeeid")
+        private String employeeid;
     }
 }
