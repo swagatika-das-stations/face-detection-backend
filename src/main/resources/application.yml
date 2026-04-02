@@ -1,0 +1,26 @@
+server:
+  port: 9090
+
+spring:
+  application:
+    name: face-detection-services
+
+  profiles:
+    active: kloudspot
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/face_detection_app
+    username: postgres
+    password: tiger
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+
+  mongodb:
+    uri: mongodb://localhost:27017/camera_recording_face_detection
+
+jwt:
+  secret: face_detection_super_secret_key_12345678901234567890
+  expiration: 86400000
