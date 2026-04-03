@@ -25,28 +25,33 @@ public class KloudspotRegistrationService {
         String token = authService.getToken();
         String url = properties.getBaseUrl() + properties.getRegistrationUrl();
 
-        return webClient.post()
-                .uri(url)
-                .header("Authorization", "Bearer " + token)
-                .header("Accept", "application/json")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(request)
-                .exchangeToMono(response -> {
-                    System.out.println("Response Status Code: " + response.statusCode());
-                    System.out.println("Response Headers: " + response.headers().asHttpHeaders());
-                    
-                    if (response.statusCode().is2xxSuccessful()) {
-                        return response.bodyToMono(RegistrationResponseDto.class);
-                    } else {
-                        return response.bodyToMono(String.class)
-                                .flatMap(errorBody -> {
-                                    System.err.println("Error Response Body: " + errorBody);
-                                    return Mono.error(new RuntimeException("API Error: " + errorBody));
-                                });
-                    }
-                })
-                .timeout(Duration.ofMinutes(2))
-                .doOnError(error -> System.err.println("Request failed: " + error.getMessage()))
-                .block();
+        try {
+            return webClient.post()
+                    .uri(url)
+                    .header("Authorization", "Bearer " + token)
+                    .header("Accept", "application/json")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(request)
+                    .exchangeToMono(response -> {
+                        System.out.println("Response Status Code: " + response.statusCode());
+                        System.out.println("Response Headers: " + response.headers().asHttpHeaders());
+                        
+                        if (response.statusCode().is2xxSuccessful()) {
+                            return response.bodyToMono(RegistrationResponseDto.class);
+                        } else {
+                            return response.bodyToMono(String.class)
+                                    .flatMap(errorBody -> {
+                                        System.err.println("Error Response Body: " + errorBody);
+                                        return Mono.error(new RuntimeException("API Error: " + errorBody));
+                                    });
+                        }
+                    })
+                    .timeout(Duration.ofMinutes(2))
+                    .doOnError(error -> System.err.println("Request failed: " + error.getMessage()))
+                    .block();
+        } catch (Exception e) {
+            System.err.println("Registration API call failed: " + e.getMessage());
+            throw new RuntimeException("Registration failed: " + e.getMessage(), e);
+        }
     }
 }

@@ -42,6 +42,13 @@ public class FaceRegistrationController {
                 files, firstName, lastName, email, employeeid);
 
             files.forEach(File::delete);
+            
+            // Check if person already exists
+            if ("ALREADY_EXISTS".equalsIgnoreCase(response.getSTATUS())) {
+                return ResponseEntity.status(409) // Conflict status
+                    .body(Map.of("status", "ALREADY_EXISTS", "message", response.getMessage()));
+            }
+            
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
