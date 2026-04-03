@@ -1,0 +1,90 @@
+package com.stations.facedetection.Dashboard.Service;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.stations.facedetection.Dashboard.DTO.CheckinCheckoutRecordDto;
+import com.stations.facedetection.Dashboard.DTO.CheckinCheckoutSummaryDto;
+import com.stations.facedetection.Dashboard.DTO.EmployeeCheckinCheckoutDashboardDto;
+import com.stations.facedetection.Dashboard.Entity.EmployeeCheckinCheckoutEntity;
+import com.stations.facedetection.Dashboard.Repository.EmployeeCheckinCheckoutRepository;
+import com.stations.facedetection.User.Entity.EmployeeEntity;
+import com.stations.facedetection.User.Entity.UserEntity;
+import com.stations.facedetection.User.Repository.UserRepository;
+import com.stations.facedetection.common.exception.ResourceNotFoundException;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class EmployeeCheckinCheckoutService {
+
+    private final EmployeeCheckinCheckoutRepository employeeCheckinCheckoutRepository;
+    private final UserRepository userRepository;
+
+    public EmployeeCheckinCheckoutDashboardDto getDashboard(String email, LocalDate startDate, LocalDate endDate) {
+
+        LocalDate resolvedEndDate = endDate == null ? LocalDate.now() : endDate;
+        LocalDate resolvedStartDate = startDate == null ? resolvedEndDate.minusDays(6) : startDate;
+
+        if (resolvedStartDate.isAfter(resolvedEndDate)) {
+            throw new IllegalArgumentException("startDate cannot be after endDate");
+        }
+
+        UserEntity user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found for email: " + email));
+
+        EmployeeEntity employee = user.getEmployee();
+        if (employee == null) {
+            throw new ResourceNotFoundException("Employee profile not found for user: " + email);
+        }
+
+        String employeeName = buildEmployeeName(employee);
+
+        List<EmployeeCheckinCheckoutEntity> entities = employeeCheckinCheckoutRepository
+                .findByNameIgnoreCaseAndDateBetweenOrderByDateDesc(employeeName, resolvedStartDate, resolvedEndDate);
+
+        List<CheckinCheckoutRecordDto> records = entities.stream()
+                .map(this::toRecordDto)
+                .toList();
+
+        long totalDays = records.size();
+        long completedDays = records.stream().filter(record -> record.getLastExitTime() != null).count();
+        long openDays = totalDays - completedDays;
+
+        CheckinCheckoutSummaryDto summary = new CheckinCheckoutSummaryDto(totalDays, completedDays, openDays);
+
+        return new EmployeeCheckinCheckoutDashboardDto(
+                employeeName,
+                resolvedStartDate,
+                resolvedEndDate,
+                summary,
+                records);
+    }
+
+    private CheckinCheckoutRecordDto toRecordDto(EmployeeCheckinCheckoutEntity entity) {
+        String status = entity.getLastExitTime() == null ? "CHECKED_IN" : "CHECKED_OUT";
+
+        return new CheckinCheckoutRecordDto(
+                entity.getDate(),
+                entity.getName(),
+                entity.getFirstEntryTime(),
+                entity.getLastExitTime(),
+                entity.getLocationName(),
+                status);
+    }
+
+    private String buildEmployeeName(EmployeeEntity employee) {
+        String firstName = employee.getFirstName() == null ? "" : employee.getFirstName().trim();
+        String lastName = employee.getLastName() == null ? "" : employee.getLastName().trim();
+
+        String fullName = (firstName + " " + lastName).trim();
+        if (fullName.isEmpty()) {
+            throw new ResourceNotFoundException("Employee name is not available");
+        }
+
+        return fullName;
+    }
+}

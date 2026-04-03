@@ -2,6 +2,7 @@ package com.stations.facedetection.Auth.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -105,18 +106,48 @@ public class AuthService implements IAuthService {
 	            )
 	    );
 
-	    UserEntity user = UserRepository.findByEmail(request.getEmail())
+	    UserEntity user = UserRepository.findByEmailWithRoles(request.getEmail())
 	            .orElseThrow(() -> new RuntimeException("User not found"));
 
 	    String token = jwtUtil.generateToken(user.getEmail());
 
-	    String role = user.getUserRoles()
-	            .stream()
-	            .findFirst()
-	            .get()
-	            .getRoles()
-	            .getName();
+	    List<String> roles = user.getUserRoles().stream()
+	            .map(userRole -> userRole.getRoles().getName())
+	            .filter(roleName -> roleName != null && !roleName.trim().isEmpty())
+	            .map(String::trim)
+	            .distinct()
+	            .collect(Collectors.toList());
 
-	    return new LoginResponseDto(token, user.getId(), role);
+	    String primaryRole = resolvePrimaryRole(roles);
+	    boolean multipleRoles = roles.size() > 1;
+	    String dashboardPath = resolveDashboardPath(primaryRole, multipleRoles);
+
+	    return new LoginResponseDto(token, user.getId(), primaryRole, roles, multipleRoles, dashboardPath);
+	}
+
+	private String resolveDashboardPath(String primaryRole, boolean multipleRoles) {
+	    if (multipleRoles || primaryRole == null) {
+	        return null;
+	    }
+
+	    String normalizedRole = primaryRole.trim().toUpperCase();
+	    return switch (normalizedRole) {
+	        case "ADMIN" -> "/admin/dashboard";
+	        case "EMPLOYEE" -> "/employee/dashboard";
+	        default -> null;
+	    };
+	}
+
+	private String resolvePrimaryRole(List<String> roles) {
+	    if (roles == null || roles.isEmpty()) {
+	        return null;
+	    }
+
+	    return roles.stream()
+	            .map(role -> role == null ? null : role.trim().toUpperCase())
+	            .filter(role -> role != null && !role.isBlank())
+	            .filter(role -> role.equals("ADMIN"))
+	            .findFirst()
+	            .orElse(roles.get(0));
 	}
 }
