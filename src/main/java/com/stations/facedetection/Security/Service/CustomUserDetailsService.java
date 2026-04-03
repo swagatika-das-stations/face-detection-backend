@@ -1,6 +1,5 @@
 package com.stations.facedetection.Security.Service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,7 +21,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     //check for existing user...
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-		UserEntity user = userRepository.findByEmail(email)
+                UserEntity user = userRepository.findByEmailWithRoles(email)
                 .orElseThrow(() ->
                         new UsernameNotFoundException("User not found with email: " + email));
 

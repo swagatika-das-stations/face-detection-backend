@@ -2,6 +2,8 @@ package com.stations.facedetection.common.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -47,6 +49,42 @@ public class GlobalExceptionHandler {
     }
 
     // 4. Generic Exception (Fallback)
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleBadRequest(IllegalArgumentException ex) {
+
+        ErrorResponse error = new ErrorResponse(
+                ex.getMessage(),
+                "BAD_REQUEST"
+        );
+
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    // 5. Generic Exception (Fallback)
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleBadCredentials(BadCredentialsException ex) {
+
+        ErrorResponse error = new ErrorResponse(
+                "Invalid email or password",
+                "UNAUTHORIZED"
+        );
+
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+    }
+
+    // 6. Generic authentication failures
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorResponse> handleAuthentication(AuthenticationException ex) {
+
+        ErrorResponse error = new ErrorResponse(
+                "Authentication failed",
+                "UNAUTHORIZED"
+        );
+
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+    }
+
+    // 7. Generic Exception (Fallback)
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneric(Exception ex) {
 

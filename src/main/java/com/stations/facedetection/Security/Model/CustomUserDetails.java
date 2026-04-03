@@ -28,9 +28,17 @@ public class CustomUserDetails implements UserDetails {
 	        List<UserRoleEntity> roles = user.getUserRoles();
 
 	        return roles.stream()
-	                .map(role -> new SimpleGrantedAuthority(
-	                        "ROLE_" + role.getRoles().getName()
-	                ))
+				.map(role -> {
+				    String roleName = role.getRoles().getName() == null
+					    ? ""
+					    : role.getRoles().getName().trim().toUpperCase();
+
+				    String authority = roleName.startsWith("ROLE_")
+					    ? roleName
+					    : "ROLE_" + roleName;
+
+				    return new SimpleGrantedAuthority(authority);
+				})
 	                .collect(Collectors.toList());
 	    }
 	    
