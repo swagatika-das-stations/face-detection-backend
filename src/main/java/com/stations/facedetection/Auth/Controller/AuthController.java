@@ -23,18 +23,8 @@ public class AuthController {
 	//Autowired classes...
 	private final AuthService authService;
 
-	// Register API
-	/*
-	 * @PostMapping("/register") public ResponseEntity<ApiResponse>
-	 * register(@RequestBody RegisterRequestDto request) {
-	 * 
-	 * authService.register(request);
-	 * 
-	 * ApiResponse response = new ApiResponse(true,
-	 * "User registered successfully",null);
-	 * 
-	 * return ResponseEntity.ok(response); }
-	 */
+	// Register API (Face detection.....)
+
 	
     // Login API
 	@PostMapping("/login")

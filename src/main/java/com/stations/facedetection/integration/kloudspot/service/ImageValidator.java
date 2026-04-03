@@ -21,7 +21,7 @@ public class ImageValidator {
      * Validate images according to Kloudspot specifications
      */
     public void validateImages(List<File> images) {
-        log.info("🔍 Validating {} images against Kloudspot specifications", images.size());
+        log.info("Validating {} images against Kloudspot specifications", images.size());
 
         // 1. Check number of images
         validateImageCount(images);
@@ -39,7 +39,7 @@ public class ImageValidator {
         // 3. Check total size
         validateTotalSize(totalSize);
 
-        log.info("✅ All images validated successfully!");
+        log.info("All images validated successfully!");
     }
 
     private void validateImageCount(List<File> images) {
@@ -63,7 +63,7 @@ public class ImageValidator {
             );
         }
 
-        log.info("✅ Image count validation passed: {} images", images.size());
+        log.info("Image count validation passed: {} images", images.size());
     }
 
     private void validateSingleImage(File image, int imageNumber) {
@@ -76,14 +76,14 @@ public class ImageValidator {
         long fileSize = image.length();
         long maxSize = uploadConfig.getMaxImageSizeBytes();
 
-        log.info("📦 Image {}: {} ({} KB)", 
+        log.info("Image {}: {} ({} KB)", 
             imageNumber, 
             image.getName(), 
             fileSize / 1024);
 
         if (fileSize > maxSize) {
             if (uploadConfig.getAutoResize()) {
-                log.warn("⚠️ Image {} is {} MB (max: {} MB) - Will be auto-resized",
+                log.warn("Image {} is {} MB (max: {} MB) - Will be auto-resized",
                     imageNumber,
                     String.format("%.2f", fileSize / (1024.0 * 1024.0)),
                     uploadConfig.getMaxImageSizeMb());
@@ -110,12 +110,12 @@ public class ImageValidator {
             );
         }
 
-        log.info("📷 Format: {} ✅", extension.toUpperCase());
+        log.info("Format: {} ✅", extension.toUpperCase());
 
         // Try to read image
         validateImageReadable(image, imageNumber);
 
-        log.info("✅ Image {} validation passed", imageNumber);
+        log.info("Image {} validation passed", imageNumber);
     }
 
     private void validateImageReadable(File image, int imageNumber) {
@@ -130,7 +130,7 @@ public class ImageValidator {
             int width = img.getWidth();
             int height = img.getHeight();
 
-            log.info("📐 Dimensions: {}x{}", width, height);
+            log.info("Dimensions: {}x{}", width, height);
 
             // Check minimum dimensions (at least 100x100 for face recognition)
             if (width < 100 || height < 100) {
@@ -158,7 +158,7 @@ public class ImageValidator {
             );
         }
 
-        log.info("✅ Total size validation passed: {} MB", 
+        log.info("Total size validation passed: {} MB", 
             String.format("%.2f", totalSize / (1024.0 * 1024.0)));
     }
 
