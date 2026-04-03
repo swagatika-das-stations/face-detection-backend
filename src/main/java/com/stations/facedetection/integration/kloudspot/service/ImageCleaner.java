@@ -30,12 +30,12 @@ public class ImageCleaner {
      */
     public File cleanImage(File originalImage) throws IOException {
         
-        log.info("🧹 Cleaning image: {}", originalImage.getName());
+        log.info("Cleaning image: {}", originalImage.getName());
         
         long originalSize = originalImage.length();
         long maxSize = uploadConfig.getMaxImageSizeBytes();
 
-        log.info("📦 Original size: {} KB (max: {} KB)", 
+        log.info("Original size: {} KB (max: {} KB)", 
                 originalSize / 1024, 
                 maxSize / 1024);
         
@@ -47,11 +47,11 @@ public class ImageCleaner {
         int width = original.getWidth();
         int height = original.getHeight();
         
-        log.info("📐 Original dimensions: {}x{}", width, height);
+        log.info("Original dimensions: {}x{}", width, height);
 
         // If image is already small enough, just optimize format
         if (originalSize <= maxSize) {
-            log.info("✅ Image size OK, optimizing format only");
+            log.info("Image size OK, optimizing format only");
             return optimizeFormat(original, originalImage.getName());
         }
 
@@ -73,13 +73,13 @@ public class ImageCleaner {
 
         // If still too large, reduce quality further
         if (cleanedSize > maxSize) {
-            log.warn("⚠️ Still too large after resize, reducing quality...");
+            log.warn("Still too large after resize, reducing quality...");
             cleanedFile = reduceQualityUntilFits(rgb, maxSize);
         }
 
         long finalSize = cleanedFile.length();
         
-        log.info("✅ Cleaned: {} KB → {} KB ({}% reduction)", 
+        log.info("Cleaned: {} KB → {} KB ({}% reduction)", 
                 originalSize / 1024, 
                 finalSize / 1024,
                 (int)(100 - (finalSize * 100.0 / originalSize)));
@@ -105,7 +105,7 @@ public class ImageCleaner {
             newWidth = (int) ((double) width / height * maxDimension);
         }
 
-        log.info("📐 Resizing to: {}x{}", newWidth, newHeight);
+        log.info("Resizing to: {}x{}", newWidth, newHeight);
 
         BufferedImage resized = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
         Graphics2D g = resized.createGraphics();
@@ -170,7 +170,7 @@ public class ImageCleaner {
             tempFile = saveAsOptimizedJpeg(image, quality);
             
             if (tempFile.length() <= maxSize) {
-                log.info("✅ Reduced quality to {}% - Size: {} KB", 
+                log.info("Reduced quality to {}% - Size: {} KB", 
                         (int)(quality * 100), 
                         tempFile.length() / 1024);
                 return tempFile;

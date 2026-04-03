@@ -3,7 +3,7 @@
 server:
   port: 9090
   tomcat:
-    connection-timeout: 120000
+    connection-timeout: 300000
     max-http-header-size: 65536
   servlet:
     multipart:
@@ -20,7 +20,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/face_detection_app
     username: postgres
-    password: tiger
+    password: Vvit@123
 
   jpa:
     hibernate:

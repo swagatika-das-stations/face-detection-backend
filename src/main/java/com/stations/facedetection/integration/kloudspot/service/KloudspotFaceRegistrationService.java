@@ -31,6 +31,7 @@ public class KloudspotFaceRegistrationService {
     private final ImageCleaner imageCleaner;
     private final ZipBuilder zipBuilder;
     private final KloudspotRegistrationService registrationService;
+    private final KloudspotSearchService searchService;
     private final FaceRegistryRepository repository;
     private final KloudspotUploadConfig uploadConfig;
 
@@ -44,64 +45,73 @@ public class KloudspotFaceRegistrationService {
         List<File> cleanedImages = new ArrayList<>();
 
         try {
-            log.info("🚀 Starting registration for {} {} (Employee ID: {})", firstName, lastName, employeeid);
-            log.info("📋 Kloudspot Specifications:");
+            log.info("Starting registration for {} {} (Employee ID: {})", firstName, lastName, employeeid);
+            log.info("Kloudspot Specifications:");
             log.info("   - Images: {}-{}", uploadConfig.getMinImages(), uploadConfig.getMaxImages());
             log.info("   - Max Image Size: {} MB", uploadConfig.getMaxImageSizeMb());
             log.info("   - Supported Formats: {}", String.join(", ", uploadConfig.getSupportedFormats()));
-
-            // 1️⃣ Validate images according to Kloudspot specs
+            // 0️⃣ Check if identity already exists
+            log.info("🔐 Checking if identity already exists in Kloudspot database...");
+            if (searchService.checkIdentityExists(email)) {
+                log.warn("⚠️ Identity {} already exists in Kloudspot database", email);
+                RegistrationResponseDto existsResponse = new RegistrationResponseDto();
+                existsResponse.setSTATUS("ALREADY_EXISTS");
+                existsResponse.setMessage("Identity " + email + " already exists in Kloudspot database");
+                return existsResponse;
+            }
+            log.info("✅ Identity does not exist, proceeding with registration");
+            // 1️. Validate images according to Kloudspot specs
             imageValidator.validateImages(images);
 
-            // 2️⃣ Clean and optimize each image
-            log.info("🧹 Cleaning {} images...", images.size());
+            // 2️. Clean and optimize each image
+            log.info("Cleaning {} images...", images.size());
             for (int i = 0; i < images.size(); i++) {
                 log.info("--- Processing Image {} of {} ---", i + 1, images.size());
                 File cleaned = imageCleaner.cleanImage(images.get(i));
                 cleanedImages.add(cleaned);
             }
 
-            // 3️⃣ Create ZIP
+            // 3️. Create ZIP
             zipFile = zipBuilder.createZip(cleanedImages);
             byte[] zipBytes = Files.readAllBytes(zipFile.toPath());
             long zipSize = zipBytes.length;
             
-            log.info("📦 ZIP File:");
+            log.info("ZIP File:");
             log.info("   - Size: {} KB ({} MB)", 
                     zipSize / 1024, 
                     String.format("%.2f", zipSize / (1024.0 * 1024.0)));
             log.info("   - Images: {}", cleanedImages.size());
 
-            // 4️⃣ Convert to Base64
+            // 4️. Convert to Base64
             String base64Zip = Base64.getEncoder().encodeToString(zipBytes);
-            log.info("🔐 Base64 encoded: {} characters", base64Zip.length());
+            log.info("Base64 encoded: {} characters", base64Zip.length());
 
-            // 5️⃣ Build Request
+            // 5️. Build Request
             KloudspotRegistrationRequestDTO request = buildRequest(
                     firstName, lastName, email, employeeid, base64Zip);
 
-            // 6️⃣ Print JSON to console (truncate Base64) - FOR DEBUGGING
+            // 6️. Print JSON to console (truncate Base64) - FOR DEBUGGING
             logRequestJson(request, base64Zip, zipBytes, firstName, lastName, email);
 
-            // 7️⃣ Send to Kloudspot
-            log.info("📤 Sending registration request to Kloudspot...");
+            // 7️. Send to Kloudspot
+            log.info("Sending registration request to Kloudspot...");
             RegistrationResponseDto response = registrationService.register(request);
 
-            // 8️⃣ Save to database if successful
+            // 8️. Save to database if successful
             if (response != null && "SUCCESS".equalsIgnoreCase(response.getSTATUS())) {
                 saveToDatabase(firstName, lastName, email, employeeid, response);
-                log.info("✅ Registration successful! Entity ID: {}", response.getEntityId());
+                log.info(" Registration successful! Entity ID: {}", response.getEntityId());
             } else {
-                log.error("❌ Kloudspot registration failed: {}", response);
+                log.error(" Kloudspot registration failed: {}", response);
             }
-   System.out.println(response);
+            System.out.println(response);
             return response;
 
         } catch (IllegalArgumentException e) {
-            log.error("❌ Validation failed: {}", e.getMessage());
+            log.error(" Validation failed: {}", e.getMessage());
             throw e;
         } catch (Exception e) {
-            log.error("❌ Registration failed", e);
+            log.error(" Registration failed", e);
             throw new RuntimeException("Registration failed: " + e.getMessage(), e);
 
         } finally {

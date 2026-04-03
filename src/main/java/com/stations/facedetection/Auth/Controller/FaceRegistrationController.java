@@ -54,6 +54,7 @@ public class FaceRegistrationController {
             @RequestParam String email,
             @RequestParam String employeeid) {
 
+<<<<<<< HEAD
         ResponseEntity<ErrorResponse> validationError = validateUpload(images);
         if (validationError != null) {
             return validationError;
@@ -66,6 +67,8 @@ public class FaceRegistrationController {
         System.out.println("Email: " + email);
         System.out.println("Employee ID: " + employeeid);
         System.out.println("=".repeat(70));
+=======
+>>>>>>> 9ec63add4f19b0683a4785e21fc37aade9e6d137
 
         try {
             List<File> files = Arrays.stream(images)
@@ -76,6 +79,13 @@ public class FaceRegistrationController {
                 files, firstName, lastName, email, employeeid);
 
             files.forEach(File::delete);
+            
+            // Check if person already exists
+            if ("ALREADY_EXISTS".equalsIgnoreCase(response.getSTATUS())) {
+                return ResponseEntity.status(409) // Conflict status
+                    .body(Map.of("status", "ALREADY_EXISTS", "message", response.getMessage()));
+            }
+            
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
