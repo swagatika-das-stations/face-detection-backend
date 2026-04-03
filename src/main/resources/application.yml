@@ -20,7 +20,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/face_detection_app
     username: postgres
-    password: tiger
+    password: Vvit@123
 
   jpa:
     hibernate:
