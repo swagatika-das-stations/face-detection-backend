@@ -92,29 +92,27 @@ public class AdminDashboardService {
     }
 
     public EmployeeCardResponseDto getOnLeave(LocalDate date) {
+
         LocalDate resolvedDate = resolveDate(date);
         log.info("Fetching on-leave employees for date={}", resolvedDate);
 
-        List<EmployeeEntity> employeeEntities = employeeRepository.findAll();
+        List<EmployeeCheckinCheckoutEntity> leaveRecords =
+            employeeCheckinCheckoutRepository
+                .findByDateAndFirstEntryTimeIsNullAndLastExitTimeIsNull(resolvedDate);
 
-        Set<String> checkedInNames = employeeCheckinCheckoutRepository.findByDateAndFirstEntryTimeIsNotNullOrderByFirstEntryTimeAsc(
-                resolvedDate)
-                .stream()
-                .map(EmployeeCheckinCheckoutEntity::getName)
-                .map(this::normalizeName)
-                .filter(normalized -> !normalized.isBlank())
-                .collect(Collectors.toCollection(LinkedHashSet::new));
+        List<EmployeeInfoDto> onLeaveEmployees = leaveRecords.stream()
+            .map(record -> {
+                EmployeeInfoDto dto = new EmployeeInfoDto();
+                dto.setFullName(record.getName());
+                dto.setFirstName(record.getName());
+                dto.setLastName(record.getLocationName());
+                return dto;
+            })
+            .sorted(Comparator.comparing(dto -> safeTrim(dto.getFullName()), String.CASE_INSENSITIVE_ORDER))
+            .toList();
 
-        List<EmployeeInfoDto> onLeaveEmployees = employeeEntities.stream()
-                .filter(employee -> !checkedInNames.contains(normalizeName(buildFullName(employee))))
-                .sorted(Comparator.comparing(this::buildFullName, String.CASE_INSENSITIVE_ORDER))
-                .map(this::toEmployeeInfoDto)
-                .toList();
-
-        log.info("On-leave employees fetched: date={}, totalEmployees={}, checkedIn={}, onLeave={}",
+        log.info("On-leave employees fetched: date={}, totalOnLeave={}",
             resolvedDate,
-            employeeEntities.size(),
-            checkedInNames.size(),
             onLeaveEmployees.size());
 
         return new EmployeeCardResponseDto(resolvedDate, onLeaveEmployees.size(), onLeaveEmployees);
