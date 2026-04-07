@@ -25,4 +25,6 @@ public interface EmployeeCheckinCheckoutRepository extends JpaRepository<Employe
 
     List<EmployeeCheckinCheckoutEntity> findByDateAndFirstEntryTimeIsNotNullAndLastExitTimeIsNullOrderByFirstEntryTimeAsc(
             LocalDate date);
+
+    List<EmployeeCheckinCheckoutEntity> findByDateAndFirstEntryTimeIsNullAndLastExitTimeIsNull(LocalDate resolvedDate);
 }
