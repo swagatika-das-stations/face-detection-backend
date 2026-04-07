@@ -10,17 +10,21 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.stations.facedetection.Dashboard.DTO.AttendanceCardResponseDto;
 import com.stations.facedetection.Dashboard.DTO.CheckinCheckoutRecordDto;
 import com.stations.facedetection.Dashboard.DTO.EmployeeCardResponseDto;
 import com.stations.facedetection.Dashboard.DTO.EmployeeInfoDto;
+import com.stations.facedetection.Dashboard.DTO.ProcedureEmployeeDirectoryDto;
 import com.stations.facedetection.Dashboard.DTO.UnknownAlertDto;
 import com.stations.facedetection.Dashboard.DTO.UnknownAlertsResponseDto;
 import com.stations.facedetection.Dashboard.Entity.EmployeeCheckinCheckoutEntity;
 import com.stations.facedetection.Dashboard.Repository.EmployeeCheckinCheckoutRepository;
 import com.stations.facedetection.User.Entity.EmployeeEntity;
 import com.stations.facedetection.User.Repository.EmployeeRepository;
+
+import jakarta.persistence.EntityManager;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,9 +36,28 @@ public class AdminDashboardService {
 
     private final EmployeeCheckinCheckoutRepository employeeCheckinCheckoutRepository;
     private final EmployeeRepository employeeRepository;
+    private final AttendanceSyncProcedureService attendanceSyncProcedureService;
+        private final EntityManager entityManager;
+
+        @Transactional
+        public List<ProcedureEmployeeDirectoryDto> getEmployeeDirectoryFromProcedure() {
+        attendanceSyncProcedureService.runSyncProcedureSafe();
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> rows = entityManager
+            .createNativeQuery(
+                "SELECT employee_id, email, name, date, location_name, first_entry_time, last_exit_time "
+                    + "FROM employee_temp_main_checkincheckout ORDER BY employee_id")
+            .getResultList();
+
+        return rows.stream()
+            .map(this::toProcedureDirectoryDto)
+            .toList();
+        }
 
     public AttendanceCardResponseDto getCheckins(LocalDate date) {
-        LocalDate resolvedDate = resolveDate(date);
+        attendanceSyncProcedureService.runSyncProcedureSafe();
+        LocalDate resolvedDate = resolveAttendanceDate(date);
         log.info("Fetching check-in records for date={}", resolvedDate);
 
         List<CheckinCheckoutRecordDto> records = employeeCheckinCheckoutRepository
@@ -49,7 +72,8 @@ public class AdminDashboardService {
     }
 
     public AttendanceCardResponseDto getCheckouts(LocalDate date) {
-        LocalDate resolvedDate = resolveDate(date);
+        attendanceSyncProcedureService.runSyncProcedureSafe();
+        LocalDate resolvedDate = resolveAttendanceDate(date);
         log.info("Fetching check-out records for date={}", resolvedDate);
 
         List<CheckinCheckoutRecordDto> records = employeeCheckinCheckoutRepository
@@ -64,7 +88,8 @@ public class AdminDashboardService {
     }
 
     public AttendanceCardResponseDto getHeadcount(LocalDate date) {
-        LocalDate resolvedDate = resolveDate(date);
+        attendanceSyncProcedureService.runSyncProcedureSafe();
+        LocalDate resolvedDate = resolveAttendanceDate(date);
         log.info("Fetching headcount records for date={}", resolvedDate);
 
         List<CheckinCheckoutRecordDto> records = employeeCheckinCheckoutRepository
@@ -79,6 +104,7 @@ public class AdminDashboardService {
     }
 
     public EmployeeCardResponseDto getTotalEmployees() {
+        attendanceSyncProcedureService.runSyncProcedureSafe();
         log.info("Fetching all employees for total-employees card");
 
         List<EmployeeInfoDto> employees = employeeRepository.findAll().stream()
@@ -92,7 +118,8 @@ public class AdminDashboardService {
     }
 
     public EmployeeCardResponseDto getOnLeave(LocalDate date) {
-        LocalDate resolvedDate = resolveDate(date);
+        attendanceSyncProcedureService.runSyncProcedureSafe();
+        LocalDate resolvedDate = resolveAttendanceDate(date);
         log.info("Fetching on-leave employees for date={}", resolvedDate);
 
         List<EmployeeEntity> employeeEntities = employeeRepository.findAll();
@@ -121,7 +148,8 @@ public class AdminDashboardService {
     }
 
     public UnknownAlertsResponseDto getUnknownAlerts(LocalDate date) {
-        LocalDate resolvedDate = resolveDate(date);
+        attendanceSyncProcedureService.runSyncProcedureSafe();
+        LocalDate resolvedDate = resolveAttendanceDate(date);
         log.info("Fetching unknown alerts for date={}", resolvedDate);
 
         Set<String> knownEmployees = employeeRepository.findAll().stream()
@@ -162,6 +190,31 @@ public class AdminDashboardService {
         return date == null ? LocalDate.now() : date;
     }
 
+    private LocalDate resolveAttendanceDate(LocalDate requestedDate) {
+        LocalDate resolvedDate = resolveDate(requestedDate);
+
+        boolean hasRowsForDate = !employeeCheckinCheckoutRepository
+                .findByDateOrderByNameAsc(resolvedDate)
+                .isEmpty();
+
+        if (hasRowsForDate) {
+            return resolvedDate;
+        }
+
+        LocalDate latestAvailableDate = employeeCheckinCheckoutRepository
+                .findTopByOrderByDateDesc()
+                .map(EmployeeCheckinCheckoutEntity::getDate)
+                .orElse(resolvedDate);
+
+        if (!latestAvailableDate.equals(resolvedDate)) {
+            log.info("No attendance rows found for date={}, falling back to latest available date={}",
+                    resolvedDate,
+                    latestAvailableDate);
+        }
+
+        return latestAvailableDate;
+    }
+
     private CheckinCheckoutRecordDto toRecordDto(EmployeeCheckinCheckoutEntity entity) {
         String status = entity.getLastExitTime() == null ? "CHECKED_IN" : "CHECKED_OUT";
 
@@ -197,5 +250,23 @@ public class AdminDashboardService {
             return "";
         }
         return name.trim().replaceAll("\\s+", " ").toLowerCase();
+    }
+
+    private ProcedureEmployeeDirectoryDto toProcedureDirectoryDto(Object[] row) {
+        return new ProcedureEmployeeDirectoryDto(
+                asText(row, 0),
+                asText(row, 1),
+                asText(row, 2),
+                asText(row, 3),
+                asText(row, 4),
+                asText(row, 5),
+                asText(row, 6));
+    }
+
+    private String asText(Object[] row, int index) {
+        if (row == null || row.length <= index || row[index] == null) {
+            return null;
+        }
+        return String.valueOf(row[index]);
     }
 }

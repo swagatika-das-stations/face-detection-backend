@@ -12,12 +12,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.stations.facedetection.Dashboard.DTO.AttendanceCardResponseDto;
 import com.stations.facedetection.Dashboard.DTO.EmployeeCardResponseDto;
+import com.stations.facedetection.Dashboard.DTO.ProcedureEmployeeDirectoryDto;
 import com.stations.facedetection.Dashboard.DTO.UnknownAlertsResponseDto;
 import com.stations.facedetection.Dashboard.Service.AdminDashboardService;
 import com.stations.facedetection.common.response.ApiResponse;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/admin/dashboard")
@@ -88,6 +91,15 @@ public class AdminDashboardController {
 
         EmployeeCardResponseDto payload = adminDashboardService.getTotalEmployees();
         return ResponseEntity.ok(new ApiResponse(true, "Total employees fetched successfully", payload));
+    }
+
+    @GetMapping("/employee-directory")
+    public ResponseEntity<ApiResponse> getEmployeeDirectoryFromProcedure() {
+
+        log.info("Dashboard API called: /employee-directory");
+
+        List<ProcedureEmployeeDirectoryDto> payload = adminDashboardService.getEmployeeDirectoryFromProcedure();
+        return ResponseEntity.ok(new ApiResponse(true, "Employee directory fetched successfully", payload));
     }
 
     @GetMapping("/on-leave")

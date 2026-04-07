@@ -2,12 +2,15 @@ package com.stations.facedetection.Dashboard.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.stations.facedetection.Dashboard.Entity.EmployeeCheckinCheckoutEntity;
 
 public interface EmployeeCheckinCheckoutRepository extends JpaRepository<EmployeeCheckinCheckoutEntity, Long> {
+
+        Optional<EmployeeCheckinCheckoutEntity> findTopByOrderByDateDesc();
 
     List<EmployeeCheckinCheckoutEntity> findByNameIgnoreCaseAndDateBetweenOrderByDateDesc(
             String name,
