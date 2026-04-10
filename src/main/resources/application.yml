@@ -18,9 +18,9 @@ spring:
     active: kloudspot
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/face_detection_app
-    username: postgres
-    password: Vvit@123
+    url: jdbc:mysql://zdotapps-devenviron.cvuouqwaej9d.ap-south-1.rds.amazonaws.com:3306/3C_faceDetection_App_DB
+    username: zda_devenviron
+    password: 7XxqiZw391vCIl6MudTk
 
   jpa:
     hibernate:

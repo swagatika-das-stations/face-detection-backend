@@ -1,3 +1,4 @@
+
 package com.stations.facedetection.Auth.Controller;
 
 import java.io.File;
@@ -61,6 +62,9 @@ public class FaceRegistrationController {
     private File convertToFile(MultipartFile file) {
         try {
             String originalName = file.getOriginalFilename();
+            if (originalName == null) {
+                throw new RuntimeException("Invalid file name");
+            }
             String extension = originalName.substring(originalName.lastIndexOf("."));
 
             File convFile = File.createTempFile("upload_", extension);
