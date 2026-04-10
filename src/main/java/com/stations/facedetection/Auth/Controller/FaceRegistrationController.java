@@ -19,7 +19,7 @@ import com.stations.facedetection.integration.kloudspot.service.KloudspotFaceReg
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/faces")
+@RequestMapping("api/faces")
 @RequiredArgsConstructor
 public class FaceRegistrationController {
 

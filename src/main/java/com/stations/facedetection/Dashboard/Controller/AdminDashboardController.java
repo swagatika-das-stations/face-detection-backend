@@ -19,7 +19,7 @@ import com.stations.facedetection.common.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/admin/dashboard")
+@RequestMapping("api/admin/dashboard")
 @RequiredArgsConstructor
 public class AdminDashboardController {
 
