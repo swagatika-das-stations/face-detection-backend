@@ -50,16 +50,16 @@ public class KloudspotFaceRegistrationService {
             log.info("   - Images: {}-{}", uploadConfig.getMinImages(), uploadConfig.getMaxImages());
             log.info("   - Max Image Size: {} MB", uploadConfig.getMaxImageSizeMb());
             log.info("   - Supported Formats: {}", String.join(", ", uploadConfig.getSupportedFormats()));
-            // 0️⃣ Check if identity already exists
-            log.info("🔐 Checking if identity already exists in Kloudspot database...");
+            //  Check if identity already exists
+            log.info(" Checking if identity already exists in Kloudspot database...");
             if (searchService.checkIdentityExists(email)) {
-                log.warn("⚠️ Identity {} already exists in Kloudspot database", email);
+                log.warn(" Identity {} already exists in Kloudspot database", email);
                 RegistrationResponseDto existsResponse = new RegistrationResponseDto();
                 existsResponse.setSTATUS("ALREADY_EXISTS");
                 existsResponse.setMessage("Identity " + email + " already exists in Kloudspot database");
                 return existsResponse;
             }
-            log.info("✅ Identity does not exist, proceeding with registration");
+            log.info(" Identity does not exist, proceeding with registration");
             // 1️. Validate images according to Kloudspot specs
             imageValidator.validateImages(images);
 

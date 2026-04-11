@@ -1,9 +1,7 @@
 package com.stations.facedetection.Security.Config;
 
-
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -17,6 +15,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -63,10 +64,10 @@ public class SecurityConfig {
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
             .authorizeHttpRequests(auth -> auth
-
+                    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                     .requestMatchers("/auth/register").permitAll()
-                    .requestMatchers("/employee/dashboard").permitAll()
-                    .requestMatchers("/admin/dashboard").permitAll()
+                    .requestMatchers("/employee/dashboard", "/employee/dashboard/**").permitAll()
+                    .requestMatchers("/admin/dashboard", "/admin/dashboard/**").permitAll()
                     .requestMatchers("/faces/register").permitAll()
                     .requestMatchers("/test").permitAll()
                     .requestMatchers("/auth/login").permitAll()

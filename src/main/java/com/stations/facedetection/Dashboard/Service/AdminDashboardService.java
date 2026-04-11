@@ -68,6 +68,8 @@ public class AdminDashboardService {
                 .map(this::toRecordDto)
                 .toList();
 
+        log.info("Check-in records fetched: date={}, count={}", resolvedDate, records.size());
+
         return new AttendanceCardResponseDto(resolvedDate, records.size(), records);
     }
 
@@ -83,6 +85,8 @@ public class AdminDashboardService {
                 .stream()
                 .map(this::toRecordDto)
                 .toList();
+
+        log.info("Check-out records fetched: date={}, count={}", resolvedDate, records.size());
 
         return new AttendanceCardResponseDto(resolvedDate, records.size(), records);
     }
@@ -100,6 +104,8 @@ public class AdminDashboardService {
                 .map(this::toRecordDto)
                 .toList();
 
+        log.info("Headcount records fetched: date={}, count={}", resolvedDate, records.size());
+
         return new AttendanceCardResponseDto(resolvedDate, records.size(), records);
     }
 
@@ -111,6 +117,8 @@ public class AdminDashboardService {
                 .sorted(Comparator.comparing(this::buildFullName, String.CASE_INSENSITIVE_ORDER))
                 .map(this::toEmployeeInfoDto)
                 .toList();
+
+        log.info("Total employees fetched: count={}", employees.size());
 
         return new EmployeeCardResponseDto(null, employees.size(), employees);
     }
