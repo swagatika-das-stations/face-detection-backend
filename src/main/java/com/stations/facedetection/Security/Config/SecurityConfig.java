@@ -65,14 +65,6 @@ public class SecurityConfig {
             )
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                    .requestMatchers("/auth/register").permitAll()
-                    .requestMatchers("/employee/dashboard", "/employee/dashboard/**").permitAll()
-                    .requestMatchers("/admin/dashboard", "/admin/dashboard/**").permitAll()
-                    .requestMatchers("/faces/register").permitAll()
-                    .requestMatchers("/test").permitAll()
-                    .requestMatchers("/auth/login").permitAll()
-
-                    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                     .requestMatchers("/api/faces/register").permitAll()
                     .requestMatchers("/api/auth/login").permitAll()
                     .requestMatchers("/favicon.ico", "/error").permitAll()
