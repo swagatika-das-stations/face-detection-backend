@@ -12,14 +12,17 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RegisterRequestDto {
+
+
+    //registered data storing in employee entity
 	private String firstName;
     private String lastName;
-    private String email;
     private Long  employeeId;
-
+    //email and paasword is storing in user entity
+    private String email;
     private String password;
     private String confirmPassword;
-
+//image is storing in FaceRegistryEntity, 
     private List<MultipartFile> faceImages;
 
 }

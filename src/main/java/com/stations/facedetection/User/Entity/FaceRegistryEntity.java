@@ -24,5 +24,7 @@ public class FaceRegistryEntity {
 
     private String employeeId;
 
+
     private String entityId; // Kloudspot entityId
+
 }

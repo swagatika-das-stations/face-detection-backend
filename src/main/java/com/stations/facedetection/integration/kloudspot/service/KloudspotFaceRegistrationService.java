@@ -185,7 +185,9 @@ public class KloudspotFaceRegistrationService {
         user.setLastName(lastName);
         user.setEmail(email);
         user.setEmployeeId(employeeid);
+
         user.setEntityId(response.getEntityId());
+
         repository.save(user);
         log.info(" Saved to database");
     }

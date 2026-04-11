@@ -69,7 +69,7 @@ public class KloudspotSearchService {
                     .block();
 
             if (response != null) {
-                log.info("✅ Identity EXISTS in Kloudspot:");
+                log.info(" Identity EXISTS in Kloudspot:");
                 log.info("   - Name: {} {}", response.getFirstName(), response.getLastName());
                 log.info("   - Email: {}", response.getEmailAddress());
                 log.info("   - Status: {}", response.getRegistrationStatus());
@@ -77,26 +77,26 @@ public class KloudspotSearchService {
                 return true;
             }
 
-            log.info("⚠️ Identity not found (null response)");
+            log.info("Identity not found (null response)");
             return false;
 
         } catch (WebClientResponseException.NotFound e) {
-            log.info("⚠️ Identity NOT FOUND in Kloudspot (404): {}", identity);
+            log.info("Identity NOT FOUND in Kloudspot (404): {}", identity);
             return false;
         } catch (WebClientResponseException.Forbidden e) {
-            log.warn("⚠️ Access FORBIDDEN to search identity (403): {}", identity);
+            log.warn(" Access FORBIDDEN to search identity (403): {}", identity);
             return false;
         } catch (WebClientResponseException.Conflict e) {
-            log.warn("⚠️ Identity CONFLICT (409): {}", identity);
+            log.warn("Identity CONFLICT (409): {}", identity);
             return true; // Treat conflict as exists
         } catch (WebClientResponseException.BadRequest e) {
-            log.warn("⚠️ Bad request for identity search (400): {}", identity);
+            log.warn("Bad request for identity search (400): {}", identity);
             return false;
         } catch (WebClientResponseException e) {
-            log.warn("⚠️ Search API returned error ({}): {}", e.getStatusCode(), e.getMessage());
+            log.warn("Search API returned error ({}): {}", e.getStatusCode(), e.getMessage());
             return false;
         } catch (Exception e) {
-            log.warn("⚠️ Error checking identity existence: {}", e.getMessage());
+            log.warn("Error checking identity existence: {}", e.getMessage());
             return false;
         }
     }
