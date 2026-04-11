@@ -15,21 +15,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
 
 import com.stations.facedetection.Security.Jwt.JwtAuthenticationFilter;
 
 import lombok.RequiredArgsConstructor;
-
 import lombok.extern.slf4j.Slf4j;
-
 
 @Configuration
 @EnableWebSecurity
@@ -58,53 +52,67 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-   .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
-            .sessionManagement(session ->
-                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
-            .authorizeHttpRequests(auth -> auth
-                    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                    .requestMatchers("/auth/register").permitAll()
-                    .requestMatchers("/employee/dashboard", "/employee/dashboard/**").permitAll()
-                    .requestMatchers("/admin/dashboard", "/admin/dashboard/**").permitAll()
-                    .requestMatchers("/faces/register").permitAll()
-                    .requestMatchers("/test").permitAll()
-                    .requestMatchers("/auth/login").permitAll()
 
+            .sessionManagement(session ->
+                    session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+            .authorizeHttpRequests(auth -> auth
+
+                    // allow preflight requests
                     .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                    // public APIs
                     .requestMatchers("/api/faces/register").permitAll()
                     .requestMatchers("/api/auth/login").permitAll()
+
+                    // common resources
                     .requestMatchers("/favicon.ico", "/error").permitAll()
 
-                    .requestMatchers("/admin/**").hasRole("ADMIN")
-                    .requestMatchers("/employee/**").hasRole("EMPLOYEE")
+                    // secured APIs
+                    .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                    .requestMatchers("/api/employee/**").hasRole("EMPLOYEE")
+
                     .anyRequest().authenticated()
             )
+
             .addFilterBefore(jwtAuthenticationFilter,
                     UsernamePasswordAuthenticationFilter.class);
+
+        log.info("Security configuration loaded");
 
         return http.build();
     }
 
-
-    // CORS configuration for Angular frontend
+    // CORS configuration
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
 
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of("http://localhost:4200"));
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedOrigins(List.of(
+                "http://localhost:4200"
+                /*"http://dev-3c.zdotapps.in"*/
+        ));
+
+        configuration.setAllowedMethods(List.of(
+                "GET", "POST", "PUT", "DELETE", "OPTIONS"
+        ));
+
         configuration.setAllowedHeaders(List.of("*"));
+
+        configuration.setExposedHeaders(List.of("Authorization"));
+
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source =
                 new UrlBasedCorsConfigurationSource();
 
         source.registerCorsConfiguration("/**", configuration);
-       log.info("CORS configuration loaded for Angular frontend");
+
+        log.info("CORS configuration loaded for Angular frontend");
+
         return source;
     }
-
 }

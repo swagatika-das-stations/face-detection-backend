@@ -16,13 +16,24 @@ public class AttendanceSyncProcedureService {
 
     @Transactional
     public void runSyncProcedureSafe() {
+
+        log.info("Starting attendance sync procedure execution");
+
         try {
-            entityManager.createNativeQuery("CALL public.employee_main_checkincheckout_procedure()")
+
+            entityManager
+                    .createNativeQuery("CALL public.employee_main_checkincheckout_procedure()")
                     .executeUpdate();
+
             log.info("Attendance sync procedure executed successfully");
+
         } catch (Exception ex) {
-            // Keep dashboard APIs responsive even if procedure is not stable yet.
-            log.warn("Attendance sync procedure failed; continuing with existing data. Reason: {}", ex.getMessage());
+
+            // Do not break dashboard APIs
+            log.warn(
+                "Attendance sync procedure failed. Dashboard will continue using existing data",
+                ex
+            );
         }
     }
 }

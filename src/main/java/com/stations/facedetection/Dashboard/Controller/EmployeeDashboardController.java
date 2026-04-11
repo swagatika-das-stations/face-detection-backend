@@ -15,10 +15,12 @@ import com.stations.facedetection.Dashboard.Service.EmployeeCheckinCheckoutServi
 import com.stations.facedetection.common.response.ApiResponse;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@RequestMapping("/employee/dashboard")
+@RequestMapping("/api/employee/dashboard")
 @RequiredArgsConstructor
+@Slf4j
 public class EmployeeDashboardController {
 
     private final EmployeeCheckinCheckoutService employeeCheckinCheckoutService;
@@ -26,17 +28,36 @@ public class EmployeeDashboardController {
     @GetMapping("/checkin-checkout")
     public ResponseEntity<ApiResponse> getCheckinCheckoutDashboard(
             Principal principal,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
 
-        EmployeeCheckinCheckoutDashboardDto dashboardData = employeeCheckinCheckoutService
-                .getDashboard(principal.getName(), startDate, endDate);
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
 
-        ApiResponse response = new ApiResponse(
-                true,
-                "Check-in/check-out dashboard data fetched successfully",
-                dashboardData);
+        String email = principal.getName();
 
-        return ResponseEntity.ok(response);
+        log.info("Employee dashboard API called → /checkin-checkout");
+        log.info("Request details → user={}, startDate={}, endDate={}", email, startDate, endDate);
+
+        try {
+
+            EmployeeCheckinCheckoutDashboardDto dashboardData =
+                    employeeCheckinCheckoutService.getDashboard(email, startDate, endDate);
+
+            log.info("Dashboard data fetched successfully for user={}", email);
+
+            ApiResponse response = new ApiResponse(
+                    true,
+                    "Check-in/check-out dashboard data fetched successfully",
+                    dashboardData
+            );
+
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+
+            log.error("Error fetching dashboard data for user={}", email, e);
+            throw e;
+        }
     }
 }

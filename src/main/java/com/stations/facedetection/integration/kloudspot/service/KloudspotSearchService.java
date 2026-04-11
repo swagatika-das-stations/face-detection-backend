@@ -1,12 +1,6 @@
 package com.stations.facedetection.integration.kloudspot.service;
 
-import java.io.File;
-
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.util.MultiValueMap;
-import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
@@ -25,40 +19,20 @@ public class KloudspotSearchService {
     private final KloudspotAuthService authService;
     private final KloudspotProperties properties;
 
-    public String register(File zipFile, File jsonFile) {
-
-        String token = authService.getToken();
-
-        String url = properties.getBaseUrl() + properties.getRegistrationUrl();
-
-        // Prepare multipart data
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("zipFile", new FileSystemResource(zipFile));
-        body.add("human", new FileSystemResource(jsonFile));
-
-        String response = webClient.post()
-                .uri(url)
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.MULTIPART_FORM_DATA)
-                .bodyValue(body)
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
-
-        return response;
-    }
-
     /**
      * Check if an identity already exists in Kloudspot database
-     * @param identity - email or unique identifier
-     * @return true if identity exists in system, false otherwise
      */
     public boolean checkIdentityExists(String identity) {
-        try {
-            String token = authService.getToken();
-            String url = properties.getBaseUrl() + "/advanced/api/v1/humans/get?identity=" + identity;
 
-            log.info("🔍 Checking if identity exists in Kloudspot: {}", identity);
+        try {
+
+            String token = authService.getToken();
+
+            String url = properties.getBaseUrl()
+                    + properties.getSearchUrl()
+                    + "?identity=" + identity;
+
+            log.info("Checking Kloudspot identity existence for identity={}", identity);
 
             SearchResponseDto response = webClient.get()
                     .uri(url)
@@ -69,34 +43,52 @@ public class KloudspotSearchService {
                     .block();
 
             if (response != null) {
-                log.info(" Identity EXISTS in Kloudspot:");
-                log.info("   - Name: {} {}", response.getFirstName(), response.getLastName());
-                log.info("   - Email: {}", response.getEmailAddress());
-                log.info("   - Status: {}", response.getRegistrationStatus());
-                log.info("   - User ID: {}", response.getUserId());
+
+                log.info("Identity exists in Kloudspot: name={} {}, email={}, status={}, userId={}",
+                        response.getFirstName(),
+                        response.getLastName(),
+                        response.getEmailAddress(),
+                        response.getRegistrationStatus(),
+                        response.getUserId());
+
                 return true;
             }
 
-            log.info("Identity not found (null response)");
+            log.info("Identity not found in Kloudspot for identity={}", identity);
+
             return false;
 
         } catch (WebClientResponseException.NotFound e) {
-            log.info("Identity NOT FOUND in Kloudspot (404): {}", identity);
+
+            log.info("Identity not found in Kloudspot (404). identity={}", identity);
             return false;
+
         } catch (WebClientResponseException.Forbidden e) {
-            log.warn(" Access FORBIDDEN to search identity (403): {}", identity);
+
+            log.warn("Kloudspot search access forbidden (403). identity={}", identity);
             return false;
+
         } catch (WebClientResponseException.Conflict e) {
-            log.warn("Identity CONFLICT (409): {}", identity);
-            return true; // Treat conflict as exists
+
+            log.warn("Kloudspot identity conflict (409). Treating as existing. identity={}", identity);
+            return true;
+
         } catch (WebClientResponseException.BadRequest e) {
-            log.warn("Bad request for identity search (400): {}", identity);
+
+            log.warn("Kloudspot search bad request (400). identity={}", identity);
             return false;
+
         } catch (WebClientResponseException e) {
-            log.warn("Search API returned error ({}): {}", e.getStatusCode(), e.getMessage());
+
+            log.error("Kloudspot search API error. status={}, message={}",
+                    e.getStatusCode(),
+                    e.getResponseBodyAsString());
+
             return false;
+
         } catch (Exception e) {
-            log.warn("Error checking identity existence: {}", e.getMessage());
+
+            log.error("Unexpected error while checking Kloudspot identity existence", e);
             return false;
         }
     }

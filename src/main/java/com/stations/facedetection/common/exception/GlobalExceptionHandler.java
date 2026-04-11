@@ -9,12 +9,17 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.stations.facedetection.common.response.ErrorResponse;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-	 // 1. User Already Exists
+    // 1. User Already Exists
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<ErrorResponse> handleUserExists(UserAlreadyExistsException ex) {
+
+        log.warn("User already exists: {}", ex.getMessage());
 
         ErrorResponse error = new ErrorResponse(
                 ex.getMessage(),
@@ -28,6 +33,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(PasswordMismatchException.class)
     public ResponseEntity<ErrorResponse> handlePasswordMismatch(PasswordMismatchException ex) {
 
+        log.warn("Password mismatch: {}", ex.getMessage());
+
         ErrorResponse error = new ErrorResponse(
                 ex.getMessage(),
                 "PASSWORD_MISMATCH"
@@ -40,6 +47,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleNotFound(ResourceNotFoundException ex) {
 
+        log.warn("Resource not found: {}", ex.getMessage());
+
         ErrorResponse error = new ErrorResponse(
                 ex.getMessage(),
                 "RESOURCE_NOT_FOUND"
@@ -48,9 +57,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
-    // 4. Generic Exception (Fallback)
+    // 4. Illegal Argument
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponse> handleBadRequest(IllegalArgumentException ex) {
+
+        log.warn("Bad request error: {}", ex.getMessage());
 
         ErrorResponse error = new ErrorResponse(
                 ex.getMessage(),
@@ -60,9 +71,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-    // 5. Generic Exception (Fallback)
+    // 5. Invalid Login Credentials
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ErrorResponse> handleBadCredentials(BadCredentialsException ex) {
+
+        log.warn("Invalid login attempt");
 
         ErrorResponse error = new ErrorResponse(
                 "Invalid email or password",
@@ -72,9 +85,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
 
-    // 6. Generic authentication failures
+    // 6. Authentication failures
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ErrorResponse> handleAuthentication(AuthenticationException ex) {
+
+        log.warn("Authentication failed: {}", ex.getMessage());
 
         ErrorResponse error = new ErrorResponse(
                 "Authentication failed",
@@ -84,9 +99,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
 
-    // 7. Generic Exception (Fallback)
+    // 7. Generic Exception
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneric(Exception ex) {
+
+        log.error("Unexpected server error", ex);
 
         ErrorResponse error = new ErrorResponse(
                 ex.getMessage(),

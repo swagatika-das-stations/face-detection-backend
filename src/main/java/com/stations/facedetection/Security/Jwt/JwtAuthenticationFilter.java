@@ -14,54 +14,75 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-	// Autowired classes....
-	private final JwtUtil jwtUtil;
-	private final UserDetailsService userDetailsService;
+    private final JwtUtil jwtUtil;
+    private final UserDetailsService userDetailsService;
 
-	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-			throws ServletException, IOException {
+    @Override
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
+            throws ServletException, IOException {
 
-		final String authHeader = request.getHeader("Authorization");
+        final String authHeader = request.getHeader("Authorization");
 
-		String jwt = null;
-		String username = null;
+        String jwt = null;
+        String username = null;
 
-		if (authHeader != null && authHeader.startsWith("Bearer ")) {
+        try {
 
-			jwt = authHeader.substring(7);
-			username = jwtUtil.extractUsername(jwt);
-		}
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
 
-		if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                jwt = authHeader.substring(7);
+                username = jwtUtil.extractUsername(jwt);
 
-			UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                log.debug("JWT detected for user: {}", username);
+            }
 
-			if (jwtUtil.validateToken(jwt, userDetails.getUsername())) {
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-				UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,
-						null, userDetails.getAuthorities());
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-				authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                if (jwtUtil.validateToken(jwt, userDetails.getUsername())) {
 
-				SecurityContextHolder.getContext().setAuthentication(authToken);
-			}
-		}
-		System.out.println("Request Path: " + request.getServletPath());
-		filterChain.doFilter(request, response);
-	}
+                    UsernamePasswordAuthenticationToken authToken =
+                            new UsernamePasswordAuthenticationToken(
+                                    userDetails,
+                                    null,
+                                    userDetails.getAuthorities());
 
-	@Override
-	protected boolean shouldNotFilter(HttpServletRequest request) {
+                    authToken.setDetails(
+                            new WebAuthenticationDetailsSource().buildDetails(request));
 
-		String path = request.getServletPath();
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
 
-		return path.startsWith("/auth") || path.startsWith("/faces");
-	}
+                    log.debug("JWT authentication successful for {}", username);
+                }
+            }
+
+        } catch (Exception e) {
+            log.warn("JWT authentication failed: {}", e.getMessage());
+        }
+
+        log.info("Request Path: {}", request.getServletPath());
+
+        filterChain.doFilter(request, response);
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+
+        String path = request.getServletPath();
+
+        return path.startsWith("/api/auth/login")
+                || path.startsWith("/api/faces/register");
+    }
 }

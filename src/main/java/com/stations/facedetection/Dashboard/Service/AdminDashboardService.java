@@ -41,6 +41,8 @@ public class AdminDashboardService {
     @Transactional
     public List<ProcedureEmployeeDirectoryDto> getEmployeeDirectoryFromProcedure() {
 
+        log.info("Running attendance sync procedure before fetching employee directory");
+
         attendanceSyncProcedureService.runSyncProcedureSafe();
 
         @SuppressWarnings("unchecked")
@@ -50,6 +52,8 @@ public class AdminDashboardService {
                                 + "FROM employee_temp_main_checkincheckout ORDER BY employee_id")
                 .getResultList();
 
+        log.info("Employee directory fetched from procedure table. Records={}", rows.size());
+
         return rows.stream()
                 .map(this::toProcedureDirectoryDto)
                 .toList();
@@ -57,10 +61,13 @@ public class AdminDashboardService {
 
     public AttendanceCardResponseDto getCheckins(LocalDate date) {
 
+        log.info("Fetching check-in data. Requested date={}", date);
+
         attendanceSyncProcedureService.runSyncProcedureSafe();
+
         LocalDate resolvedDate = resolveAttendanceDate(date);
 
-        log.info("Fetching check-in records for date={}", resolvedDate);
+        log.info("Resolved check-in date={}", resolvedDate);
 
         List<CheckinCheckoutRecordDto> records = employeeCheckinCheckoutRepository
                 .findByDateAndFirstEntryTimeIsNotNullOrderByFirstEntryTimeAsc(resolvedDate)
@@ -68,17 +75,20 @@ public class AdminDashboardService {
                 .map(this::toRecordDto)
                 .toList();
 
-        log.info("Check-in records fetched: date={}, count={}", resolvedDate, records.size());
+        log.info("Check-in records fetched successfully. date={}, count={}", resolvedDate, records.size());
 
         return new AttendanceCardResponseDto(resolvedDate, records.size(), records);
     }
 
     public AttendanceCardResponseDto getCheckouts(LocalDate date) {
 
+        log.info("Fetching check-out data. Requested date={}", date);
+
         attendanceSyncProcedureService.runSyncProcedureSafe();
+
         LocalDate resolvedDate = resolveAttendanceDate(date);
 
-        log.info("Fetching check-out records for date={}", resolvedDate);
+        log.info("Resolved checkout date={}", resolvedDate);
 
         List<CheckinCheckoutRecordDto> records = employeeCheckinCheckoutRepository
                 .findByDateAndLastExitTimeIsNotNullOrderByLastExitTimeAsc(resolvedDate)
@@ -86,17 +96,20 @@ public class AdminDashboardService {
                 .map(this::toRecordDto)
                 .toList();
 
-        log.info("Check-out records fetched: date={}, count={}", resolvedDate, records.size());
+        log.info("Check-out records fetched successfully. date={}, count={}", resolvedDate, records.size());
 
         return new AttendanceCardResponseDto(resolvedDate, records.size(), records);
     }
 
     public AttendanceCardResponseDto getHeadcount(LocalDate date) {
 
+        log.info("Fetching headcount data. Requested date={}", date);
+
         attendanceSyncProcedureService.runSyncProcedureSafe();
+
         LocalDate resolvedDate = resolveAttendanceDate(date);
 
-        log.info("Fetching headcount records for date={}", resolvedDate);
+        log.info("Resolved headcount date={}", resolvedDate);
 
         List<CheckinCheckoutRecordDto> records = employeeCheckinCheckoutRepository
                 .findByDateAndFirstEntryTimeIsNotNullAndLastExitTimeIsNullOrderByFirstEntryTimeAsc(resolvedDate)
@@ -104,12 +117,14 @@ public class AdminDashboardService {
                 .map(this::toRecordDto)
                 .toList();
 
-        log.info("Headcount records fetched: date={}, count={}", resolvedDate, records.size());
+        log.info("Headcount records fetched successfully. date={}, count={}", resolvedDate, records.size());
 
         return new AttendanceCardResponseDto(resolvedDate, records.size(), records);
     }
 
     public EmployeeCardResponseDto getTotalEmployees() {
+
+        log.info("Fetching total employee list");
 
         attendanceSyncProcedureService.runSyncProcedureSafe();
 
@@ -118,7 +133,7 @@ public class AdminDashboardService {
                 .map(this::toEmployeeInfoDto)
                 .toList();
 
-        log.info("Total employees fetched: count={}", employees.size());
+        log.info("Total employees fetched successfully. count={}", employees.size());
 
         return new EmployeeCardResponseDto(null, employees.size(), employees);
     }
@@ -126,6 +141,8 @@ public class AdminDashboardService {
     public EmployeeCardResponseDto getOnLeave(LocalDate date) {
 
         LocalDate resolvedDate = resolveDate(date);
+
+        log.info("Fetching on-leave employees for date={}", resolvedDate);
 
         Set<String> checkedInNames = employeeCheckinCheckoutRepository
                 .findByDateAndFirstEntryTimeIsNotNullOrderByFirstEntryTimeAsc(resolvedDate)
@@ -140,13 +157,20 @@ public class AdminDashboardService {
                 .map(this::toEmployeeInfoDto)
                 .toList();
 
+        log.info("On-leave employees calculated. date={}, count={}", resolvedDate, onLeaveEmployees.size());
+
         return new EmployeeCardResponseDto(resolvedDate, onLeaveEmployees.size(), onLeaveEmployees);
     }
 
     public UnknownAlertsResponseDto getUnknownAlerts(LocalDate date) {
 
+        log.info("Fetching unknown alerts. Requested date={}", date);
+
         attendanceSyncProcedureService.runSyncProcedureSafe();
+
         LocalDate resolvedDate = resolveAttendanceDate(date);
+
+        log.info("Resolved unknown alert date={}", resolvedDate);
 
         Set<String> knownEmployees = employeeRepository.findAll().stream()
                 .map(this::buildFullName)
@@ -176,6 +200,8 @@ public class AdminDashboardService {
 
         List<UnknownAlertDto> unknownPersons = unknownByName.values().stream().toList();
 
+        log.info("Unknown alerts fetched successfully. date={}, count={}", resolvedDate, unknownPersons.size());
+
         return new UnknownAlertsResponseDto(resolvedDate, unknownPersons.size(), unknownPersons);
     }
 
@@ -194,6 +220,8 @@ public class AdminDashboardService {
         if (hasRows) {
             return resolvedDate;
         }
+
+        log.warn("No attendance rows found for date={}, fetching latest available date", resolvedDate);
 
         return employeeCheckinCheckoutRepository
                 .findTopByOrderByDateDesc()
