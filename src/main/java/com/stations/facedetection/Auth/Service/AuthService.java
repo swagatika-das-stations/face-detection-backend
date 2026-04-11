@@ -44,55 +44,7 @@ public class AuthService implements IAuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
     //..............................Register.....................................
-	/*
-	 * @Override public void register(RegisterRequestDto request) throws
-	 * RuntimeException {
-	 * 
-	 * 
-	 * // 1️. Check if email already exists if
-	 * (UserRepository.findByEmail(request.getEmail()).isPresent()) { throw new
-	 * UserAlreadyExistsException("Email already registered"); }
-	 * 
-	 * // 2️. Validate password & confirm password if
-	 * (!request.getPassword().equals(request.getConfirmPassword())) { throw new
-	 * PasswordMismatchException("Passwords do not match"); }
-	 * 
-	 * // 3️. Create User (AUTH DATA) UserEntity user = new UserEntity();
-	 * user.setEmail(request.getEmail());
-	 * user.setPassword(passwordEncoder.encode(request.getPassword()));
-	 * user.setEnabled(true);
-	 * 
-	 * UserEntity savedUser = UserRepository.save(user);
-	 * 
-	 * // 4️. Assign EMPLOYEE Role RoleEntity role =
-	 * roleRepository.findByName("EMPLOYEE") .orElseThrow(() -> new
-	 * ResourceNotFoundException("EMPLOYEE role not found"));
-	 * 
-	 * UserRoleEntity userRole = new UserRoleEntity(); userRole.setUsers(savedUser);
-	 * userRole.setRoles(role);
-	 * 
-	 * userRoleRepository.save(userRole);
-	 * 
-	 * // 5️. Create Employee (BUSINESS DATA) EmployeeEntity employee = new
-	 * EmployeeEntity(); employee.setFirstName(request.getFirstName());
-	 * employee.setLastName(request.getLastName());
-	 * employee.setEmployeeId(request.getEmployeeId()); employee.setUser(savedUser);
-	 * 
-	 * EmployeeEntity savedEmployee = employeeRepository.save(employee);
-	 * 
-	 * // 6️. Save Face Images (if available) if (request.getFaceImages() != null &&
-	 * !request.getFaceImages().isEmpty()) {
-	 * 
-	 * List<FaceImageEntity> images = new ArrayList<>();
-	 * 
-	 * for (String img : request.getFaceImages()) { FaceImageEntity faceImage = new
-	 * FaceImageEntity(); faceImage.setImagePath(img);
-	 * faceImage.setEmployee(savedEmployee); images.add(faceImage); }
-	 * 
-	 * faceImageRepository.saveAll(images); }
-	 * 
-	 * }
-	 */
+
 	
 	//..............................Login.........................................
 	
