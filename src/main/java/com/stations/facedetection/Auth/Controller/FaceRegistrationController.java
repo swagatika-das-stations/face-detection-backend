@@ -59,16 +59,6 @@ public class FaceRegistrationController {
         if (validationError != null) {
             return validationError;
         }
-
-        System.out.println("=".repeat(70));
-        System.out.println("REGISTRATION API HIT SUCCESSFULLY!");
-        System.out.println("Images count: " + images.length);
-        System.out.println("Name: " + firstName + " " + lastName);
-        System.out.println("Email: " + email);
-        System.out.println("Employee ID: " + employeeid);
-        System.out.println("=".repeat(70));
-
-
         try {
             List<File> files = Arrays.stream(images)
                 .map(this::convertToFile)
