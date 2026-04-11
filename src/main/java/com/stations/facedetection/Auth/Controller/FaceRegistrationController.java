@@ -54,21 +54,6 @@ public class FaceRegistrationController {
             @RequestParam String email,
             @RequestParam String employeeid) {
 
-<<<<<<< HEAD
-        ResponseEntity<ErrorResponse> validationError = validateUpload(images);
-        if (validationError != null) {
-            return validationError;
-        }
-
-        System.out.println("=".repeat(70));
-        System.out.println("REGISTRATION API HIT SUCCESSFULLY!");
-        System.out.println("Images count: " + images.length);
-        System.out.println("Name: " + firstName + " " + lastName);
-        System.out.println("Email: " + email);
-        System.out.println("Employee ID: " + employeeid);
-        System.out.println("=".repeat(70));
-=======
->>>>>>> 9ec63add4f19b0683a4785e21fc37aade9e6d137
 
         ResponseEntity<ErrorResponse> validationError = validateUpload(images);
         if (validationError != null) {
