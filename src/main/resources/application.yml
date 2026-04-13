@@ -39,7 +39,7 @@ jwt:
 
 logging:
   file:
-    name: logs/application.log
+    name: logs/3C_application.log
   logback:
     rollingpolicy:
       file-name-pattern: logs/application-%d{yyyy-MM-dd}.%i.log
