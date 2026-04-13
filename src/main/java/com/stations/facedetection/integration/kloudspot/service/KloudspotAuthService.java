@@ -1,5 +1,6 @@
 package com.stations.facedetection.integration.kloudspot.service;
 
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,9 +21,20 @@ public class KloudspotAuthService {
 
     private final WebClient webClient;
     private final KloudspotProperties properties;
-    private final ObjectMapper objectMapper; // ✅ Injected
+    private final ObjectMapper objectMapper;
 
-    public String getToken() {
+    private String cachedToken;
+    private long tokenExpiryTime;
+
+    public synchronized String getToken() {
+
+        long currentTime = System.currentTimeMillis();
+
+        // reuse token if not expired
+        if (cachedToken != null && currentTime < tokenExpiryTime - 60000) {
+            log.info("Using cached Kloudspot JWT token");
+            return cachedToken;
+        }
 
         String url = properties.getBaseUrl() + properties.getAuthUrl();
 
@@ -47,13 +59,16 @@ public class KloudspotAuthService {
                 throw new RuntimeException("Empty response from Kloudspot auth API");
             }
 
-            log.debug("Raw auth response received");
-
             String token = extractToken(response);
+
+            cachedToken = token;
+
+            // extract expiry from JWT
+            tokenExpiryTime = extractExpiryFromToken(token);
 
             log.info("Kloudspot JWT token generated successfully (length={})", token.length());
 
-            return token;
+            return cachedToken;
 
         } catch (Exception ex) {
             log.error("Failed to generate JWT token from Kloudspot API", ex);
@@ -64,18 +79,41 @@ public class KloudspotAuthService {
     private String extractToken(String response) {
 
         try {
-            // Try JSON parsing
             JsonNode jsonNode = objectMapper.readTree(response);
 
             if (jsonNode.has("token")) {
                 return jsonNode.get("token").asText().trim();
             }
 
-        } catch (Exception ignored) {
-            // Not JSON → ignore
+        } catch (Exception ignored) {}
+
+        return response.replace("\"", "").trim();
+    }
+
+    private long extractExpiryFromToken(String token) {
+
+        try {
+
+            String[] parts = token.split("\\.");
+
+            String payload = new String(
+                    Base64.getUrlDecoder().decode(parts[1])
+            );
+
+            JsonNode jsonNode = objectMapper.readTree(payload);
+
+            if (jsonNode.has("exp")) {
+
+                long expSeconds = jsonNode.get("exp").asLong();
+
+                return expSeconds * 1000; // convert to milliseconds
+            }
+
+        } catch (Exception e) {
+            log.warn("Could not extract expiry from JWT", e);
         }
 
-        // Plain string fallback
-        return response.replace("\"", "").trim();
+        // fallback (1 hour)
+        return System.currentTimeMillis() + (60 * 60 * 1000);
     }
 }

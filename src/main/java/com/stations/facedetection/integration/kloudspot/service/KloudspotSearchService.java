@@ -20,7 +20,7 @@ public class KloudspotSearchService {
     private final KloudspotProperties properties;
 
     /**
-     * Check if an identity already exists in Kloudspot database
+     * Check if identity exists in Kloudspot
      */
     public boolean checkIdentityExists(String identity) {
 
@@ -28,14 +28,12 @@ public class KloudspotSearchService {
 
             String token = authService.getToken();
 
-            String url = properties.getBaseUrl()
-                    + properties.getSearchUrl()
-                    + "?identity=" + identity;
-
             log.info("Checking Kloudspot identity existence for identity={}", identity);
 
             SearchResponseDto response = webClient.get()
-                    .uri(url)
+                    .uri(uriBuilder -> uriBuilder
+                            .path(properties.getSearchUrl())   // contains {uniqueId}
+                            .build(identity))                  // expands {uniqueId}
                     .header("Authorization", "Bearer " + token)
                     .header("Accept", "application/json")
                     .retrieve()

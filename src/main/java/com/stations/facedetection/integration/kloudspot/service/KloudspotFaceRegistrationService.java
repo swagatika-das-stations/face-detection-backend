@@ -70,11 +70,11 @@ public class KloudspotFaceRegistrationService {
 
             log.info("Identity not found. Proceeding with registration.");
 
-            // 1️⃣ Validate images
+            // 1️ Validate images
             log.info("Validating {} uploaded images", images.size());
             imageValidator.validateImages(images);
 
-            // 2️⃣ Clean images
+            // 2️ Clean images
             log.info("Cleaning uploaded images");
 
             for (int i = 0; i < images.size(); i++) {
@@ -87,7 +87,7 @@ public class KloudspotFaceRegistrationService {
 
             log.info("Image cleaning completed. Cleaned images={}", cleanedImages.size());
 
-            // 3️⃣ Create ZIP
+            // 3️ Create ZIP
             zipFile = zipBuilder.createZip(cleanedImages);
 
             byte[] zipBytes = Files.readAllBytes(zipFile.toPath());
@@ -99,24 +99,24 @@ public class KloudspotFaceRegistrationService {
                     String.format("%.2f", zipSize / (1024.0 * 1024.0)),
                     cleanedImages.size());
 
-            // 4️⃣ Convert to Base64
+            // 4️ Convert to Base64
             String base64Zip = Base64.getEncoder().encodeToString(zipBytes);
 
             log.debug("Base64 ZIP length={}", base64Zip.length());
 
-            // 5️⃣ Build request
+            // 5️ Build request
             KloudspotRegistrationRequestDTO request =
                     buildRequest(firstName, lastName, email, employeeid, base64Zip);
 
-            // 6️⃣ Log request JSON (safe)
+            // 6️ Log request JSON (safe)
             logRequestJson(request, base64Zip);
 
-            // 7️⃣ Send request
+            // 7️ Send request
             log.info("Sending face registration request to Kloudspot");
 
             RegistrationResponseDto response = registrationService.register(request);
 
-            // 8️⃣ Handle response
+            // 8️ Handle response
             if (response != null && "SUCCESS".equalsIgnoreCase(response.getSTATUS())) {
 
                 log.info("Kloudspot registration successful. EntityId={}", response.getEntityId());
