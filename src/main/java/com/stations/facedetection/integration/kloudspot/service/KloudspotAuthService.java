@@ -20,8 +20,7 @@ public class KloudspotAuthService {
 
     private final WebClient webClient;
     private final KloudspotProperties properties;
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper; // ✅ Injected
 
     public String getToken() {
 
@@ -44,22 +43,39 @@ public class KloudspotAuthService {
                     .bodyToMono(String.class)
                     .block();
 
-            log.info("Received response from Kloudspot auth API");
+            if (response == null || response.isBlank()) {
+                throw new RuntimeException("Empty response from Kloudspot auth API");
+            }
 
-            JsonNode jsonNode = objectMapper.readTree(response);
+            log.debug("Raw auth response received");
 
-            String token = jsonNode.has("token")
-                    ? jsonNode.get("token").asText()
-                    : response;
+            String token = extractToken(response);
 
-            log.info("Kloudspot JWT token generated successfully");
+            log.info("Kloudspot JWT token generated successfully (length={})", token.length());
 
             return token;
 
         } catch (Exception ex) {
-
             log.error("Failed to generate JWT token from Kloudspot API", ex);
             throw new RuntimeException("Kloudspot authentication failed", ex);
         }
+    }
+
+    private String extractToken(String response) {
+
+        try {
+            // Try JSON parsing
+            JsonNode jsonNode = objectMapper.readTree(response);
+
+            if (jsonNode.has("token")) {
+                return jsonNode.get("token").asText().trim();
+            }
+
+        } catch (Exception ignored) {
+            // Not JSON → ignore
+        }
+
+        // Plain string fallback
+        return response.replace("\"", "").trim();
     }
 }

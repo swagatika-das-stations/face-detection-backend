@@ -1,5 +1,3 @@
-# application.yml
-
 server:
   port: 9090
   tomcat:
@@ -13,7 +11,6 @@ server:
 spring:
   application:
     name: face-detection-services
-
   profiles:
     active: kloudspot
 
@@ -39,22 +36,21 @@ spring:
 jwt:
   secret: face_detection_super_secret_key_12345678901234567890
   expiration: 86400000
+
 logging:
+  file:
+    name: logs/application.log
+  logback:
+    rollingpolicy:
+      file-name-pattern: logs/application-%d{yyyy-MM-dd}.%i.log
+      max-file-size: 50MB
+      max-history: 30
+      total-size-cap: 1GB
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
   level:
-    reactor:
-      netty:
-        http:
-          client: DEBUG
-    org:
-      springframework:
-        web:
-          reactive:
-            function:
-              client: DEBUG
-    com:
-      stations:
-        facedetection:
-          integration:
-            kloudspot: DEBUG
-pattern:
-   console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    root: INFO
+    reactor.netty.http.client: DEBUG
+    org.springframework.web.reactive.function.client: DEBUG
+    com.stations.facedetection.integration.kloudspot: DEBUG
