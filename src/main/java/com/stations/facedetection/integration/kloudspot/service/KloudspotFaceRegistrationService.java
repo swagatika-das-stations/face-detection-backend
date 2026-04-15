@@ -3,15 +3,10 @@ package com.stations.facedetection.integration.kloudspot.service;
 import java.io.File;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stations.facedetection.User.Entity.FaceRegistryEntity;
 import com.stations.facedetection.User.Repository.FaceRegistryRepository;
 import com.stations.facedetection.integration.kloudspot.DTO.KloudspotRegistrationRequestDTO;
@@ -41,7 +36,8 @@ public class KloudspotFaceRegistrationService {
                                                    String email,
                                                    String employeeid) {
 
-        File zipFile = null;
+        File imageZipFile = null;
+        File humanJsonFile = null;
         List<File> cleanedImages = new ArrayList<>();
 
         try {
@@ -62,7 +58,7 @@ public class KloudspotFaceRegistrationService {
                 log.warn("Identity already exists in Kloudspot database for email={}", email);
 
                 RegistrationResponseDto existsResponse = new RegistrationResponseDto();
-                existsResponse.setSTATUS("ALREADY_EXISTS");
+                existsResponse.setSTATUS("failure");
                 existsResponse.setMessage("Identity " + email + " already exists in Kloudspot database");
 
                 return existsResponse;
@@ -87,45 +83,54 @@ public class KloudspotFaceRegistrationService {
 
             log.info("Image cleaning completed. Cleaned images={}", cleanedImages.size());
 
-            // 3️ Create ZIP
-            zipFile = zipBuilder.createZip(cleanedImages);
+            // 3️ Build human data
+            KloudspotRegistrationRequestDTO humanData =
+                    buildRequest(firstName, lastName, email, employeeid);
 
-            byte[] zipBytes = Files.readAllBytes(zipFile.toPath());
+            // 4️ Create human.json file
+            humanJsonFile = zipBuilder.createHumanJson(humanData);
 
-            long zipSize = zipBytes.length;
+            // 5️ Create image ZIP
+            imageZipFile = zipBuilder.createImageZip(cleanedImages);
 
-            log.info("ZIP created successfully. Size={} KB ({} MB), images={}",
+            long zipSize = imageZipFile.length();
+
+            log.info("Image ZIP created successfully. Size={} KB ({} MB), images={}",
                     zipSize / 1024,
                     String.format("%.2f", zipSize / (1024.0 * 1024.0)),
                     cleanedImages.size());
+            
+            // Validate ZIP size
+            long maxZipSize = uploadConfig.getMaxTotalZipSizeBytes();
+            if (zipSize > maxZipSize) {
+                throw new RuntimeException(
+                    String.format("Image ZIP file exceeds max size. Current: %d KB, Max: %d KB",
+                        zipSize / 1024, maxZipSize / 1024)
+                );
+            }
 
-            // 4️ Convert to Base64
-            String base64Zip = Base64.getEncoder().encodeToString(zipBytes);
+            // 6️ Send request
+            log.info("Sending face registration request to Kloudspot (human.json + image.zip)");
 
-            log.debug("Base64 ZIP length={}", base64Zip.length());
-
-            // 5️ Build request
-            KloudspotRegistrationRequestDTO request =
-                    buildRequest(firstName, lastName, email, employeeid, base64Zip);
-
-            // 6️ Log request JSON (safe)
-            logRequestJson(request, base64Zip);
-
-            // 7️ Send request
-            log.info("Sending face registration request to Kloudspot");
-
-            RegistrationResponseDto response = registrationService.register(request);
+            RegistrationResponseDto response = registrationService.register(humanJsonFile, imageZipFile);
 
             // 8️ Handle response
-            if (response != null && "SUCCESS".equalsIgnoreCase(response.getSTATUS())) {
+            if (response != null && "successful".equalsIgnoreCase(response.getSTATUS())) {
 
                 log.info("Kloudspot registration successful. EntityId={}", response.getEntityId());
 
                 saveToDatabase(firstName, lastName, email, employeeid, response);
 
+            } else if (response != null && "ALREADY_EXISTS".equalsIgnoreCase(response.getSTATUS())) {
+
+                log.warn("Person already exists in Kloudspot");
+
             } else {
 
                 log.error("Kloudspot registration failed. Response={}", response);
+                if (response != null) {
+                    response.setSTATUS("failure");
+                }
             }
 
             return response;
@@ -133,18 +138,25 @@ public class KloudspotFaceRegistrationService {
         } catch (IllegalArgumentException e) {
 
             log.error("Image validation failed: {}", e.getMessage());
-            throw e;
+            RegistrationResponseDto errorResponse = new RegistrationResponseDto();
+            errorResponse.setSTATUS("failure");
+            errorResponse.setMessage(e.getMessage());
+            return errorResponse;
 
         } catch (Exception e) {
 
             log.error("Face registration process failed", e);
-            throw new RuntimeException("Registration failed: " + e.getMessage(), e);
+            RegistrationResponseDto errorResponse = new RegistrationResponseDto();
+            errorResponse.setSTATUS("failure");
+            errorResponse.setMessage("Registration failed: " + e.getMessage());
+            return errorResponse;
 
         } finally {
 
             log.debug("Cleaning temporary files");
 
-            cleanupTempFile(zipFile);
+            cleanupTempFile(imageZipFile);
+            cleanupTempFile(humanJsonFile);
             cleanedImages.forEach(this::cleanupTempFile);
         }
     }
@@ -153,63 +165,23 @@ public class KloudspotFaceRegistrationService {
             String firstName,
             String lastName,
             String email,
-            String employeeid,
-            String base64Zip) {
+            String employeeid) {
 
         KloudspotRegistrationRequestDTO request = new KloudspotRegistrationRequestDTO();
 
-        KloudspotRegistrationRequestDTO.Human human = new KloudspotRegistrationRequestDTO.Human();
-
-        human.setFirstName(firstName);
-        human.setLastName(lastName);
-        human.setEmailId(email);
-        human.setIdentity(email);
+        request.setIdentity(email);
+        request.setFirstName(firstName);
+        request.setLastName(lastName);
+        request.setEmailAddress(email);
 
         KloudspotRegistrationRequestDTO.Meta meta = new KloudspotRegistrationRequestDTO.Meta();
-        meta.setEmployeeid(employeeid);
+        meta.setEmployeeId(employeeid);
+        request.setMeta(meta);
 
-        human.setMeta(meta);
-        human.setTags(List.of("Customer", "Employee"));
-
-        request.setHuman(human);
-        request.setZipFile(base64Zip);
+        log.info("Built human data: identity={}, firstName={}, lastName={}, employeeId={}",
+                email, firstName, lastName, employeeid);
 
         return request;
-    }
-
-    private void logRequestJson(KloudspotRegistrationRequestDTO request, String base64Zip) {
-
-        try {
-
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-
-            String jsonRequest = mapper.writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(request);
-
-            Pattern pattern = Pattern.compile("(\"zipFile\"\\s*:\\s*\")(.*?)(\")");
-
-            Matcher matcher = pattern.matcher(jsonRequest);
-
-            String safeJson;
-
-            if (matcher.find()) {
-
-                String truncated = base64Zip.substring(0, Math.min(100, base64Zip.length())) + "...";
-
-                safeJson = matcher.replaceAll("$1" + truncated + "$3");
-
-            } else {
-
-                safeJson = jsonRequest;
-            }
-
-            log.debug("Kloudspot request JSON (Base64 truncated): {}", safeJson);
-
-        } catch (Exception e) {
-
-            log.warn("Failed to log request JSON", e);
-        }
     }
 
     private void saveToDatabase(String firstName,

@@ -1,4 +1,4 @@
-﻿package com.stations.facedetection.Auth.Controller;
+package com.stations.facedetection.Auth.Controller;
 
 import java.io.File;
 import java.util.Arrays;
@@ -55,10 +55,15 @@ public class FaceRegistrationController {
             @RequestParam String employeeid) {
 
         log.info("Face registration API called");
-        log.info("Request details: firstName={}, lastName={}, email={}, employeeId={}",
-                firstName, lastName, email, employeeid);
+        log.info("Request details: firstName={}, lastName={}, email={}, employeeId={}, imageCount={}",
+                firstName, lastName, email, employeeid, images != null ? images.length : 0);
 
-        log.info("Number of images received: {}", images != null ? images.length : 0);
+        if (images != null) {
+            for (MultipartFile image : images) {
+                log.info("Incoming image: filename={}, sizeBytes={}, contentType={}",
+                        image.getOriginalFilename(), image.getSize(), image.getContentType());
+            }
+        }
 
         ResponseEntity<ErrorResponse> validationError = validateUpload(images);
 

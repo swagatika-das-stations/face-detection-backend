@@ -1,33 +1,25 @@
 <configuration>
 
-    <!-- Relative log directory -->
     <property name="LOG_DIR" value="logs"/>
 
-    <!-- Console Log -->
+    <!-- Console -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 
-    <!-- Size + Time Based Rolling File Log -->
+    <!-- File -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-
-        <!-- Active log file -->
-        <file>${LOG_DIR}/application.log</file>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
 
-            <!-- Daily log + index if size exceeds -->
-            <fileNamePattern>${LOG_DIR}/application-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>
+                ${LOG_DIR}/3C_%d{dd-MM-yyyy}_app.%i.log
+            </fileNamePattern>
 
-            <!-- Max file size -->
             <maxFileSize>10MB</maxFileSize>
-
-            <!-- Keep logs for 30 days -->
             <maxHistory>30</maxHistory>
-
-            <!-- Max total log storage -->
             <totalSizeCap>1GB</totalSizeCap>
 
         </rollingPolicy>

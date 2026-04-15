@@ -1,47 +1,38 @@
 package com.stations.facedetection.integration.kloudspot.DTO;
 
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * DTO for human.json file to be included in Kloudspot ZIP request
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class KloudspotRegistrationRequestDTO {
 
-	@JsonProperty("human")
-    private Human human;
-	@JsonProperty("zipFile")
-    private String zipFile;
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class Human {
-    	
-    	@JsonProperty("emailId")
-        private String emailId;
-        @JsonProperty("firstName")
-        private String firstName;
-        @JsonProperty("identity")
-        private String identity;
-        @JsonProperty("lastName")
-        private String lastName;
-        @JsonProperty("meta")
-        private Meta meta;
-        @JsonProperty("tags")
-        private List<String> tags;
-    }
+    @JsonProperty("identity")
+    private String identity;
+    
+    @JsonProperty("firstName")
+    private String firstName;
+    
+    @JsonProperty("lastName")
+    private String lastName;
+    
+    @JsonProperty("emailAddress")
+    private String emailAddress;
+    
+    @JsonProperty("meta")
+    private Meta meta;
 
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Meta {
-    	@JsonProperty("employeeid")
-        private String employeeid;
+        @JsonProperty("employeeId")
+        private String employeeId;
     }
 }
