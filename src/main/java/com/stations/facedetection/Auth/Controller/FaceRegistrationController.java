@@ -52,7 +52,8 @@ public class FaceRegistrationController {
             @RequestParam String firstName,
             @RequestParam String lastName,
             @RequestParam String email,
-            @RequestParam String employeeid) {
+            @RequestParam String employeeid,
+            @RequestParam String password) {
 
         log.info("Face registration API called");
         log.info("Request details: firstName={}, lastName={}, email={}, employeeId={}, imageCount={}",
@@ -83,14 +84,14 @@ public class FaceRegistrationController {
             log.info("Calling Kloudspot registration service");
 
             RegistrationResponseDto response = service.registerPerson(
-                    files, firstName, lastName, email, employeeid);
+                    files, firstName, lastName, email, employeeid, password);
 
             log.info("Received response from Kloudspot: {}", response);
 
             files.forEach(File::delete);
             log.info("Temporary files deleted");
 
-            if ("ALREADY_EXISTS".equalsIgnoreCase(response.getSTATUS())) {
+            if ("ALREADY_EXISTS".equalsIgnoreCase(response.getStatus())) {
 
                 log.warn("Person already exists in Kloudspot");
 

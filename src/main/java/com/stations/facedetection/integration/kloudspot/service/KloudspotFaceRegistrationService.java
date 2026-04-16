@@ -5,21 +5,30 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.stations.facedetection.User.Entity.FaceRegistryEntity;
+import com.stations.facedetection.User.Entity.RoleEntity;
+import com.stations.facedetection.User.Entity.UserEntity;
+import com.stations.facedetection.User.Entity.UserRoleEntity;
 import com.stations.facedetection.User.Repository.FaceRegistryRepository;
+import com.stations.facedetection.User.Repository.RoleRepository;
+import com.stations.facedetection.User.Repository.UserRepository;
+import com.stations.facedetection.User.Repository.UserRoleRepository;
 import com.stations.facedetection.integration.kloudspot.DTO.KloudspotRegistrationRequestDTO;
 import com.stations.facedetection.integration.kloudspot.DTO.RegistrationResponseDto;
 import com.stations.facedetection.integration.kloudspot.builder.ZipBuilder;
 import com.stations.facedetection.integration.kloudspot.config.KloudspotUploadConfig;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class KloudspotFaceRegistrationService {
 
     private final ImageValidator imageValidator;
@@ -28,13 +37,18 @@ public class KloudspotFaceRegistrationService {
     private final KloudspotRegistrationService registrationService;
     private final KloudspotSearchService searchService;
     private final FaceRegistryRepository repository;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final UserRoleRepository userRoleRepository;
+    private final PasswordEncoder passwordEncoder;
     private final KloudspotUploadConfig uploadConfig;
 
     public RegistrationResponseDto registerPerson(List<File> images,
                                                    String firstName,
                                                    String lastName,
                                                    String email,
-                                                   String employeeid) {
+                                                   String employeeid,
+                                                   String password) {
 
         File imageZipFile = null;
         File humanJsonFile = null;
@@ -58,7 +72,7 @@ public class KloudspotFaceRegistrationService {
                 log.warn("Identity already exists in Kloudspot database for email={}", email);
 
                 RegistrationResponseDto existsResponse = new RegistrationResponseDto();
-                existsResponse.setSTATUS("failure");
+                existsResponse.setStatus("failure");
                 existsResponse.setMessage("Identity " + email + " already exists in Kloudspot database");
 
                 return existsResponse;
@@ -115,13 +129,13 @@ public class KloudspotFaceRegistrationService {
             RegistrationResponseDto response = registrationService.register(humanJsonFile, imageZipFile);
 
             // 8️ Handle response
-            if (response != null && "successful".equalsIgnoreCase(response.getSTATUS())) {
+            if (response != null && "successful".equalsIgnoreCase(response.getStatus())) {
 
                 log.info("Kloudspot registration successful. EntityId={}", response.getEntityId());
 
-                saveToDatabase(firstName, lastName, email, employeeid, response);
+                saveToDatabase(firstName, lastName, email, employeeid, password, response);
 
-            } else if (response != null && "ALREADY_EXISTS".equalsIgnoreCase(response.getSTATUS())) {
+            } else if (response != null && "ALREADY_EXISTS".equalsIgnoreCase(response.getStatus())) {
 
                 log.warn("Person already exists in Kloudspot");
 
@@ -129,7 +143,7 @@ public class KloudspotFaceRegistrationService {
 
                 log.error("Kloudspot registration failed. Response={}", response);
                 if (response != null) {
-                    response.setSTATUS("failure");
+                    response.setStatus("failure");
                 }
             }
 
@@ -139,7 +153,7 @@ public class KloudspotFaceRegistrationService {
 
             log.error("Image validation failed: {}", e.getMessage());
             RegistrationResponseDto errorResponse = new RegistrationResponseDto();
-            errorResponse.setSTATUS("failure");
+            errorResponse.setStatus("failure");
             errorResponse.setMessage(e.getMessage());
             return errorResponse;
 
@@ -147,7 +161,7 @@ public class KloudspotFaceRegistrationService {
 
             log.error("Face registration process failed", e);
             RegistrationResponseDto errorResponse = new RegistrationResponseDto();
-            errorResponse.setSTATUS("failure");
+            errorResponse.setStatus("failure");
             errorResponse.setMessage("Registration failed: " + e.getMessage());
             return errorResponse;
 
@@ -183,25 +197,61 @@ public class KloudspotFaceRegistrationService {
 
         return request;
     }
+@Transactional
+private void saveToDatabase(String firstName,
+                            String lastName,
+                            String email,
+                            String employeeid,
+                            String password,
+                            RegistrationResponseDto response) {
 
-    private void saveToDatabase(String firstName,
-                                String lastName,
-                                String email,
-                                String employeeid,
-                                RegistrationResponseDto response) {
-
-        FaceRegistryEntity user = new FaceRegistryEntity();
-
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setEmail(email);
-        user.setEmployeeId(employeeid);
-        user.setEntityId(response.getEntityId());
-
-        repository.save(user);
-
-        log.info("Face registry record saved to database. entityId={}", response.getEntityId());
+    // Check if user already exists
+    if (userRepository.findByEmail(email).isPresent()) {
+        log.warn("User already exists with email={}. Skipping user creation.", email);
+        return;
     }
+
+    // Create User
+    UserEntity user = new UserEntity();
+    user.setEmail(email);
+    user.setPassword(passwordEncoder.encode(password));
+    user.setEnabled(true);
+
+    // Create Face Registry
+    FaceRegistryEntity faceRegistry = new FaceRegistryEntity();
+    faceRegistry.setFirstName(firstName);
+    faceRegistry.setLastName(lastName);
+    faceRegistry.setEmail(email);
+    faceRegistry.setEmployeeId(employeeid);
+    faceRegistry.setEntityId(response.getEntityId());
+
+    // Set One-to-One relationship
+    faceRegistry.setUser(user);
+    user.setFaceRegistry(faceRegistry);
+
+    // Get or create role
+    RoleEntity employeeRole = roleRepository.findByName("EMPLOYEE")
+            .orElseGet(() -> {
+                RoleEntity role = new RoleEntity();
+                role.setName("EMPLOYEE");
+                return roleRepository.save(role);
+            });
+
+    // Create UserRole mapping
+    UserRoleEntity userRole = new UserRoleEntity();
+    userRole.setUsers(user);
+    userRole.setRoles(employeeRole);
+
+    List<UserRoleEntity> roles = new ArrayList<>();
+    roles.add(userRole);
+    user.setUserRoles(roles);
+
+    // Save user (cascade will save face_registry)
+    userRepository.save(user);
+
+    log.info("User saved successfully with email={}", email);
+    log.info("Face registry saved with entityId={}", response.getEntityId());
+}
 
     private void cleanupTempFile(File file) {
 

@@ -61,7 +61,7 @@ public class KloudspotRegistrationService {
 
                             return response.bodyToMono(RegistrationResponseDto.class)
                                     .doOnNext(body2 -> {
-                                        body2.setSTATUS("successful");
+                                        body2.setStatus("successful");
                                         log.info("Kloudspot registration success. EntityId={}, Status=successful", body2.getEntityId());
                                     });
 
