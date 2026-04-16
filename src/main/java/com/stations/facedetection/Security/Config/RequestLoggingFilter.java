@@ -1,28 +1,34 @@
 package com.stations.facedetection.Security.Config;
 
-import jakarta.servlet.*;
-import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.stereotype.Component;
-
 import java.io.IOException;
 
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Component;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Component
 public class RequestLoggingFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        
+
         HttpServletRequest httpRequest = (HttpServletRequest) request;
-        
-        System.out.println("=".repeat(70));
-        System.out.println("INCOMING REQUEST TO APPLICATION");
-        System.out.println("Method: " + httpRequest.getMethod());
-        System.out.println("URL: " + httpRequest.getRequestURL());
-        System.out.println("Path: " + httpRequest.getServletPath());
-        System.out.println("Content-Type: " + httpRequest.getContentType());
-        System.out.println("=".repeat(70));
-        
+
+        log.info("Incoming request: method={}, url={}, path={}, contentType={}",
+                httpRequest.getMethod(),
+                httpRequest.getRequestURL(),
+                httpRequest.getServletPath(),
+                httpRequest.getContentType());
+
         chain.doFilter(request, response);
     }
 }

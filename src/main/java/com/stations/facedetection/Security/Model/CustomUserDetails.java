@@ -11,74 +11,86 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.stations.facedetection.User.Entity.UserEntity;
 import com.stations.facedetection.User.Entity.UserRoleEntity;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@Data
+@Getter
 @RequiredArgsConstructor
 public class CustomUserDetails implements UserDetails {
-	
-	 private static final long serialVersionUID = 1L;
 
-	    private final UserEntity user;
+    private static final long serialVersionUID = 1L;
 
-	    //Convert roles → authorities
-	    @Override
-	    public Collection<? extends GrantedAuthority> getAuthorities() {
-	        List<UserRoleEntity> roles = user.getUserRoles();
+    private final UserEntity user;
 
-	        return roles.stream()
-				.map(role -> {
-				    String roleName = role.getRoles().getName() == null
-					    ? ""
-					    : role.getRoles().getName().trim().toUpperCase();
+    // Convert roles → authorities
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
 
-				    String authority = roleName.startsWith("ROLE_")
-					    ? roleName
-					    : "ROLE_" + roleName;
+        List<UserRoleEntity> roles = user.getUserRoles();
 
-				    return new SimpleGrantedAuthority(authority);
-				})
-	                .collect(Collectors.toList());
-	    }
-	    
-	    // Username (we use email)
-	    @Override
-	    public String getUsername() {
-	        return user.getEmail();
-	    }
+        if (roles == null || roles.isEmpty()) {
+            return List.of();
+        }
 
-	    //Password
-	    @Override
-	    public String getPassword() {
-	        return user.getPassword();
-	    }
+        return roles.stream()
+                .map(role -> {
 
-	    //Account status checks
-	    @Override
-	    public boolean isAccountNonExpired() {
-	        return true;
-	    }
+                    String roleName = role.getRoles() == null
+                            ? ""
+                            : role.getRoles().getName();
 
-	    @Override
-	    public boolean isAccountNonLocked() {
-	        return true;
-	    }
+                    if (roleName == null) {
+                        roleName = "";
+                    }
 
-	    @Override
-	    public boolean isCredentialsNonExpired() {
-	        return true;
-	    }
+                    roleName = roleName.trim().toUpperCase();
 
-	    @Override
-	    public boolean isEnabled() {
-	        return user.isEnabled();
-	    }
+                    String authority = roleName.startsWith("ROLE_")
+                            ? roleName
+                            : "ROLE_" + roleName;
 
-	    //get original UserEntity
-	    public UserEntity getUser() {
-	        return user;
-	    }
+                    return new SimpleGrantedAuthority(authority);
 
-		
+                })
+                .collect(Collectors.toList());
+    }
+
+    // Username (email)
+    @Override
+    public String getUsername() {
+        return user.getEmail();
+    }
+
+    // Password
+    @Override
+    public String getPassword() {
+        return user.getPassword();
+    }
+
+    // Account status checks
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return user.isEnabled();
+    }
+
+    // Access original entity
+    public UserEntity getUser() {
+        return user;
+    }
 }

@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RegisterRequestDto {
+
     //registered data storing in employee entity
 	private String firstName;
     private String lastName;

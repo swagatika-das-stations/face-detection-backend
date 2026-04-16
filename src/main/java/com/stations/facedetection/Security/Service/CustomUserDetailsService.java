@@ -10,23 +10,28 @@ import com.stations.facedetection.User.Entity.UserEntity;
 import com.stations.facedetection.User.Repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CustomUserDetailsService implements UserDetailsService {
-	
-    //Autowired classes...
+
     private final UserRepository userRepository;
 
-    //check for existing user...
-	@Override
-	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-                UserEntity user = userRepository.findByEmailWithRoles(email)
-                .orElseThrow(() ->
-                        new UsernameNotFoundException("User not found with email: " + email));
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+
+        log.debug("Attempting to load user by email: {}", email);
+
+        UserEntity user = userRepository.findByEmailWithRoles(email)
+                .orElseThrow(() -> {
+                    log.warn("User not found with email: {}", email);
+                    return new UsernameNotFoundException("User not found with email: " + email);
+                });
+
+        log.debug("User found: {}", user.getEmail());
 
         return new CustomUserDetails(user);
-	}
-	//
-
+    }
 }
