@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Table(name="employee_data")
+@Table(name="employee_registration_data")
 @Entity
 public class EmployeeEntity {
 	
@@ -33,6 +33,8 @@ public class EmployeeEntity {
 
     @Column(unique = true)
     private String employeeId;
+
+    private String entityId;
 
     @OneToOne
     @JoinColumn(name = "user_id")

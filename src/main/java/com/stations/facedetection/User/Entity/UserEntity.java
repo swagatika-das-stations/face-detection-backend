@@ -42,8 +42,8 @@ public class UserEntity {
 	    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
 	    private EmployeeEntity employee;
 	    
-	    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-	    private FaceRegistryEntity faceRegistry;
+	    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	    private List<FaceRegistryEntity> faceRegistries;
 
 }
 
