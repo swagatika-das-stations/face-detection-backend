@@ -1,7 +1,6 @@
 package com.stations.facedetection.Dashboard.Entity;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,18 +23,27 @@ public class EmployeeCheckinCheckoutEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, length = 10)
+    private String direction;
+
+    @Column(nullable = false, length = 20)
+    private String locationType;
+
     @Column(nullable = false)
-    private LocalDate date;
+    private LocalDateTime timestamp;
+
+    @Column(nullable = false, length = 100)
+    private String email;
 
     @Column(nullable = false, length = 100)
     private String name;
 
-    @Column(name = "first_entry_time")
-    private LocalTime firstEntryTime;
+    @Column(nullable = false, length = 50)
+    private String entityId;
 
-    @Column(name = "last_exit_time")
-    private LocalTime lastExitTime;
-
-    @Column(name = "location_name", length = 50)
+    @Column(nullable = false, length = 50)
     private String locationName;
+
+    @Column(nullable = false, length = 100)
+    private String locationFullName;
 }

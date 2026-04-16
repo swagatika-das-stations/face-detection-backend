@@ -1,6 +1,7 @@
 package com.stations.facedetection.Dashboard.Service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -58,7 +59,7 @@ public class EmployeeCheckinCheckoutService {
                 employeeName, resolvedStartDate, resolvedEndDate);
 
         List<EmployeeCheckinCheckoutEntity> entities = employeeCheckinCheckoutRepository
-                .findByNameIgnoreCaseAndDateBetweenOrderByDateDesc(employeeName, resolvedStartDate, resolvedEndDate);
+                .findByNameIgnoreCaseAndTimestampBetweenOrderByTimestampDesc(employeeName, resolvedStartDate.atStartOfDay(), resolvedEndDate.atTime(23, 59, 59));
 
         log.info("Attendance records fetched. employeeName={}, recordCount={}", employeeName, entities.size());
 
@@ -85,13 +86,14 @@ public class EmployeeCheckinCheckoutService {
 
     private CheckinCheckoutRecordDto toRecordDto(EmployeeCheckinCheckoutEntity entity) {
 
-        String status = entity.getLastExitTime() == null ? "CHECKED_IN" : "CHECKED_OUT";
+        LocalTime time = entity.getTimestamp().toLocalTime();
+        String status = entity.getDirection().equals("in") ? "CHECKED_IN" : "CHECKED_OUT";
 
         return new CheckinCheckoutRecordDto(
-                entity.getDate(),
+                entity.getTimestamp().toLocalDate(),
                 entity.getName(),
-                entity.getFirstEntryTime(),
-                entity.getLastExitTime(),
+                entity.getDirection().equals("in") ? time : null,
+                entity.getDirection().equals("out") ? time : null,
                 entity.getLocationName(),
                 status);
     }

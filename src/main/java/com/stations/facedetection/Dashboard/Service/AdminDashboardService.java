@@ -1,6 +1,7 @@
 package com.stations.facedetection.Dashboard.Service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -10,13 +11,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.stations.facedetection.Dashboard.DTO.AttendanceCardResponseDto;
 import com.stations.facedetection.Dashboard.DTO.CheckinCheckoutRecordDto;
 import com.stations.facedetection.Dashboard.DTO.EmployeeCardResponseDto;
 import com.stations.facedetection.Dashboard.DTO.EmployeeInfoDto;
-import com.stations.facedetection.Dashboard.DTO.ProcedureEmployeeDirectoryDto;
 import com.stations.facedetection.Dashboard.DTO.UnknownAlertDto;
 import com.stations.facedetection.Dashboard.DTO.UnknownAlertsResponseDto;
 import com.stations.facedetection.Dashboard.Entity.EmployeeCheckinCheckoutEntity;
@@ -24,7 +23,6 @@ import com.stations.facedetection.Dashboard.Repository.EmployeeCheckinCheckoutRe
 import com.stations.facedetection.User.Entity.EmployeeEntity;
 import com.stations.facedetection.User.Repository.EmployeeRepository;
 
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,42 +33,17 @@ public class AdminDashboardService {
 
     private final EmployeeCheckinCheckoutRepository employeeCheckinCheckoutRepository;
     private final EmployeeRepository employeeRepository;
-    private final AttendanceSyncProcedureService attendanceSyncProcedureService;
-    private final EntityManager entityManager;
-
-    @Transactional
-    public List<ProcedureEmployeeDirectoryDto> getEmployeeDirectoryFromProcedure() {
-
-        log.info("Running attendance sync procedure before fetching employee directory");
-
-        attendanceSyncProcedureService.runSyncProcedureSafe();
-
-        @SuppressWarnings("unchecked")
-        List<Object[]> rows = entityManager
-                .createNativeQuery(
-                        "SELECT employee_id, email, name, date, location_name, first_entry_time, last_exit_time "
-                                + "FROM employee_temp_main_checkincheckout ORDER BY employee_id")
-                .getResultList();
-
-        log.info("Employee directory fetched from procedure table. Records={}", rows.size());
-
-        return rows.stream()
-                .map(this::toProcedureDirectoryDto)
-                .toList();
-    }
 
     public AttendanceCardResponseDto getCheckins(LocalDate date) {
 
         log.info("Fetching check-in data. Requested date={}", date);
-
-        attendanceSyncProcedureService.runSyncProcedureSafe();
 
         LocalDate resolvedDate = resolveAttendanceDate(date);
 
         log.info("Resolved check-in date={}", resolvedDate);
 
         List<CheckinCheckoutRecordDto> records = employeeCheckinCheckoutRepository
-                .findByDateAndFirstEntryTimeIsNotNullOrderByFirstEntryTimeAsc(resolvedDate)
+                .findCheckinsByDateOrderByTimestampAsc(resolvedDate)
                 .stream()
                 .map(this::toRecordDto)
                 .toList();
@@ -84,14 +57,12 @@ public class AdminDashboardService {
 
         log.info("Fetching check-out data. Requested date={}", date);
 
-        attendanceSyncProcedureService.runSyncProcedureSafe();
-
         LocalDate resolvedDate = resolveAttendanceDate(date);
 
         log.info("Resolved checkout date={}", resolvedDate);
 
         List<CheckinCheckoutRecordDto> records = employeeCheckinCheckoutRepository
-                .findByDateAndLastExitTimeIsNotNullOrderByLastExitTimeAsc(resolvedDate)
+                .findCheckoutsByDateOrderByTimestampDesc(resolvedDate)
                 .stream()
                 .map(this::toRecordDto)
                 .toList();
@@ -105,14 +76,12 @@ public class AdminDashboardService {
 
         log.info("Fetching headcount data. Requested date={}", date);
 
-        attendanceSyncProcedureService.runSyncProcedureSafe();
-
         LocalDate resolvedDate = resolveAttendanceDate(date);
 
         log.info("Resolved headcount date={}", resolvedDate);
 
         List<CheckinCheckoutRecordDto> records = employeeCheckinCheckoutRepository
-                .findByDateAndFirstEntryTimeIsNotNullAndLastExitTimeIsNullOrderByFirstEntryTimeAsc(resolvedDate)
+                .findHeadcountByDate(resolvedDate)
                 .stream()
                 .map(this::toRecordDto)
                 .toList();
@@ -125,8 +94,6 @@ public class AdminDashboardService {
     public EmployeeCardResponseDto getTotalEmployees() {
 
         log.info("Fetching total employee list");
-
-        attendanceSyncProcedureService.runSyncProcedureSafe();
 
         List<EmployeeInfoDto> employees = employeeRepository.findAll().stream()
                 .sorted(Comparator.comparing(this::buildFullName, String.CASE_INSENSITIVE_ORDER))
@@ -145,7 +112,7 @@ public class AdminDashboardService {
         log.info("Fetching on-leave employees for date={}", resolvedDate);
 
         Set<String> checkedInNames = employeeCheckinCheckoutRepository
-                .findByDateAndFirstEntryTimeIsNotNullOrderByFirstEntryTimeAsc(resolvedDate)
+                .findCheckinsByDateOrderByTimestampAsc(resolvedDate)
                 .stream()
                 .map(EmployeeCheckinCheckoutEntity::getName)
                 .map(this::normalizeName)
@@ -165,8 +132,6 @@ public class AdminDashboardService {
     public UnknownAlertsResponseDto getUnknownAlerts(LocalDate date) {
 
         log.info("Fetching unknown alerts. Requested date={}", date);
-
-        attendanceSyncProcedureService.runSyncProcedureSafe();
 
         LocalDate resolvedDate = resolveAttendanceDate(date);
 
@@ -190,9 +155,9 @@ public class AdminDashboardService {
                     }
 
                     UnknownAlertDto alert = new UnknownAlertDto(
-                            entity.getDate(),
+                            entity.getTimestamp().toLocalDate(),
                             entity.getName(),
-                            entity.getFirstEntryTime(),
+                            entity.getTimestamp().toLocalTime(),
                             entity.getLocationName());
 
                     unknownByName.put(normalizedName, alert);
@@ -224,20 +189,21 @@ public class AdminDashboardService {
         log.warn("No attendance rows found for date={}, fetching latest available date", resolvedDate);
 
         return employeeCheckinCheckoutRepository
-                .findTopByOrderByDateDesc()
-                .map(EmployeeCheckinCheckoutEntity::getDate)
+                .findTopByOrderByTimestampDesc()
+                .map(entity -> entity.getTimestamp().toLocalDate())
                 .orElse(resolvedDate);
     }
 
     private CheckinCheckoutRecordDto toRecordDto(EmployeeCheckinCheckoutEntity entity) {
 
-        String status = entity.getLastExitTime() == null ? "CHECKED_IN" : "CHECKED_OUT";
+        LocalTime time = entity.getTimestamp().toLocalTime();
+        String status = entity.getDirection().equals("entry") ? "CHECKED_IN" : "CHECKED_OUT";
 
         return new CheckinCheckoutRecordDto(
-                entity.getDate(),
+                entity.getTimestamp().toLocalDate(),
                 entity.getName(),
-                entity.getFirstEntryTime(),
-                entity.getLastExitTime(),
+                entity.getDirection().equals("entry") ? time : null,
+                entity.getDirection().equals("exit") ? time : null,
                 entity.getLocationName(),
                 status);
     }
@@ -264,26 +230,5 @@ public class AdminDashboardService {
     private String normalizeName(String name) {
         if (name == null) return "";
         return name.trim().replaceAll("\\s+", " ").toLowerCase();
-    }
-
-    private ProcedureEmployeeDirectoryDto toProcedureDirectoryDto(Object[] row) {
-
-        return new ProcedureEmployeeDirectoryDto(
-                asText(row, 0),
-                asText(row, 1),
-                asText(row, 2),
-                asText(row, 3),
-                asText(row, 4),
-                asText(row, 5),
-                asText(row, 6));
-    }
-
-    private String asText(Object[] row, int index) {
-
-        if (row == null || row.length <= index || row[index] == null) {
-            return null;
-        }
-
-        return String.valueOf(row[index]);
     }
 }

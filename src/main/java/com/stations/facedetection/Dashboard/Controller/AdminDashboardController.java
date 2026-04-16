@@ -1,7 +1,6 @@
 package com.stations.facedetection.Dashboard.Controller;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.stations.facedetection.Dashboard.DTO.AttendanceCardResponseDto;
 import com.stations.facedetection.Dashboard.DTO.EmployeeCardResponseDto;
-import com.stations.facedetection.Dashboard.DTO.ProcedureEmployeeDirectoryDto;
 import com.stations.facedetection.Dashboard.DTO.UnknownAlertsResponseDto;
 import com.stations.facedetection.Dashboard.Service.AdminDashboardService;
 import com.stations.facedetection.common.response.ApiResponse;
@@ -86,23 +84,6 @@ public class AdminDashboardController {
 
         return ResponseEntity.ok(
                 new ApiResponse(true, "Total employees fetched successfully", payload)
-        );
-    }
-
-    // ================= EMPLOYEE DIRECTORY =================
-
-    @GetMapping("/employee-directory")
-    public ResponseEntity<ApiResponse> getEmployeeDirectoryFromProcedure() {
-
-        log.info("API Request → GET /employee-directory");
-
-        List<ProcedureEmployeeDirectoryDto> payload =
-                adminDashboardService.getEmployeeDirectoryFromProcedure();
-
-        log.info("Employee directory fetched, total records={}", payload.size());
-
-        return ResponseEntity.ok(
-                new ApiResponse(true, "Employee directory fetched successfully", payload)
         );
     }
 
