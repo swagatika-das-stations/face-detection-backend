@@ -1,5 +1,3 @@
-# application-kloudspot.yml
-
 # Kloudspot API Configuration
 kloudspot:
   # API Endpoints
@@ -27,12 +25,17 @@ kloudspot:
   upload:
     min-images: 1
     max-images: 5
-    max-image-size-mb: 1
-    max-total-size-mb: 5
+    max-image-size-mb: 1          # Validation limit (before optimization)
+    max-total-size-mb: 5          # Validation limit (before optimization)
     supported-formats:
       - jpg
       - jpeg
       - png
     auto-resize: true
-    target-max-dimension: 1920
-    jpeg-quality: 0.90
+    target-max-dimension: 600     # 600x600 px (1:1 square aspect ratio)
+    jpeg-quality: 0.85            # Reduced for better compression to 500KB
+    
+  # Optimized image specifications
+  optimized:
+    max-image-size-kb: 500        # 500KB per image after optimization
+    max-zip-size-mb: 2            # 2MB total ZIP file size

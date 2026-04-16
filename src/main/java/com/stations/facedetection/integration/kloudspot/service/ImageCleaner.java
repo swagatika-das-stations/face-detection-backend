@@ -24,20 +24,21 @@ public class ImageCleaner {
 
     /**
      * Clean and optimize image for Kloudspot
-     * - Resize if > 1MB
-     * - Convert to RGB
-     * - Optimize JPEG quality
+     * Specifications:
+     * - Dimensions: 600x600 px (1:1 square aspect ratio)
+     * - File Size: less than 500KB per image
+     * - Format: JPEG with optimized quality
      */
     public File cleanImage(File originalImage) throws IOException {
         
         log.info("Cleaning image: {}", originalImage.getName());
         
         long originalSize = originalImage.length();
-        long maxSize = uploadConfig.getMaxImageSizeBytes();
+        long maxOptimizedSize = uploadConfig.getMaxOptimizedImageSizeBytes();
 
-        log.info("Original size: {} KB (max: {} KB)", 
+        log.info("Original size: {} KB (target: {} KB)", 
                 originalSize / 1024, 
-                maxSize / 1024);
+                maxOptimizedSize / 1024);
         
         BufferedImage original = ImageIO.read(originalImage);
         if (original == null) {
@@ -49,42 +50,56 @@ public class ImageCleaner {
         
         log.info("Original dimensions: {}x{}", width, height);
 
-        // If image is already small enough, just optimize format
-        if (originalSize <= maxSize) {
-            log.info("Image size OK, optimizing format only");
-            return optimizeFormat(original, originalImage.getName());
-        }
-
-        // Resize if needed
-        BufferedImage resized;
-        if (width > uploadConfig.getTargetMaxDimension() || height > uploadConfig.getTargetMaxDimension()) {
-            resized = resizeImage(original, uploadConfig.getTargetMaxDimension());
-        } else {
-            resized = original;
-        }
-
-        // Convert to RGB
+        // 1. Ensure square 600x600 px (1:1 aspect ratio)
+        BufferedImage square = cropToSquare(original);
+        BufferedImage resized = resizeImage(square, 600);
+        
+        // 2. Convert to RGB
         BufferedImage rgb = convertToRgb(resized);
 
-        // Save as optimized JPEG
+        // 3. Save as optimized JPEG
         File cleanedFile = saveAsOptimizedJpeg(rgb, uploadConfig.getJpegQuality());
-
         long cleanedSize = cleanedFile.length();
 
-        // If still too large, reduce quality further
-        if (cleanedSize > maxSize) {
-            log.warn("Still too large after resize, reducing quality...");
-            cleanedFile = reduceQualityUntilFits(rgb, maxSize);
+        log.info("After first compression: {} KB (target: {} KB)", 
+                cleanedSize / 1024, 
+                maxOptimizedSize / 1024);
+
+        // 4. If still too large, reduce quality until it fits
+        if (cleanedSize > maxOptimizedSize) {
+            log.warn("Image larger than 500KB, reducing quality");
+            cleanedFile = reduceQualityUntilFits(rgb, maxOptimizedSize);
         }
 
         long finalSize = cleanedFile.length();
         
-        log.info("Cleaned: {} KB → {} KB ({}% reduction)", 
+        log.info("Optimized: {} KB to {} KB ({}% reduction)", 
                 originalSize / 1024, 
                 finalSize / 1024,
                 (int)(100 - (finalSize * 100.0 / originalSize)));
+        
+        if (finalSize > maxOptimizedSize) {
+            throw new IOException(
+                String.format("Cannot compress image to 500KB. Current size: %d KB", finalSize / 1024)
+            );
+        }
 
         return cleanedFile;
+    }
+    
+    /**
+     * Crop image to square (1:1 aspect ratio) from center
+     */
+    private BufferedImage cropToSquare(BufferedImage original) {
+        int width = original.getWidth();
+        int height = original.getHeight();
+        int size = Math.min(width, height);
+        int x = (width - size) / 2;
+        int y = (height - size) / 2;
+        
+        BufferedImage cropped = original.getSubimage(x, y, size, size);
+        log.info("Cropped to square: {}x{}", size, size);
+        return cropped;
     }
 
     private File optimizeFormat(BufferedImage image, String originalName) throws IOException {

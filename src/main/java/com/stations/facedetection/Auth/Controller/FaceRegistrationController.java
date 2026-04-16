@@ -1,4 +1,4 @@
-﻿package com.stations.facedetection.Auth.Controller;
+package com.stations.facedetection.Auth.Controller;
 
 import java.io.File;
 import java.util.Arrays;
@@ -52,13 +52,19 @@ public class FaceRegistrationController {
             @RequestParam String firstName,
             @RequestParam String lastName,
             @RequestParam String email,
-            @RequestParam String employeeid) {
+            @RequestParam String employeeid,
+            @RequestParam String password) {
 
         log.info("Face registration API called");
-        log.info("Request details: firstName={}, lastName={}, email={}, employeeId={}",
-                firstName, lastName, email, employeeid);
+        log.info("Request details: firstName={}, lastName={}, email={}, employeeId={}, imageCount={}",
+                firstName, lastName, email, employeeid, images != null ? images.length : 0);
 
-        log.info("Number of images received: {}", images != null ? images.length : 0);
+        if (images != null) {
+            for (MultipartFile image : images) {
+                log.info("Incoming image: filename={}, sizeBytes={}, contentType={}",
+                        image.getOriginalFilename(), image.getSize(), image.getContentType());
+            }
+        }
 
         ResponseEntity<ErrorResponse> validationError = validateUpload(images);
 
@@ -78,14 +84,14 @@ public class FaceRegistrationController {
             log.info("Calling Kloudspot registration service");
 
             RegistrationResponseDto response = service.registerPerson(
-                    files, firstName, lastName, email, employeeid);
+                    files, firstName, lastName, email, employeeid, password);
 
             log.info("Received response from Kloudspot: {}", response);
 
             files.forEach(File::delete);
             log.info("Temporary files deleted");
 
-            if ("ALREADY_EXISTS".equalsIgnoreCase(response.getSTATUS())) {
+            if ("ALREADY_EXISTS".equalsIgnoreCase(response.getStatus())) {
 
                 log.warn("Person already exists in Kloudspot");
 
