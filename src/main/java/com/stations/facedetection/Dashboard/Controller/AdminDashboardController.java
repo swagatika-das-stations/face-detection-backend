@@ -102,6 +102,33 @@ public class AdminDashboardController {
         );
     }
 
+    @GetMapping("/present-employees")
+    public ResponseEntity<ApiResponse> getPresentEmployees(
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+
+        log.info("API Request → GET /present-employees , date={}", date);
+
+        return okEmployeeCard(
+                "Present employees fetched successfully",
+                adminDashboardService.getPresentEmployees(date)
+        );
+    }
+
+    @GetMapping("/employees")
+    public ResponseEntity<ApiResponse> getEmployeesByScope(
+            @RequestParam(required = false, defaultValue = "total") String scope,
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+
+        log.info("API Request → GET /employees , scope={}, date={}", scope, date);
+
+        return okEmployeeCard(
+                "Employees fetched successfully",
+                adminDashboardService.getEmployeesByScope(scope, date)
+        );
+    }
+
     // ================= UNKNOWN ALERTS =================
 
     @GetMapping("/unknown-alerts")

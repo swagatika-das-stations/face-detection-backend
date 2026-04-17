@@ -14,6 +14,8 @@ public class CheckinCheckoutRecordDto {
 
     private LocalDate date;
     private String name;
+    private String employeeId;
+    private String email;
     private LocalTime firstEntryTime;
     private LocalTime lastExitTime;
     private String locationName;
