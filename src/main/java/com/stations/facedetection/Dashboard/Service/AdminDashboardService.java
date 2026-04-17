@@ -3,6 +3,7 @@ package com.stations.facedetection.Dashboard.Service;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -129,6 +130,66 @@ public class AdminDashboardService {
         return new EmployeeCardResponseDto(resolvedDate, onLeaveEmployees.size(), onLeaveEmployees);
     }
 
+    public EmployeeCardResponseDto getPresentEmployees(LocalDate date) {
+
+        LocalDate resolvedDate = resolveAttendanceDate(date);
+
+        log.info("Fetching present employees for date={}", resolvedDate);
+
+        List<EmployeeCheckinCheckoutEntity> headcountRows = employeeCheckinCheckoutRepository
+                .findHeadcountByDate(resolvedDate);
+
+        Map<String, EmployeeInfoDto> employeesByNormalizedName = new HashMap<>();
+
+        employeeRepository.findAll().forEach(employee -> {
+            EmployeeInfoDto dto = toEmployeeInfoDto(employee);
+            employeesByNormalizedName.put(normalizeName(dto.getFullName()), dto);
+        });
+
+        List<EmployeeInfoDto> presentEmployees = headcountRows.stream()
+                .map(row -> {
+                    String normalizedName = normalizeName(row.getName());
+                    EmployeeInfoDto existing = employeesByNormalizedName.get(normalizedName);
+
+                    if (existing != null) {
+                        return existing;
+                    }
+
+                    // Fallback for attendance names that do not exactly match registration names.
+                    return new EmployeeInfoDto(
+                            null,
+                            null,
+                            safeTrim(row.getName()),
+                            safeTrim(row.getName()),
+                            "",
+                            null);
+                })
+                .collect(Collectors.collectingAndThen(
+                        Collectors.toMap(
+                                employee -> normalizeName(employee.getFullName()),
+                                employee -> employee,
+                                (first, second) -> first,
+                                LinkedHashMap::new),
+                        map -> map.values().stream().toList()));
+
+        log.info("Present employees calculated. date={}, count={}", resolvedDate, presentEmployees.size());
+
+        return new EmployeeCardResponseDto(resolvedDate, presentEmployees.size(), presentEmployees);
+    }
+
+    public EmployeeCardResponseDto getEmployeesByScope(String scope, LocalDate date) {
+
+        String normalizedScope = normalizeScope(scope);
+
+        log.info("Fetching employee list by scope='{}', date={}", normalizedScope, date);
+
+        return switch (normalizedScope) {
+            case "present" -> getPresentEmployees(date);
+            case "on-leave" -> getOnLeave(date);
+            default -> getTotalEmployees();
+        };
+    }
+
     public UnknownAlertsResponseDto getUnknownAlerts(LocalDate date) {
 
         log.info("Fetching unknown alerts. Requested date={}", date);
@@ -198,14 +259,35 @@ public class AdminDashboardService {
 
         LocalTime time = entity.getTimestamp().toLocalTime();
         String status = entity.getDirection().equals("entry") ? "CHECKED_IN" : "CHECKED_OUT";
+        EmployeeEntity employee = findEmployeeForAttendance(entity);
+        String employeeId = employee == null ? null : employee.getEmployeeId();
+        String email = employee == null || employee.getUser() == null ? entity.getEmail() : employee.getUser().getEmail();
 
         return new CheckinCheckoutRecordDto(
                 entity.getTimestamp().toLocalDate(),
                 entity.getName(),
+                employeeId,
+                email,
                 entity.getDirection().equals("entry") ? time : null,
                 entity.getDirection().equals("exit") ? time : null,
                 entity.getLocationName(),
                 status);
+    }
+
+    private EmployeeEntity findEmployeeForAttendance(EmployeeCheckinCheckoutEntity entity) {
+
+        String normalizedEmail = entity.getEmail() == null ? "" : entity.getEmail().trim().toLowerCase();
+        String normalizedName = normalizeName(entity.getName());
+
+        return employeeRepository.findAll().stream()
+                .filter(employee -> {
+                    if (employee.getUser() != null && employee.getUser().getEmail() != null) {
+                        return employee.getUser().getEmail().trim().equalsIgnoreCase(normalizedEmail);
+                    }
+                    return normalizeName(buildFullName(employee)).equals(normalizedName);
+                })
+                .findFirst()
+                .orElse(null);
     }
 
     private EmployeeInfoDto toEmployeeInfoDto(EmployeeEntity entity) {
@@ -230,5 +312,20 @@ public class AdminDashboardService {
     private String normalizeName(String name) {
         if (name == null) return "";
         return name.trim().replaceAll("\\s+", " ").toLowerCase();
+    }
+
+    private String normalizeScope(String scope) {
+
+        if (scope == null || scope.isBlank()) {
+            return "total";
+        }
+
+        String normalized = scope.trim().toLowerCase();
+
+        return switch (normalized) {
+            case "headcount", "checked-in", "checkin", "present" -> "present";
+            case "onleave", "leave", "on-leave" -> "on-leave";
+            default -> "total";
+        };
     }
 }

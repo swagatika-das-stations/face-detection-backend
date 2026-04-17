@@ -88,10 +88,16 @@ public class EmployeeCheckinCheckoutService {
 
         LocalTime time = entity.getTimestamp().toLocalTime();
         String status = entity.getDirection().equals("in") ? "CHECKED_IN" : "CHECKED_OUT";
+        UserEntity user = userRepository.findByEmail(entity.getEmail()).orElse(null);
+        EmployeeEntity employee = user == null ? null : user.getEmployee();
+        String employeeId = employee == null ? null : employee.getEmployeeId();
+        String email = user == null ? entity.getEmail() : user.getEmail();
 
         return new CheckinCheckoutRecordDto(
                 entity.getTimestamp().toLocalDate(),
                 entity.getName(),
+                employeeId,
+                email,
                 entity.getDirection().equals("in") ? time : null,
                 entity.getDirection().equals("out") ? time : null,
                 entity.getLocationName(),
