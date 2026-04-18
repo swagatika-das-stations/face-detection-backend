@@ -130,3 +130,50 @@ SET @add_fk_registry_employee = (
 PREPARE stmt FROM @add_fk_registry_employee;
 EXECUTE stmt;
 DEALLOCATE PREPARE stmt;
+
+-- 5) Rename face_images.employee_id (registration row FK) to employee_registration_id
+--    and add a new face_images.employee_id column for the business employee number.
+SET @rename_face_images_fk = (
+  SELECT IF(
+    EXISTS (
+      SELECT 1
+      FROM information_schema.columns
+      WHERE table_schema = DATABASE() AND table_name = 'face_images' AND column_name = 'employee_id'
+    )
+    AND NOT EXISTS (
+      SELECT 1
+      FROM information_schema.columns
+      WHERE table_schema = DATABASE() AND table_name = 'face_images' AND column_name = 'employee_registration_id'
+    ),
+    'ALTER TABLE face_images CHANGE COLUMN employee_id employee_registration_id BIGINT NULL',
+    'SELECT ''face_images registration FK rename skipped'''
+  )
+);
+PREPARE stmt FROM @rename_face_images_fk;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @add_face_images_business_employee_id = (
+  SELECT IF(
+    EXISTS (
+      SELECT 1
+      FROM information_schema.columns
+      WHERE table_schema = DATABASE() AND table_name = 'face_images' AND column_name = 'employee_registration_id'
+    )
+    AND NOT EXISTS (
+      SELECT 1
+      FROM information_schema.columns
+      WHERE table_schema = DATABASE() AND table_name = 'face_images' AND column_name = 'employee_id'
+    ),
+    'ALTER TABLE face_images ADD COLUMN employee_id VARCHAR(255) NULL AFTER employee_registration_id',
+    'SELECT ''face_images.employee_id already exists or registration FK missing'''
+  )
+);
+PREPARE stmt FROM @add_face_images_business_employee_id;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+UPDATE face_images fi
+JOIN employee_registration_data erd ON erd.id = fi.employee_registration_id
+SET fi.employee_id = erd.employee_id
+WHERE fi.employee_id IS NULL OR fi.employee_id = '';
