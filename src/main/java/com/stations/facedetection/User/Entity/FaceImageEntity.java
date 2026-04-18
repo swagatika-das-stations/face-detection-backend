@@ -17,13 +17,14 @@ import lombok.NoArgsConstructor;
 @Data
 @Table(name = "face_images")
 public class FaceImageEntity {
-	@Id
+
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String imagePath; // or base64 if storing differently
+    private String imagePath;
 
     @ManyToOne
-    @JoinColumn(name = "employee_id")
+    @JoinColumn(name = "employee_id", referencedColumnName = "employee_id")
     private EmployeeEntity employee;
 }

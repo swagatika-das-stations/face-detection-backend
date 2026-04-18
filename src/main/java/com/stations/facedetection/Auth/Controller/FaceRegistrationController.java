@@ -91,12 +91,21 @@ public class FaceRegistrationController {
             files.forEach(File::delete);
             log.info("Temporary files deleted");
 
+                        if (response == null) {
+                                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                                .body(Map.of("error", "Registration failed", "message", "No response from registration service"));
+                        }
+
+                        if ("failure".equalsIgnoreCase(response.getStatus())) {
+                                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                                .body(Map.of("error", "Registration failed", "message", response.getMessage()));
+                        }
+
             if ("ALREADY_EXISTS".equalsIgnoreCase(response.getStatus())) {
 
                 log.warn("Person already exists in Kloudspot");
 
-                return ResponseEntity.status(409)
-                        .body(Map.of("status", "ALREADY_EXISTS", "message", response.getMessage()));
+                                return ResponseEntity.ok(Map.of("status", "successful", "message", response.getMessage()));
             }
 
             log.info("Face registration successful");

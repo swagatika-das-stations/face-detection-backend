@@ -14,6 +14,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.stations.facedetection.User.Entity.EmployeeEntity;
@@ -32,14 +34,12 @@ import com.stations.facedetection.integration.kloudspot.DTO.RegistrationResponse
 import com.stations.facedetection.integration.kloudspot.builder.ZipBuilder;
 import com.stations.facedetection.integration.kloudspot.config.KloudspotUploadConfig;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class KloudspotFaceRegistrationService {
 
     private final ImageValidator imageValidator;
@@ -58,6 +58,7 @@ public class KloudspotFaceRegistrationService {
     @Value("${app.media.root-dir:media}")
     private String mediaRootDir;
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public RegistrationResponseDto registerPerson(List<File> images,
                                                    String firstName,
                                                    String lastName,
@@ -72,7 +73,8 @@ public class KloudspotFaceRegistrationService {
 
         try {
 
-            attemptHistory = faceRegistryRepository.save(attemptHistory);
+            // Persist attempt history later when all relation fields are available.
+            // This avoids early FK failures from partially populated rows.
 
             log.info("Starting Kloudspot face registration for employeeId={}, email={}", employeeid, email);
 
@@ -90,10 +92,9 @@ public class KloudspotFaceRegistrationService {
                 log.warn("Identity already exists in Kloudspot database for email={}", email);
 
                 RegistrationResponseDto existsResponse = new RegistrationResponseDto();
-                existsResponse.setStatus("failure");
-                existsResponse.setMessage("Identity " + email + " already exists in Kloudspot database");
-
-                markHistoryAsFailure(attemptHistory, existsResponse.getMessage());
+                saveSuccessfulRegistration(firstName, lastName, email, employeeid, password, images, null, attemptHistory);
+                existsResponse.setStatus("successful");
+                existsResponse.setMessage("Identity " + email + " already exists in Kloudspot; local database synced successfully");
 
                 return existsResponse;
             }
@@ -148,30 +149,35 @@ public class KloudspotFaceRegistrationService {
 
             RegistrationResponseDto response = registrationService.register(humanJsonFile, imageZipFile);
 
+            if (response == null) {
+                RegistrationResponseDto emptyResponse = new RegistrationResponseDto();
+                emptyResponse.setStatus("failure");
+                emptyResponse.setMessage("Kloudspot registration failed with empty response");
+                tryMarkHistoryAsFailure(attemptHistory, emptyResponse.getMessage());
+                return emptyResponse;
+            }
+
             // 8️ Handle response
             if (response != null && "successful".equalsIgnoreCase(response.getStatus())) {
 
                 log.info("Kloudspot registration successful. EntityId={}", response.getEntityId());
-
-                if (StringUtils.hasText(response.getEntityId())) {
-                    saveSuccessfulRegistration(firstName, lastName, email, employeeid, password, images, response, attemptHistory);
-                } else {
-                    markHistoryAsFailure(attemptHistory, "Successful status but missing entityId from Kloudspot response");
-                }
+                saveSuccessfulRegistration(firstName, lastName, email, employeeid, password, images, response.getEntityId(), attemptHistory);
 
             } else if (response != null && "ALREADY_EXISTS".equalsIgnoreCase(response.getStatus())) {
 
                 log.warn("Person already exists in Kloudspot");
-                markHistoryAsFailure(attemptHistory, response.getMessage());
+                saveSuccessfulRegistration(firstName, lastName, email, employeeid, password, images, null, attemptHistory);
+                response.setStatus("successful");
+                response.setMessage("Identity already exists in Kloudspot; local database synced successfully");
 
             } else {
 
                 log.error("Kloudspot registration failed. Response={}", response);
                 if (response != null) {
                     response.setStatus("failure");
-                    markHistoryAsFailure(attemptHistory, response.getMessage());
+                    tryMarkHistoryAsFailure(attemptHistory, response.getMessage());
                 } else {
-                    markHistoryAsFailure(attemptHistory, "Kloudspot registration failed with empty response");
+                    tryMarkHistoryAsFailure(attemptHistory, "Kloudspot registration failed with empty response");
                 }
             }
 
@@ -180,7 +186,7 @@ public class KloudspotFaceRegistrationService {
         } catch (IllegalArgumentException e) {
 
             log.error("Image validation failed: {}", e.getMessage());
-            markHistoryAsFailure(attemptHistory, e.getMessage());
+            tryMarkHistoryAsFailure(attemptHistory, e.getMessage());
             RegistrationResponseDto errorResponse = new RegistrationResponseDto();
             errorResponse.setStatus("failure");
             errorResponse.setMessage(e.getMessage());
@@ -189,7 +195,7 @@ public class KloudspotFaceRegistrationService {
         } catch (Exception e) {
 
             log.error("Face registration process failed", e);
-            markHistoryAsFailure(attemptHistory, e.getMessage());
+            tryMarkHistoryAsFailure(attemptHistory, e.getMessage());
             RegistrationResponseDto errorResponse = new RegistrationResponseDto();
             errorResponse.setStatus("failure");
             errorResponse.setMessage("Registration failed: " + e.getMessage());
@@ -227,21 +233,22 @@ public class KloudspotFaceRegistrationService {
 
         return request;
     }
-    @Transactional
     private void saveSuccessfulRegistration(String firstName,
                                             String lastName,
                                             String email,
                                             String employeeid,
                                             String password,
                                             List<File> images,
-                                            RegistrationResponseDto response,
+                                            String entityId,
                                             FaceRegistryEntity attemptHistory) {
 
         UserEntity user = userRepository.findByEmail(email)
                 .orElseGet(() -> createUserWithRole(email, password));
 
         EmployeeEntity employee = resolveEmployeeForUser(user, firstName, lastName, employeeid);
-        employee.setEntityId(response.getEntityId());
+        if (StringUtils.hasText(entityId)) {
+            employee.setEntityId(entityId);
+        }
         employee = employeeRepository.save(employee);
 
         List<Path> copiedFilePaths = new ArrayList<>();
@@ -256,13 +263,13 @@ public class KloudspotFaceRegistrationService {
 
         attemptHistory.setUser(user);
         attemptHistory.setEmployee(employee);
-        attemptHistory.setEntityId(response.getEntityId());
+        attemptHistory.setEntityId(entityId);
         attemptHistory.setRegistrationStatus("SUCCESS");
         attemptHistory.setFailureReason(null);
         faceRegistryRepository.save(attemptHistory);
 
         log.info("Registration success persisted for email={}, entityId={}, employeeRegisterId={}",
-                email, response.getEntityId(), employee.getId());
+            email, entityId, employee.getId());
     }
 
     private UserEntity createUserWithRole(String email, String password) {
@@ -337,6 +344,17 @@ public class KloudspotFaceRegistrationService {
         history.setRegistrationStatus("FAILED");
         history.setFailureReason(message);
         faceRegistryRepository.save(history);
+    }
+
+    private void tryMarkHistoryAsFailure(FaceRegistryEntity history, String message) {
+
+        try {
+            markHistoryAsFailure(history, message);
+        } catch (Exception ex) {
+            log.warn("Failed to persist failure history. OriginalMessage={}, SaveError={}",
+                    message,
+                    ex.getMessage());
+        }
     }
 
     private List<FaceImageEntity> copyAndBuildFaceImages(List<File> images,

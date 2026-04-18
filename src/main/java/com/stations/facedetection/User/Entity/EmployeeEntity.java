@@ -31,7 +31,7 @@ public class EmployeeEntity {
 
     private String lastName;
 
-    @Column(unique = true)
+    @Column(name = "employee_id", unique = true)
     private String employeeId;
 
     private String entityId;
