@@ -1,0 +1,52 @@
+name: Java Maven CI/CD - DEV
+
+on:
+  workflow_dispatch: 
+
+jobs:
+  build-and-deploy:
+    name: Build & Deploy to DEV EC2
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout code
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # 2. Setup Java
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      # 3. Build using Maven
+      - name: Build with Maven
+        run: mvn clean package -DskipTests
+
+      # 4. Copy JAR to EC2 (same name, same structure)
+      - name: Copy JAR to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "target/face-detection-services-0.0.1-SNAPSHOT.jar"
+          target: "/home/ec2-user/dev-environment/3c-backend"
+
+      # 5. Restart service
+      - name: Restart face-detection service
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            echo "Stopping service..."
+            sudo systemctl stop face-detection.service
+
+            echo "Starting service..."
+            sudo systemctl start face-detection.service
+
+            echo "Service status:"
+            sudo systemctl status face-detection.service --no-pager
