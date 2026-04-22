@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 public class EmployeeCheckinCheckoutDashboardDto {
 
     private String employeeName;
+    private String employeeId;
+    private String email;
     private LocalDate startDate;
     private LocalDate endDate;
     private CheckinCheckoutSummaryDto summary;

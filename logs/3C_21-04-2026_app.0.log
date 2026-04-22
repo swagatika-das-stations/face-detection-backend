@@ -1,0 +1,619 @@
+2026-04-21 09:44:57 [main] INFO  c.s.f.FaceDetectionServicesApplication - Starting FaceDetectionServicesApplication using Java 21.0.10 with PID 21288 (D:\FaceDetectionApplication\Backend\spring3c\3c-backend\target\classes started by HP in D:\FaceDetectionApplication\Backend\spring3c\3c-backend)
+2026-04-21 09:44:57 [main] INFO  c.s.f.FaceDetectionServicesApplication - The following 1 profile is active: "kloudspot"
+2026-04-21 09:44:58 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-04-21 09:44:58 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 141 ms. Found 7 JPA repository interfaces.
+2026-04-21 09:44:59 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 9090 (http)
+2026-04-21 09:44:59 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9090"]
+2026-04-21 09:44:59 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-04-21 09:44:59 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.31]
+2026-04-21 09:44:59 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-04-21 09:44:59 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1354 ms
+2026-04-21 09:44:59 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-04-21 09:44:59 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-04-21 09:44:59 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-04-21 09:44:59 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-04-21 09:44:59 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-04-21 09:45:00 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@771d4db
+2026-04-21 09:45:00 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-04-21 09:45:00 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-04-21 09:45:01 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-04-21 09:45:02 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-04-21 09:45:02 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-04-21 09:45:02 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2026-04-21 09:45:02 [main] INFO  c.s.f.S.Config.WebClientConfig - Initializing WebClient for Kloudspot APIs. Base URL=https://3c.zdotapps.in
+2026-04-21 09:45:03 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-04-21 09:45:03 [main] INFO  c.s.f.Security.Config.SecurityConfig - CORS configuration loaded for Angular frontend
+2026-04-21 09:45:03 [main] INFO  c.s.f.Security.Config.SecurityConfig - Security configuration loaded
+2026-04-21 09:45:03 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-9090"]
+2026-04-21 09:45:03 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 9090 (http) with context path '/'
+2026-04-21 09:45:03 [main] INFO  c.s.f.FaceDetectionServicesApplication - Started FaceDetectionServicesApplication in 6.396 seconds (process running for 6.717)
+2026-04-21 09:48:04 [http-nio-9090-exec-1] INFO  o.a.coyote.http11.Http11Processor - Error parsing HTTP request header
+ Note: further occurrences of HTTP request parsing errors will be logged at DEBUG level.
+java.lang.IllegalArgumentException: Invalid character found in method name [0x160x030x010x060xf20x010x000x060xee0x030x030x0c&0xca-30x9b0xe10xb4,wk0x8feaA'm0xdd60x0fkm0x02Vp[0xcah0xb76R0x03 ]. HTTP method names must be tokens
+	at org.apache.coyote.http11.Http11InputBuffer.parseRequestLine(Http11InputBuffer.java:406)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:257)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:905)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+2026-04-21 09:55:25 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-04-21 09:55:25 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-04-21 09:55:25 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-04-21 09:55:53 [main] INFO  c.s.f.FaceDetectionServicesApplication - Starting FaceDetectionServicesApplication using Java 21.0.10 with PID 16160 (D:\FaceDetectionApplication\Backend\spring3c\3c-backend\target\classes started by HP in D:\FaceDetectionApplication\Backend\spring3c\3c-backend)
+2026-04-21 09:55:53 [main] INFO  c.s.f.FaceDetectionServicesApplication - The following 1 profile is active: "kloudspot"
+2026-04-21 09:55:54 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-04-21 09:55:54 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 126 ms. Found 7 JPA repository interfaces.
+2026-04-21 09:55:55 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 9090 (http)
+2026-04-21 09:55:55 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9090"]
+2026-04-21 09:55:55 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-04-21 09:55:55 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.31]
+2026-04-21 09:55:55 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-04-21 09:55:55 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1205 ms
+2026-04-21 09:55:55 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-04-21 09:55:55 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-04-21 09:55:55 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-04-21 09:55:55 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-04-21 09:55:55 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-04-21 09:55:56 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@57f725b8
+2026-04-21 09:55:56 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-04-21 09:55:56 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-04-21 09:55:57 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-04-21 09:55:57 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-04-21 09:55:57 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-04-21 09:55:58 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2026-04-21 09:55:58 [main] INFO  c.s.f.S.Config.WebClientConfig - Initializing WebClient for Kloudspot APIs. Base URL=https://3c.zdotapps.in
+2026-04-21 09:55:58 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-04-21 09:55:58 [main] INFO  c.s.f.Security.Config.SecurityConfig - CORS configuration loaded for Angular frontend
+2026-04-21 09:55:58 [main] INFO  c.s.f.Security.Config.SecurityConfig - Security configuration loaded
+2026-04-21 09:55:59 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-9090"]
+2026-04-21 09:55:59 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 9090 (http) with context path '/'
+2026-04-21 09:55:59 [main] INFO  c.s.f.FaceDetectionServicesApplication - Started FaceDetectionServicesApplication in 5.742 seconds (process running for 6.028)
+2026-04-21 09:56:45 [http-nio-9090-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-04-21 09:56:45 [http-nio-9090-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-04-21 09:56:45 [http-nio-9090-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2026-04-21 09:56:45 [http-nio-9090-exec-3] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=POST, url=http://localhost:9090/api/auth/login, path=/api/auth/login, contentType=application/json
+2026-04-21 09:56:45 [http-nio-9090-exec-3] INFO  c.s.f.Auth.Controller.AuthController - Login API called
+2026-04-21 09:56:45 [http-nio-9090-exec-3] INFO  c.s.f.Auth.Controller.AuthController - Login attempt for user: mounika.y@station-s.org
+2026-04-21 09:56:45 [http-nio-9090-exec-3] INFO  c.s.f.Auth.Service.AuthService - Login service started for email: mounika.y@station-s.org
+2026-04-21 09:56:45 [http-nio-9090-exec-3] INFO  c.s.f.Auth.Service.AuthService - Authentication successful for user: mounika.y@station-s.org
+2026-04-21 09:56:45 [http-nio-9090-exec-3] INFO  c.s.f.Auth.Service.AuthService - User found in database: mounika.y@station-s.org
+2026-04-21 09:56:45 [http-nio-9090-exec-3] INFO  c.s.f.Auth.Service.AuthService - JWT token generated for user: mounika.y@station-s.org
+2026-04-21 09:56:45 [http-nio-9090-exec-3] INFO  c.s.f.Auth.Service.AuthService - Roles assigned to user: [EMPLOYEE, ADMIN]
+2026-04-21 09:56:45 [http-nio-9090-exec-3] INFO  c.s.f.Auth.Service.AuthService - Primary role resolved: ADMIN
+2026-04-21 09:56:45 [http-nio-9090-exec-3] INFO  c.s.f.Auth.Controller.AuthController - Login successful for user: mounika.y@station-s.org
+2026-04-21 09:57:04 [http-nio-9090-exec-5] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/unknown-alerts
+2026-04-21 09:57:04 [http-nio-9090-exec-10] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/headcount
+2026-04-21 09:57:04 [http-nio-9090-exec-1] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/checkout
+2026-04-21 09:57:04 [http-nio-9090-exec-3] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/total-employees
+2026-04-21 09:57:04 [http-nio-9090-exec-4] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/on-leave
+2026-04-21 09:57:04 [http-nio-9090-exec-9] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/checkin
+2026-04-21 09:57:04 [http-nio-9090-exec-4] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/on-leave, path=/api/admin/dashboard/on-leave, contentType=null
+2026-04-21 09:57:04 [http-nio-9090-exec-3] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/total-employees, path=/api/admin/dashboard/total-employees, contentType=null
+2026-04-21 09:57:04 [http-nio-9090-exec-9] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/checkin, path=/api/admin/dashboard/checkin, contentType=null
+2026-04-21 09:57:04 [http-nio-9090-exec-10] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/headcount, path=/api/admin/dashboard/headcount, contentType=null
+2026-04-21 09:57:04 [http-nio-9090-exec-5] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/unknown-alerts, path=/api/admin/dashboard/unknown-alerts, contentType=null
+2026-04-21 09:57:04 [http-nio-9090-exec-1] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/checkout, path=/api/admin/dashboard/checkout, contentType=null
+2026-04-21 09:57:04 [http-nio-9090-exec-3] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /total-employees
+2026-04-21 09:57:04 [http-nio-9090-exec-3] INFO  c.s.f.D.S.AdminDashboardService - Fetching total employee list
+2026-04-21 09:57:04 [http-nio-9090-exec-4] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /on-leave , date=2026-04-21
+2026-04-21 09:57:04 [http-nio-9090-exec-5] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /unknown-alerts , date=2026-04-21
+2026-04-21 09:57:04 [http-nio-9090-exec-9] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /checkin , date=2026-04-21
+2026-04-21 09:57:04 [http-nio-9090-exec-10] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /headcount , date=2026-04-21
+2026-04-21 09:57:04 [http-nio-9090-exec-9] INFO  c.s.f.D.S.AdminDashboardService - Fetching check-in data. Requested date=2026-04-21
+2026-04-21 09:57:04 [http-nio-9090-exec-1] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /checkout , date=2026-04-21
+2026-04-21 09:57:04 [http-nio-9090-exec-4] INFO  c.s.f.D.S.AdminDashboardService - Fetching on-leave employees for date=2026-04-21
+2026-04-21 09:57:04 [http-nio-9090-exec-5] INFO  c.s.f.D.S.AdminDashboardService - Fetching unknown alerts. Requested date=2026-04-21
+2026-04-21 09:57:04 [http-nio-9090-exec-10] INFO  c.s.f.D.S.AdminDashboardService - Fetching headcount data. Requested date=2026-04-21
+2026-04-21 09:57:04 [http-nio-9090-exec-1] INFO  c.s.f.D.S.AdminDashboardService - Fetching check-out data. Requested date=2026-04-21
+2026-04-21 09:57:04 [http-nio-9090-exec-5] WARN  c.s.f.D.S.AdminDashboardService - No attendance rows found for date=2026-04-21, fetching latest available date
+2026-04-21 09:57:04 [http-nio-9090-exec-9] WARN  c.s.f.D.S.AdminDashboardService - No attendance rows found for date=2026-04-21, fetching latest available date
+2026-04-21 09:57:04 [http-nio-9090-exec-10] WARN  c.s.f.D.S.AdminDashboardService - No attendance rows found for date=2026-04-21, fetching latest available date
+2026-04-21 09:57:04 [http-nio-9090-exec-1] WARN  c.s.f.D.S.AdminDashboardService - No attendance rows found for date=2026-04-21, fetching latest available date
+2026-04-21 09:57:04 [http-nio-9090-exec-5] INFO  c.s.f.D.S.AdminDashboardService - Resolved unknown alert date=2026-04-21
+2026-04-21 09:57:04 [http-nio-9090-exec-10] INFO  c.s.f.D.S.AdminDashboardService - Resolved headcount date=2026-04-21
+2026-04-21 09:57:04 [http-nio-9090-exec-1] INFO  c.s.f.D.S.AdminDashboardService - Resolved checkout date=2026-04-21
+2026-04-21 09:57:04 [http-nio-9090-exec-9] INFO  c.s.f.D.S.AdminDashboardService - Resolved check-in date=2026-04-21
+2026-04-21 09:57:04 [http-nio-9090-exec-9] INFO  c.s.f.D.S.AdminDashboardService - Check-in records fetched successfully. date=2026-04-21, count=0
+2026-04-21 09:57:04 [http-nio-9090-exec-1] INFO  c.s.f.D.S.AdminDashboardService - Check-out records fetched successfully. date=2026-04-21, count=0
+2026-04-21 09:57:04 [http-nio-9090-exec-9] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='Check-in employees fetched successfully', date=2026-04-21, count=0
+2026-04-21 09:57:04 [http-nio-9090-exec-1] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='Check-out employees fetched successfully', date=2026-04-21, count=0
+2026-04-21 09:57:04 [http-nio-9090-exec-10] INFO  c.s.f.D.S.AdminDashboardService - Headcount records fetched successfully. date=2026-04-21, count=0
+2026-04-21 09:57:04 [http-nio-9090-exec-10] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='Headcount fetched successfully', date=2026-04-21, count=0
+2026-04-21 09:57:05 [http-nio-9090-exec-3] INFO  c.s.f.D.S.AdminDashboardService - Total employees fetched successfully. count=4
+2026-04-21 09:57:05 [http-nio-9090-exec-3] INFO  c.s.f.D.C.AdminDashboardController - Total employees count=4
+2026-04-21 09:57:05 [http-nio-9090-exec-4] INFO  c.s.f.D.S.AdminDashboardService - On-leave employees calculated. date=2026-04-21, count=4
+2026-04-21 09:57:05 [http-nio-9090-exec-4] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='On-leave employees fetched successfully', date=2026-04-21, count=4
+2026-04-21 09:57:05 [http-nio-9090-exec-5] INFO  c.s.f.D.S.AdminDashboardService - Unknown alerts fetched successfully. date=2026-04-21, count=0
+2026-04-21 09:57:05 [http-nio-9090-exec-5] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='Unknown alerts fetched successfully', date=2026-04-21, count=0
+2026-04-21 09:57:40 [http-nio-9090-exec-6] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/employees
+2026-04-21 09:57:40 [http-nio-9090-exec-6] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/employees, path=/api/admin/dashboard/employees, contentType=null
+2026-04-21 09:57:40 [http-nio-9090-exec-6] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /employees , scope=total, date=null
+2026-04-21 09:57:40 [http-nio-9090-exec-6] INFO  c.s.f.D.S.AdminDashboardService - Fetching employee list by scope='total', date=null
+2026-04-21 09:57:40 [http-nio-9090-exec-6] INFO  c.s.f.D.S.AdminDashboardService - Fetching total employee list
+2026-04-21 09:57:41 [http-nio-9090-exec-6] INFO  c.s.f.D.S.AdminDashboardService - Total employees fetched successfully. count=4
+2026-04-21 09:57:41 [http-nio-9090-exec-6] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='Employees fetched successfully', date=null, count=4
+2026-04-21 09:57:47 [http-nio-9090-exec-8] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/employees
+2026-04-21 09:57:47 [http-nio-9090-exec-8] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/employees, path=/api/admin/dashboard/employees, contentType=null
+2026-04-21 09:57:47 [http-nio-9090-exec-8] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /employees , scope=total, date=null
+2026-04-21 09:57:47 [http-nio-9090-exec-8] INFO  c.s.f.D.S.AdminDashboardService - Fetching employee list by scope='total', date=null
+2026-04-21 09:57:47 [http-nio-9090-exec-8] INFO  c.s.f.D.S.AdminDashboardService - Fetching total employee list
+2026-04-21 09:57:47 [http-nio-9090-exec-8] INFO  c.s.f.D.S.AdminDashboardService - Total employees fetched successfully. count=4
+2026-04-21 09:57:47 [http-nio-9090-exec-8] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='Employees fetched successfully', date=null, count=4
+2026-04-21 09:57:53 [http-nio-9090-exec-1] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/employees
+2026-04-21 09:57:53 [http-nio-9090-exec-1] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/employees, path=/api/admin/dashboard/employees, contentType=null
+2026-04-21 09:57:53 [http-nio-9090-exec-1] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /employees , scope=total, date=null
+2026-04-21 09:57:53 [http-nio-9090-exec-1] INFO  c.s.f.D.S.AdminDashboardService - Fetching employee list by scope='total', date=null
+2026-04-21 09:57:53 [http-nio-9090-exec-1] INFO  c.s.f.D.S.AdminDashboardService - Fetching total employee list
+2026-04-21 09:57:53 [http-nio-9090-exec-1] INFO  c.s.f.D.S.AdminDashboardService - Total employees fetched successfully. count=4
+2026-04-21 09:57:53 [http-nio-9090-exec-1] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='Employees fetched successfully', date=null, count=4
+2026-04-21 09:57:53 [http-nio-9090-exec-1] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/total-employees
+2026-04-21 09:57:53 [http-nio-9090-exec-1] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/total-employees, path=/api/admin/dashboard/total-employees, contentType=null
+2026-04-21 09:57:53 [http-nio-9090-exec-1] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /total-employees
+2026-04-21 09:57:53 [http-nio-9090-exec-1] INFO  c.s.f.D.S.AdminDashboardService - Fetching total employee list
+2026-04-21 09:57:53 [http-nio-9090-exec-10] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/on-leave
+2026-04-21 09:57:53 [http-nio-9090-exec-9] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/headcount
+2026-04-21 09:57:53 [http-nio-9090-exec-8] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/checkout
+2026-04-21 09:57:53 [http-nio-9090-exec-3] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/unknown-alerts
+2026-04-21 09:57:53 [http-nio-9090-exec-7] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/checkin
+2026-04-21 09:57:53 [http-nio-9090-exec-10] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/on-leave, path=/api/admin/dashboard/on-leave, contentType=null
+2026-04-21 09:57:53 [http-nio-9090-exec-9] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/headcount, path=/api/admin/dashboard/headcount, contentType=null
+2026-04-21 09:57:53 [http-nio-9090-exec-8] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/checkout, path=/api/admin/dashboard/checkout, contentType=null
+2026-04-21 09:57:53 [http-nio-9090-exec-3] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/unknown-alerts, path=/api/admin/dashboard/unknown-alerts, contentType=null
+2026-04-21 09:57:53 [http-nio-9090-exec-7] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/checkin, path=/api/admin/dashboard/checkin, contentType=null
+2026-04-21 09:57:53 [http-nio-9090-exec-9] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /headcount , date=2026-04-21
+2026-04-21 09:57:53 [http-nio-9090-exec-8] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /checkout , date=2026-04-21
+2026-04-21 09:57:53 [http-nio-9090-exec-10] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /on-leave , date=2026-04-21
+2026-04-21 09:57:53 [http-nio-9090-exec-9] INFO  c.s.f.D.S.AdminDashboardService - Fetching headcount data. Requested date=2026-04-21
+2026-04-21 09:57:53 [http-nio-9090-exec-7] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /checkin , date=2026-04-21
+2026-04-21 09:57:53 [http-nio-9090-exec-3] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /unknown-alerts , date=2026-04-21
+2026-04-21 09:57:53 [http-nio-9090-exec-8] INFO  c.s.f.D.S.AdminDashboardService - Fetching check-out data. Requested date=2026-04-21
+2026-04-21 09:57:53 [http-nio-9090-exec-3] INFO  c.s.f.D.S.AdminDashboardService - Fetching unknown alerts. Requested date=2026-04-21
+2026-04-21 09:57:53 [http-nio-9090-exec-10] INFO  c.s.f.D.S.AdminDashboardService - Fetching on-leave employees for date=2026-04-21
+2026-04-21 09:57:53 [http-nio-9090-exec-7] INFO  c.s.f.D.S.AdminDashboardService - Fetching check-in data. Requested date=2026-04-21
+2026-04-21 09:57:53 [http-nio-9090-exec-9] WARN  c.s.f.D.S.AdminDashboardService - No attendance rows found for date=2026-04-21, fetching latest available date
+2026-04-21 09:57:53 [http-nio-9090-exec-7] WARN  c.s.f.D.S.AdminDashboardService - No attendance rows found for date=2026-04-21, fetching latest available date
+2026-04-21 09:57:53 [http-nio-9090-exec-3] WARN  c.s.f.D.S.AdminDashboardService - No attendance rows found for date=2026-04-21, fetching latest available date
+2026-04-21 09:57:53 [http-nio-9090-exec-8] WARN  c.s.f.D.S.AdminDashboardService - No attendance rows found for date=2026-04-21, fetching latest available date
+2026-04-21 09:57:53 [http-nio-9090-exec-8] INFO  c.s.f.D.S.AdminDashboardService - Resolved checkout date=2026-04-21
+2026-04-21 09:57:53 [http-nio-9090-exec-9] INFO  c.s.f.D.S.AdminDashboardService - Resolved headcount date=2026-04-21
+2026-04-21 09:57:53 [http-nio-9090-exec-3] INFO  c.s.f.D.S.AdminDashboardService - Resolved unknown alert date=2026-04-21
+2026-04-21 09:57:53 [http-nio-9090-exec-7] INFO  c.s.f.D.S.AdminDashboardService - Resolved check-in date=2026-04-21
+2026-04-21 09:57:53 [http-nio-9090-exec-7] INFO  c.s.f.D.S.AdminDashboardService - Check-in records fetched successfully. date=2026-04-21, count=0
+2026-04-21 09:57:53 [http-nio-9090-exec-9] INFO  c.s.f.D.S.AdminDashboardService - Headcount records fetched successfully. date=2026-04-21, count=0
+2026-04-21 09:57:53 [http-nio-9090-exec-7] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='Check-in employees fetched successfully', date=2026-04-21, count=0
+2026-04-21 09:57:53 [http-nio-9090-exec-8] INFO  c.s.f.D.S.AdminDashboardService - Check-out records fetched successfully. date=2026-04-21, count=0
+2026-04-21 09:57:53 [http-nio-9090-exec-9] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='Headcount fetched successfully', date=2026-04-21, count=0
+2026-04-21 09:57:53 [http-nio-9090-exec-8] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='Check-out employees fetched successfully', date=2026-04-21, count=0
+2026-04-21 09:57:54 [http-nio-9090-exec-1] INFO  c.s.f.D.S.AdminDashboardService - Total employees fetched successfully. count=4
+2026-04-21 09:57:54 [http-nio-9090-exec-1] INFO  c.s.f.D.C.AdminDashboardController - Total employees count=4
+2026-04-21 09:57:54 [http-nio-9090-exec-10] INFO  c.s.f.D.S.AdminDashboardService - On-leave employees calculated. date=2026-04-21, count=4
+2026-04-21 09:57:54 [http-nio-9090-exec-10] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='On-leave employees fetched successfully', date=2026-04-21, count=4
+2026-04-21 09:57:54 [http-nio-9090-exec-3] INFO  c.s.f.D.S.AdminDashboardService - Unknown alerts fetched successfully. date=2026-04-21, count=0
+2026-04-21 09:57:54 [http-nio-9090-exec-3] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='Unknown alerts fetched successfully', date=2026-04-21, count=0
+2026-04-21 09:58:08 [http-nio-9090-exec-5] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=POST, url=http://localhost:9090/api/auth/login, path=/api/auth/login, contentType=application/json
+2026-04-21 09:58:08 [http-nio-9090-exec-5] INFO  c.s.f.Auth.Controller.AuthController - Login API called
+2026-04-21 09:58:08 [http-nio-9090-exec-5] INFO  c.s.f.Auth.Controller.AuthController - Login attempt for user: mounika.y@station-s.org
+2026-04-21 09:58:08 [http-nio-9090-exec-5] INFO  c.s.f.Auth.Service.AuthService - Login service started for email: mounika.y@station-s.org
+2026-04-21 09:58:09 [http-nio-9090-exec-5] INFO  c.s.f.Auth.Service.AuthService - Authentication successful for user: mounika.y@station-s.org
+2026-04-21 09:58:09 [http-nio-9090-exec-5] INFO  c.s.f.Auth.Service.AuthService - User found in database: mounika.y@station-s.org
+2026-04-21 09:58:09 [http-nio-9090-exec-5] INFO  c.s.f.Auth.Service.AuthService - JWT token generated for user: mounika.y@station-s.org
+2026-04-21 09:58:09 [http-nio-9090-exec-5] INFO  c.s.f.Auth.Service.AuthService - Roles assigned to user: [EMPLOYEE, ADMIN]
+2026-04-21 09:58:09 [http-nio-9090-exec-5] INFO  c.s.f.Auth.Service.AuthService - Primary role resolved: ADMIN
+2026-04-21 09:58:09 [http-nio-9090-exec-5] INFO  c.s.f.Auth.Controller.AuthController - Login successful for user: mounika.y@station-s.org
+2026-04-21 10:32:22 [http-nio-9090-exec-10] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=POST, url=http://localhost:9090/api/faces/register, path=/api/faces/register, contentType=multipart/form-data; boundary=----WebKitFormBoundaryopDBX0pkkx9Nao38
+2026-04-21 10:32:22 [http-nio-9090-exec-10] INFO  c.s.f.A.C.FaceRegistrationController - Face registration API called
+2026-04-21 10:32:22 [http-nio-9090-exec-10] INFO  c.s.f.A.C.FaceRegistrationController - Request details: firstName=Mounika, lastName=Yamarthi, email=mounika.y@station-s.org, employeeId=1782463, imageCount=5
+2026-04-21 10:32:22 [http-nio-9090-exec-10] INFO  c.s.f.A.C.FaceRegistrationController - Incoming image: filename=1.jpg, sizeBytes=26994, contentType=image/jpeg
+2026-04-21 10:32:22 [http-nio-9090-exec-10] INFO  c.s.f.A.C.FaceRegistrationController - Incoming image: filename=2.jpg, sizeBytes=28459, contentType=image/jpeg
+2026-04-21 10:32:22 [http-nio-9090-exec-10] INFO  c.s.f.A.C.FaceRegistrationController - Incoming image: filename=3.jpg, sizeBytes=26885, contentType=image/jpeg
+2026-04-21 10:32:22 [http-nio-9090-exec-10] INFO  c.s.f.A.C.FaceRegistrationController - Incoming image: filename=4.jpg, sizeBytes=27268, contentType=image/jpeg
+2026-04-21 10:32:22 [http-nio-9090-exec-10] INFO  c.s.f.A.C.FaceRegistrationController - Incoming image: filename=5.jpg, sizeBytes=23939, contentType=image/jpeg
+2026-04-21 10:32:22 [http-nio-9090-exec-10] INFO  c.s.f.A.C.FaceRegistrationController - Validating uploaded images
+2026-04-21 10:32:22 [http-nio-9090-exec-10] INFO  c.s.f.A.C.FaceRegistrationController - Checking image: 1.jpg size: 26994 bytes
+2026-04-21 10:32:22 [http-nio-9090-exec-10] INFO  c.s.f.A.C.FaceRegistrationController - Checking image: 2.jpg size: 28459 bytes
+2026-04-21 10:32:22 [http-nio-9090-exec-10] INFO  c.s.f.A.C.FaceRegistrationController - Checking image: 3.jpg size: 26885 bytes
+2026-04-21 10:32:22 [http-nio-9090-exec-10] INFO  c.s.f.A.C.FaceRegistrationController - Checking image: 4.jpg size: 27268 bytes
+2026-04-21 10:32:22 [http-nio-9090-exec-10] INFO  c.s.f.A.C.FaceRegistrationController - Checking image: 5.jpg size: 23939 bytes
+2026-04-21 10:32:22 [http-nio-9090-exec-10] INFO  c.s.f.A.C.FaceRegistrationController - Image validation successful
+2026-04-21 10:32:22 [http-nio-9090-exec-10] INFO  c.s.f.A.C.FaceRegistrationController - Converting MultipartFiles to File objects
+2026-04-21 10:32:22 [http-nio-9090-exec-10] INFO  c.s.f.A.C.FaceRegistrationController - Converting file: 1.jpg
+2026-04-21 10:32:22 [http-nio-9090-exec-10] INFO  c.s.f.A.C.FaceRegistrationController - Converting file: 2.jpg
+2026-04-21 10:32:22 [http-nio-9090-exec-10] INFO  c.s.f.A.C.FaceRegistrationController - Converting file: 3.jpg
+2026-04-21 10:32:22 [http-nio-9090-exec-10] INFO  c.s.f.A.C.FaceRegistrationController - Converting file: 4.jpg
+2026-04-21 10:32:22 [http-nio-9090-exec-10] INFO  c.s.f.A.C.FaceRegistrationController - Converting file: 5.jpg
+2026-04-21 10:32:22 [http-nio-9090-exec-10] INFO  c.s.f.A.C.FaceRegistrationController - Calling Kloudspot registration service
+2026-04-21 10:32:22 [http-nio-9090-exec-10] INFO  c.s.f.i.k.s.KloudspotFaceRegistrationService - Starting Kloudspot face registration for employeeId=1782463, email=mounika.y@station-s.org
+2026-04-21 10:32:22 [http-nio-9090-exec-10] INFO  c.s.f.i.k.s.KloudspotFaceRegistrationService - Upload configuration: minImages=1, maxImages=5, maxImageSizeMB=1, formats=[jpg, jpeg, png]
+2026-04-21 10:32:22 [http-nio-9090-exec-10] INFO  c.s.f.i.k.s.KloudspotFaceRegistrationService - Checking if identity exists in Kloudspot for email=mounika.y@station-s.org
+2026-04-21 10:32:22 [http-nio-9090-exec-10] INFO  c.s.f.i.k.s.KloudspotAuthService - Requesting JWT token from Kloudspot API: https://3c.zdotapps.in/advanced/api/v1/auth/login
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.s.KloudspotAuthService - Kloudspot JWT token generated successfully (length=192)
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.s.KloudspotSearchService - Checking Kloudspot identity existence for identity=mounika.y@station-s.org
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.s.KloudspotSearchService - Identity not found in Kloudspot for identity=mounika.y@station-s.org
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.s.KloudspotFaceRegistrationService - Identity not found. Proceeding with registration.
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.s.KloudspotFaceRegistrationService - Validating 5 uploaded images
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageValidator - Validating 5 images against Kloudspot specifications
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageValidator - Image count validation passed: 5 images
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageValidator - --- Validating Image 1 of 5 ---
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageValidator - Image 1: upload_10205575829701464264.jpg (26 KB)
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageValidator - Format: JPG ✅
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageValidator - Dimensions: 600x600
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageValidator - Image 1 validation passed
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageValidator - --- Validating Image 2 of 5 ---
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageValidator - Image 2: upload_2442530517735273638.jpg (27 KB)
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageValidator - Format: JPG ✅
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageValidator - Dimensions: 600x600
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageValidator - Image 2 validation passed
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageValidator - --- Validating Image 3 of 5 ---
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageValidator - Image 3: upload_4306509947781971530.jpg (26 KB)
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageValidator - Format: JPG ✅
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageValidator - Dimensions: 600x600
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageValidator - Image 3 validation passed
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageValidator - --- Validating Image 4 of 5 ---
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageValidator - Image 4: upload_15876620687485942064.jpg (26 KB)
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageValidator - Format: JPG ✅
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageValidator - Dimensions: 600x600
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageValidator - Image 4 validation passed
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageValidator - --- Validating Image 5 of 5 ---
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageValidator - Image 5: upload_17031032391895128710.jpg (23 KB)
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageValidator - Format: JPG ✅
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageValidator - Dimensions: 600x600
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageValidator - Image 5 validation passed
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageValidator - Total size validation passed: 0.13 MB
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageValidator - All images validated successfully!
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.s.KloudspotFaceRegistrationService - Cleaning uploaded images
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageCleaner - Cleaning image: upload_10205575829701464264.jpg
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageCleaner - Original size: 26 KB (target: 500 KB)
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageCleaner - Original dimensions: 600x600
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageCleaner - Cropped to square: 600x600
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageCleaner - Resizing to: 600x600
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageCleaner - After first compression: 28 KB (target: 500 KB)
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageCleaner - Optimized: 26 KB to 28 KB (-9% reduction)
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageCleaner - Cleaning image: upload_2442530517735273638.jpg
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageCleaner - Original size: 27 KB (target: 500 KB)
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageCleaner - Original dimensions: 600x600
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageCleaner - Cropped to square: 600x600
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageCleaner - Resizing to: 600x600
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageCleaner - After first compression: 30 KB (target: 500 KB)
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageCleaner - Optimized: 27 KB to 30 KB (-9% reduction)
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageCleaner - Cleaning image: upload_4306509947781971530.jpg
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageCleaner - Original size: 26 KB (target: 500 KB)
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageCleaner - Original dimensions: 600x600
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageCleaner - Cropped to square: 600x600
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageCleaner - Resizing to: 600x600
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageCleaner - After first compression: 28 KB (target: 500 KB)
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageCleaner - Optimized: 26 KB to 28 KB (-9% reduction)
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageCleaner - Cleaning image: upload_15876620687485942064.jpg
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageCleaner - Original size: 26 KB (target: 500 KB)
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageCleaner - Original dimensions: 600x600
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageCleaner - Cropped to square: 600x600
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageCleaner - Resizing to: 600x600
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageCleaner - After first compression: 29 KB (target: 500 KB)
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageCleaner - Optimized: 26 KB to 29 KB (-9% reduction)
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageCleaner - Cleaning image: upload_17031032391895128710.jpg
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageCleaner - Original size: 23 KB (target: 500 KB)
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageCleaner - Original dimensions: 600x600
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageCleaner - Cropped to square: 600x600
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageCleaner - Resizing to: 600x600
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageCleaner - After first compression: 25 KB (target: 500 KB)
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.service.ImageCleaner - Optimized: 23 KB to 25 KB (-10% reduction)
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.s.KloudspotFaceRegistrationService - Image cleaning completed. Cleaned images=5
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.s.KloudspotFaceRegistrationService - Built human data: identity=mounika.y@station-s.org, firstName=Mounika, lastName=Yamarthi, employeeId=1782463
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.kloudspot.builder.ZipBuilder - Human.json file created: 199 bytes
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.kloudspot.builder.ZipBuilder - Added image1.jpg to ZIP: 29686 bytes
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.kloudspot.builder.ZipBuilder - Added image2.jpg to ZIP: 31137 bytes
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.kloudspot.builder.ZipBuilder - Added image3.jpg to ZIP: 29536 bytes
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.kloudspot.builder.ZipBuilder - Added image4.jpg to ZIP: 29937 bytes
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.kloudspot.builder.ZipBuilder - Added image5.jpg to ZIP: 26517 bytes
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.kloudspot.builder.ZipBuilder - Image ZIP file created: 145801 bytes (0.14 MB)
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.s.KloudspotFaceRegistrationService - Image ZIP created successfully. Size=142 KB (0.14 MB), images=5
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.s.KloudspotFaceRegistrationService - Sending face registration request to Kloudspot (human.json + image.zip)
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.s.KloudspotAuthService - Using cached Kloudspot JWT token
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.s.KloudspotRegistrationService - Calling Kloudspot registration API: https://3c.zdotapps.in/advanced/api/v1/humans/registration/frs
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.s.KloudspotRegistrationService - Outgoing Kloudspot request parts: zipFile=images_16484657308196867830.zip, human=human_13570800080600317303.json, imageZipSizeKB=142
+2026-04-21 10:32:23 [reactor-http-nio-2] INFO  c.s.f.i.k.s.KloudspotRegistrationService - Kloudspot API Response Status: 200 OK
+2026-04-21 10:32:23 [reactor-http-nio-2] INFO  c.s.f.i.k.s.KloudspotRegistrationService - Kloudspot registration success. EntityId=null, Status=successful
+2026-04-21 10:32:23 [http-nio-9090-exec-10] INFO  c.s.f.i.k.s.KloudspotFaceRegistrationService - Kloudspot registration successful. EntityId=null
+2026-04-21 10:32:24 [http-nio-9090-exec-10] INFO  c.s.f.i.k.s.KloudspotFaceRegistrationService - Registration success persisted for email=mounika.y@station-s.org, entityId=null, employeeRegisterId=1
+2026-04-21 10:32:24 [http-nio-9090-exec-10] INFO  c.s.f.A.C.FaceRegistrationController - Received response from Kloudspot: RegistrationResponseDto(status=successful, entityId=null, message=Human Already Present with identity mounika.y@station-s.org)
+2026-04-21 10:32:24 [http-nio-9090-exec-10] INFO  c.s.f.A.C.FaceRegistrationController - Temporary files deleted
+2026-04-21 10:32:24 [http-nio-9090-exec-10] INFO  c.s.f.A.C.FaceRegistrationController - Face registration successful
+2026-04-21 11:00:09 [http-nio-9090-exec-5] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=POST, url=http://localhost:9090/api/auth/login, path=/api/auth/login, contentType=application/json
+2026-04-21 11:00:09 [http-nio-9090-exec-5] INFO  c.s.f.Auth.Controller.AuthController - Login API called
+2026-04-21 11:00:09 [http-nio-9090-exec-5] INFO  c.s.f.Auth.Controller.AuthController - Login attempt for user: mounika.y@station-s.org
+2026-04-21 11:00:09 [http-nio-9090-exec-5] INFO  c.s.f.Auth.Service.AuthService - Login service started for email: mounika.y@station-s.org
+2026-04-21 11:00:09 [http-nio-9090-exec-5] INFO  c.s.f.Auth.Service.AuthService - Authentication successful for user: mounika.y@station-s.org
+2026-04-21 11:00:09 [http-nio-9090-exec-5] INFO  c.s.f.Auth.Service.AuthService - User found in database: mounika.y@station-s.org
+2026-04-21 11:00:09 [http-nio-9090-exec-5] INFO  c.s.f.Auth.Service.AuthService - JWT token generated for user: mounika.y@station-s.org
+2026-04-21 11:00:09 [http-nio-9090-exec-5] INFO  c.s.f.Auth.Service.AuthService - Roles assigned to user: [EMPLOYEE, ADMIN]
+2026-04-21 11:00:09 [http-nio-9090-exec-5] INFO  c.s.f.Auth.Service.AuthService - Primary role resolved: ADMIN
+2026-04-21 11:00:09 [http-nio-9090-exec-5] INFO  c.s.f.Auth.Controller.AuthController - Login successful for user: mounika.y@station-s.org
+2026-04-21 11:00:11 [http-nio-9090-exec-1] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/checkin
+2026-04-21 11:00:11 [http-nio-9090-exec-10] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/headcount
+2026-04-21 11:00:11 [http-nio-9090-exec-1] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/checkin, path=/api/admin/dashboard/checkin, contentType=null
+2026-04-21 11:00:11 [http-nio-9090-exec-10] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/headcount, path=/api/admin/dashboard/headcount, contentType=null
+2026-04-21 11:00:11 [http-nio-9090-exec-10] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /headcount , date=2026-04-21
+2026-04-21 11:00:11 [http-nio-9090-exec-1] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /checkin , date=2026-04-21
+2026-04-21 11:00:11 [http-nio-9090-exec-10] INFO  c.s.f.D.S.AdminDashboardService - Fetching headcount data. Requested date=2026-04-21
+2026-04-21 11:00:11 [http-nio-9090-exec-1] INFO  c.s.f.D.S.AdminDashboardService - Fetching check-in data. Requested date=2026-04-21
+2026-04-21 11:00:11 [http-nio-9090-exec-3] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/checkout
+2026-04-21 11:00:11 [http-nio-9090-exec-3] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/checkout, path=/api/admin/dashboard/checkout, contentType=null
+2026-04-21 11:00:11 [http-nio-9090-exec-3] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /checkout , date=2026-04-21
+2026-04-21 11:00:11 [http-nio-9090-exec-3] INFO  c.s.f.D.S.AdminDashboardService - Fetching check-out data. Requested date=2026-04-21
+2026-04-21 11:00:11 [http-nio-9090-exec-10] WARN  c.s.f.D.S.AdminDashboardService - No attendance rows found for date=2026-04-21, fetching latest available date
+2026-04-21 11:00:11 [http-nio-9090-exec-1] WARN  c.s.f.D.S.AdminDashboardService - No attendance rows found for date=2026-04-21, fetching latest available date
+2026-04-21 11:00:11 [http-nio-9090-exec-3] WARN  c.s.f.D.S.AdminDashboardService - No attendance rows found for date=2026-04-21, fetching latest available date
+2026-04-21 11:00:11 [http-nio-9090-exec-1] INFO  c.s.f.D.S.AdminDashboardService - Resolved check-in date=2026-04-21
+2026-04-21 11:00:11 [http-nio-9090-exec-10] INFO  c.s.f.D.S.AdminDashboardService - Resolved headcount date=2026-04-21
+2026-04-21 11:00:11 [http-nio-9090-exec-10] INFO  c.s.f.D.S.AdminDashboardService - Headcount records fetched successfully. date=2026-04-21, count=0
+2026-04-21 11:00:11 [http-nio-9090-exec-1] INFO  c.s.f.D.S.AdminDashboardService - Check-in records fetched successfully. date=2026-04-21, count=0
+2026-04-21 11:00:11 [http-nio-9090-exec-3] INFO  c.s.f.D.S.AdminDashboardService - Resolved checkout date=2026-04-21
+2026-04-21 11:00:11 [http-nio-9090-exec-10] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='Headcount fetched successfully', date=2026-04-21, count=0
+2026-04-21 11:00:11 [http-nio-9090-exec-1] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='Check-in employees fetched successfully', date=2026-04-21, count=0
+2026-04-21 11:00:11 [http-nio-9090-exec-3] INFO  c.s.f.D.S.AdminDashboardService - Check-out records fetched successfully. date=2026-04-21, count=0
+2026-04-21 11:00:11 [http-nio-9090-exec-3] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='Check-out employees fetched successfully', date=2026-04-21, count=0
+2026-04-21 11:00:11 [http-nio-9090-exec-5] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/total-employees
+2026-04-21 11:00:11 [http-nio-9090-exec-6] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/on-leave
+2026-04-21 11:00:11 [http-nio-9090-exec-8] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/unknown-alerts
+2026-04-21 11:00:11 [http-nio-9090-exec-5] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/total-employees, path=/api/admin/dashboard/total-employees, contentType=null
+2026-04-21 11:00:11 [http-nio-9090-exec-6] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/on-leave, path=/api/admin/dashboard/on-leave, contentType=null
+2026-04-21 11:00:11 [http-nio-9090-exec-8] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/unknown-alerts, path=/api/admin/dashboard/unknown-alerts, contentType=null
+2026-04-21 11:00:11 [http-nio-9090-exec-5] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /total-employees
+2026-04-21 11:00:11 [http-nio-9090-exec-5] INFO  c.s.f.D.S.AdminDashboardService - Fetching total employee list
+2026-04-21 11:00:11 [http-nio-9090-exec-8] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /unknown-alerts , date=2026-04-21
+2026-04-21 11:00:11 [http-nio-9090-exec-6] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /on-leave , date=2026-04-21
+2026-04-21 11:00:11 [http-nio-9090-exec-8] INFO  c.s.f.D.S.AdminDashboardService - Fetching unknown alerts. Requested date=2026-04-21
+2026-04-21 11:00:11 [http-nio-9090-exec-6] INFO  c.s.f.D.S.AdminDashboardService - Fetching on-leave employees for date=2026-04-21
+2026-04-21 11:00:11 [http-nio-9090-exec-8] WARN  c.s.f.D.S.AdminDashboardService - No attendance rows found for date=2026-04-21, fetching latest available date
+2026-04-21 11:00:11 [http-nio-9090-exec-8] INFO  c.s.f.D.S.AdminDashboardService - Resolved unknown alert date=2026-04-21
+2026-04-21 11:00:12 [http-nio-9090-exec-5] INFO  c.s.f.D.S.AdminDashboardService - Total employees fetched successfully. count=4
+2026-04-21 11:00:12 [http-nio-9090-exec-5] INFO  c.s.f.D.C.AdminDashboardController - Total employees count=4
+2026-04-21 11:00:12 [http-nio-9090-exec-6] INFO  c.s.f.D.S.AdminDashboardService - On-leave employees calculated. date=2026-04-21, count=4
+2026-04-21 11:00:12 [http-nio-9090-exec-6] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='On-leave employees fetched successfully', date=2026-04-21, count=4
+2026-04-21 11:00:12 [http-nio-9090-exec-8] INFO  c.s.f.D.S.AdminDashboardService - Unknown alerts fetched successfully. date=2026-04-21, count=0
+2026-04-21 11:00:12 [http-nio-9090-exec-8] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='Unknown alerts fetched successfully', date=2026-04-21, count=0
+2026-04-21 11:00:15 [http-nio-9090-exec-2] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/employees
+2026-04-21 11:00:15 [http-nio-9090-exec-2] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/employees, path=/api/admin/dashboard/employees, contentType=null
+2026-04-21 11:00:15 [http-nio-9090-exec-2] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /employees , scope=total, date=null
+2026-04-21 11:00:15 [http-nio-9090-exec-2] INFO  c.s.f.D.S.AdminDashboardService - Fetching employee list by scope='total', date=null
+2026-04-21 11:00:15 [http-nio-9090-exec-2] INFO  c.s.f.D.S.AdminDashboardService - Fetching total employee list
+2026-04-21 11:00:16 [http-nio-9090-exec-2] INFO  c.s.f.D.S.AdminDashboardService - Total employees fetched successfully. count=4
+2026-04-21 11:00:16 [http-nio-9090-exec-2] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='Employees fetched successfully', date=null, count=4
+2026-04-21 11:00:22 [http-nio-9090-exec-2] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/on-leave
+2026-04-21 11:00:22 [http-nio-9090-exec-9] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/unknown-alerts
+2026-04-21 11:00:22 [http-nio-9090-exec-4] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/total-employees
+2026-04-21 11:00:22 [http-nio-9090-exec-2] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/on-leave, path=/api/admin/dashboard/on-leave, contentType=null
+2026-04-21 11:00:22 [http-nio-9090-exec-9] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/unknown-alerts, path=/api/admin/dashboard/unknown-alerts, contentType=null
+2026-04-21 11:00:22 [http-nio-9090-exec-4] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/total-employees, path=/api/admin/dashboard/total-employees, contentType=null
+2026-04-21 11:00:22 [http-nio-9090-exec-4] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /total-employees
+2026-04-21 11:00:22 [http-nio-9090-exec-4] INFO  c.s.f.D.S.AdminDashboardService - Fetching total employee list
+2026-04-21 11:00:22 [http-nio-9090-exec-9] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /unknown-alerts , date=2026-04-21
+2026-04-21 11:00:22 [http-nio-9090-exec-2] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /on-leave , date=2026-04-21
+2026-04-21 11:00:22 [http-nio-9090-exec-9] INFO  c.s.f.D.S.AdminDashboardService - Fetching unknown alerts. Requested date=2026-04-21
+2026-04-21 11:00:22 [http-nio-9090-exec-2] INFO  c.s.f.D.S.AdminDashboardService - Fetching on-leave employees for date=2026-04-21
+2026-04-21 11:00:22 [http-nio-9090-exec-9] WARN  c.s.f.D.S.AdminDashboardService - No attendance rows found for date=2026-04-21, fetching latest available date
+2026-04-21 11:00:22 [http-nio-9090-exec-9] INFO  c.s.f.D.S.AdminDashboardService - Resolved unknown alert date=2026-04-21
+2026-04-21 11:00:22 [http-nio-9090-exec-8] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/checkin
+2026-04-21 11:00:22 [http-nio-9090-exec-7] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/checkout
+2026-04-21 11:00:22 [http-nio-9090-exec-6] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/headcount
+2026-04-21 11:00:22 [http-nio-9090-exec-8] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/checkin, path=/api/admin/dashboard/checkin, contentType=null
+2026-04-21 11:00:22 [http-nio-9090-exec-7] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/checkout, path=/api/admin/dashboard/checkout, contentType=null
+2026-04-21 11:00:22 [http-nio-9090-exec-6] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/headcount, path=/api/admin/dashboard/headcount, contentType=null
+2026-04-21 11:00:22 [http-nio-9090-exec-6] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /headcount , date=2026-04-21
+2026-04-21 11:00:22 [http-nio-9090-exec-7] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /checkout , date=2026-04-21
+2026-04-21 11:00:22 [http-nio-9090-exec-8] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /checkin , date=2026-04-21
+2026-04-21 11:00:22 [http-nio-9090-exec-6] INFO  c.s.f.D.S.AdminDashboardService - Fetching headcount data. Requested date=2026-04-21
+2026-04-21 11:00:22 [http-nio-9090-exec-7] INFO  c.s.f.D.S.AdminDashboardService - Fetching check-out data. Requested date=2026-04-21
+2026-04-21 11:00:22 [http-nio-9090-exec-8] INFO  c.s.f.D.S.AdminDashboardService - Fetching check-in data. Requested date=2026-04-21
+2026-04-21 11:00:22 [http-nio-9090-exec-6] WARN  c.s.f.D.S.AdminDashboardService - No attendance rows found for date=2026-04-21, fetching latest available date
+2026-04-21 11:00:22 [http-nio-9090-exec-8] WARN  c.s.f.D.S.AdminDashboardService - No attendance rows found for date=2026-04-21, fetching latest available date
+2026-04-21 11:00:22 [http-nio-9090-exec-7] WARN  c.s.f.D.S.AdminDashboardService - No attendance rows found for date=2026-04-21, fetching latest available date
+2026-04-21 11:00:22 [http-nio-9090-exec-6] INFO  c.s.f.D.S.AdminDashboardService - Resolved headcount date=2026-04-21
+2026-04-21 11:00:22 [http-nio-9090-exec-8] INFO  c.s.f.D.S.AdminDashboardService - Resolved check-in date=2026-04-21
+2026-04-21 11:00:22 [http-nio-9090-exec-7] INFO  c.s.f.D.S.AdminDashboardService - Resolved checkout date=2026-04-21
+2026-04-21 11:00:22 [http-nio-9090-exec-8] INFO  c.s.f.D.S.AdminDashboardService - Check-in records fetched successfully. date=2026-04-21, count=0
+2026-04-21 11:00:22 [http-nio-9090-exec-7] INFO  c.s.f.D.S.AdminDashboardService - Check-out records fetched successfully. date=2026-04-21, count=0
+2026-04-21 11:00:22 [http-nio-9090-exec-8] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='Check-in employees fetched successfully', date=2026-04-21, count=0
+2026-04-21 11:00:22 [http-nio-9090-exec-6] INFO  c.s.f.D.S.AdminDashboardService - Headcount records fetched successfully. date=2026-04-21, count=0
+2026-04-21 11:00:22 [http-nio-9090-exec-7] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='Check-out employees fetched successfully', date=2026-04-21, count=0
+2026-04-21 11:00:22 [http-nio-9090-exec-6] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='Headcount fetched successfully', date=2026-04-21, count=0
+2026-04-21 11:00:22 [http-nio-9090-exec-4] INFO  c.s.f.D.S.AdminDashboardService - Total employees fetched successfully. count=4
+2026-04-21 11:00:22 [http-nio-9090-exec-4] INFO  c.s.f.D.C.AdminDashboardController - Total employees count=4
+2026-04-21 11:00:22 [http-nio-9090-exec-2] INFO  c.s.f.D.S.AdminDashboardService - On-leave employees calculated. date=2026-04-21, count=4
+2026-04-21 11:00:22 [http-nio-9090-exec-2] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='On-leave employees fetched successfully', date=2026-04-21, count=4
+2026-04-21 11:00:22 [http-nio-9090-exec-9] INFO  c.s.f.D.S.AdminDashboardService - Unknown alerts fetched successfully. date=2026-04-21, count=0
+2026-04-21 11:00:22 [http-nio-9090-exec-9] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='Unknown alerts fetched successfully', date=2026-04-21, count=0
+2026-04-21 11:00:38 [http-nio-9090-exec-9] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/headcount
+2026-04-21 11:00:38 [http-nio-9090-exec-2] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/checkout
+2026-04-21 11:00:38 [http-nio-9090-exec-4] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/checkin
+2026-04-21 11:00:38 [http-nio-9090-exec-9] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/headcount, path=/api/admin/dashboard/headcount, contentType=null
+2026-04-21 11:00:38 [http-nio-9090-exec-2] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/checkout, path=/api/admin/dashboard/checkout, contentType=null
+2026-04-21 11:00:38 [http-nio-9090-exec-4] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/checkin, path=/api/admin/dashboard/checkin, contentType=null
+2026-04-21 11:00:38 [http-nio-9090-exec-9] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /headcount , date=2026-04-21
+2026-04-21 11:00:38 [http-nio-9090-exec-4] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /checkin , date=2026-04-21
+2026-04-21 11:00:38 [http-nio-9090-exec-2] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /checkout , date=2026-04-21
+2026-04-21 11:00:38 [http-nio-9090-exec-9] INFO  c.s.f.D.S.AdminDashboardService - Fetching headcount data. Requested date=2026-04-21
+2026-04-21 11:00:38 [http-nio-9090-exec-4] INFO  c.s.f.D.S.AdminDashboardService - Fetching check-in data. Requested date=2026-04-21
+2026-04-21 11:00:38 [http-nio-9090-exec-2] INFO  c.s.f.D.S.AdminDashboardService - Fetching check-out data. Requested date=2026-04-21
+2026-04-21 11:00:38 [http-nio-9090-exec-9] WARN  c.s.f.D.S.AdminDashboardService - No attendance rows found for date=2026-04-21, fetching latest available date
+2026-04-21 11:00:38 [http-nio-9090-exec-2] WARN  c.s.f.D.S.AdminDashboardService - No attendance rows found for date=2026-04-21, fetching latest available date
+2026-04-21 11:00:38 [http-nio-9090-exec-4] WARN  c.s.f.D.S.AdminDashboardService - No attendance rows found for date=2026-04-21, fetching latest available date
+2026-04-21 11:00:38 [http-nio-9090-exec-2] INFO  c.s.f.D.S.AdminDashboardService - Resolved checkout date=2026-04-21
+2026-04-21 11:00:38 [http-nio-9090-exec-9] INFO  c.s.f.D.S.AdminDashboardService - Resolved headcount date=2026-04-21
+2026-04-21 11:00:38 [http-nio-9090-exec-4] INFO  c.s.f.D.S.AdminDashboardService - Resolved check-in date=2026-04-21
+2026-04-21 11:00:38 [http-nio-9090-exec-4] INFO  c.s.f.D.S.AdminDashboardService - Check-in records fetched successfully. date=2026-04-21, count=0
+2026-04-21 11:00:38 [http-nio-9090-exec-2] INFO  c.s.f.D.S.AdminDashboardService - Check-out records fetched successfully. date=2026-04-21, count=0
+2026-04-21 11:00:38 [http-nio-9090-exec-9] INFO  c.s.f.D.S.AdminDashboardService - Headcount records fetched successfully. date=2026-04-21, count=0
+2026-04-21 11:00:38 [http-nio-9090-exec-4] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='Check-in employees fetched successfully', date=2026-04-21, count=0
+2026-04-21 11:00:38 [http-nio-9090-exec-2] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='Check-out employees fetched successfully', date=2026-04-21, count=0
+2026-04-21 11:00:38 [http-nio-9090-exec-9] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='Headcount fetched successfully', date=2026-04-21, count=0
+2026-04-21 11:00:38 [http-nio-9090-exec-6] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/total-employees
+2026-04-21 11:00:38 [http-nio-9090-exec-8] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/unknown-alerts
+2026-04-21 11:00:38 [http-nio-9090-exec-5] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/on-leave
+2026-04-21 11:00:38 [http-nio-9090-exec-6] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/total-employees, path=/api/admin/dashboard/total-employees, contentType=null
+2026-04-21 11:00:38 [http-nio-9090-exec-8] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/unknown-alerts, path=/api/admin/dashboard/unknown-alerts, contentType=null
+2026-04-21 11:00:38 [http-nio-9090-exec-5] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/on-leave, path=/api/admin/dashboard/on-leave, contentType=null
+2026-04-21 11:00:38 [http-nio-9090-exec-6] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /total-employees
+2026-04-21 11:00:38 [http-nio-9090-exec-6] INFO  c.s.f.D.S.AdminDashboardService - Fetching total employee list
+2026-04-21 11:00:38 [http-nio-9090-exec-8] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /unknown-alerts , date=2026-04-21
+2026-04-21 11:00:38 [http-nio-9090-exec-5] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /on-leave , date=2026-04-21
+2026-04-21 11:00:38 [http-nio-9090-exec-8] INFO  c.s.f.D.S.AdminDashboardService - Fetching unknown alerts. Requested date=2026-04-21
+2026-04-21 11:00:38 [http-nio-9090-exec-5] INFO  c.s.f.D.S.AdminDashboardService - Fetching on-leave employees for date=2026-04-21
+2026-04-21 11:00:38 [http-nio-9090-exec-8] WARN  c.s.f.D.S.AdminDashboardService - No attendance rows found for date=2026-04-21, fetching latest available date
+2026-04-21 11:00:39 [http-nio-9090-exec-8] INFO  c.s.f.D.S.AdminDashboardService - Resolved unknown alert date=2026-04-21
+2026-04-21 11:00:39 [http-nio-9090-exec-6] INFO  c.s.f.D.S.AdminDashboardService - Total employees fetched successfully. count=4
+2026-04-21 11:00:39 [http-nio-9090-exec-6] INFO  c.s.f.D.C.AdminDashboardController - Total employees count=4
+2026-04-21 11:00:39 [http-nio-9090-exec-5] INFO  c.s.f.D.S.AdminDashboardService - On-leave employees calculated. date=2026-04-21, count=4
+2026-04-21 11:00:39 [http-nio-9090-exec-5] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='On-leave employees fetched successfully', date=2026-04-21, count=4
+2026-04-21 11:00:39 [http-nio-9090-exec-8] INFO  c.s.f.D.S.AdminDashboardService - Unknown alerts fetched successfully. date=2026-04-21, count=0
+2026-04-21 11:00:39 [http-nio-9090-exec-8] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='Unknown alerts fetched successfully', date=2026-04-21, count=0
+2026-04-21 11:00:41 [http-nio-9090-exec-3] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/employees
+2026-04-21 11:00:41 [http-nio-9090-exec-3] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/employees, path=/api/admin/dashboard/employees, contentType=null
+2026-04-21 11:00:41 [http-nio-9090-exec-3] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /employees , scope=total, date=null
+2026-04-21 11:00:41 [http-nio-9090-exec-3] INFO  c.s.f.D.S.AdminDashboardService - Fetching employee list by scope='total', date=null
+2026-04-21 11:00:41 [http-nio-9090-exec-3] INFO  c.s.f.D.S.AdminDashboardService - Fetching total employee list
+2026-04-21 11:00:42 [http-nio-9090-exec-3] INFO  c.s.f.D.S.AdminDashboardService - Total employees fetched successfully. count=4
+2026-04-21 11:00:42 [http-nio-9090-exec-3] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='Employees fetched successfully', date=null, count=4
+2026-04-21 11:00:52 [http-nio-9090-exec-2] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/employees
+2026-04-21 11:00:52 [http-nio-9090-exec-2] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/employees, path=/api/admin/dashboard/employees, contentType=null
+2026-04-21 11:00:52 [http-nio-9090-exec-2] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /employees , scope=total, date=null
+2026-04-21 11:00:52 [http-nio-9090-exec-2] INFO  c.s.f.D.S.AdminDashboardService - Fetching employee list by scope='total', date=null
+2026-04-21 11:00:52 [http-nio-9090-exec-2] INFO  c.s.f.D.S.AdminDashboardService - Fetching total employee list
+2026-04-21 11:00:52 [http-nio-9090-exec-7] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/employees
+2026-04-21 11:00:52 [http-nio-9090-exec-7] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/employees, path=/api/admin/dashboard/employees, contentType=null
+2026-04-21 11:00:52 [http-nio-9090-exec-7] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /employees , scope=total, date=null
+2026-04-21 11:00:52 [http-nio-9090-exec-7] INFO  c.s.f.D.S.AdminDashboardService - Fetching employee list by scope='total', date=null
+2026-04-21 11:00:52 [http-nio-9090-exec-7] INFO  c.s.f.D.S.AdminDashboardService - Fetching total employee list
+2026-04-21 11:00:52 [http-nio-9090-exec-2] INFO  c.s.f.D.S.AdminDashboardService - Total employees fetched successfully. count=4
+2026-04-21 11:00:52 [http-nio-9090-exec-2] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='Employees fetched successfully', date=null, count=4
+2026-04-21 11:00:52 [http-nio-9090-exec-7] INFO  c.s.f.D.S.AdminDashboardService - Total employees fetched successfully. count=4
+2026-04-21 11:00:52 [http-nio-9090-exec-7] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='Employees fetched successfully', date=null, count=4
+2026-04-21 11:00:59 [http-nio-9090-exec-9] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/employees
+2026-04-21 11:00:59 [http-nio-9090-exec-9] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/employees, path=/api/admin/dashboard/employees, contentType=null
+2026-04-21 11:00:59 [http-nio-9090-exec-9] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /employees , scope=total, date=null
+2026-04-21 11:00:59 [http-nio-9090-exec-9] INFO  c.s.f.D.S.AdminDashboardService - Fetching employee list by scope='total', date=null
+2026-04-21 11:00:59 [http-nio-9090-exec-9] INFO  c.s.f.D.S.AdminDashboardService - Fetching total employee list
+2026-04-21 11:01:00 [http-nio-9090-exec-6] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/employees
+2026-04-21 11:01:00 [http-nio-9090-exec-6] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/employees, path=/api/admin/dashboard/employees, contentType=null
+2026-04-21 11:01:00 [http-nio-9090-exec-6] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /employees , scope=total, date=null
+2026-04-21 11:01:00 [http-nio-9090-exec-6] INFO  c.s.f.D.S.AdminDashboardService - Fetching employee list by scope='total', date=null
+2026-04-21 11:01:00 [http-nio-9090-exec-6] INFO  c.s.f.D.S.AdminDashboardService - Fetching total employee list
+2026-04-21 11:01:00 [http-nio-9090-exec-9] INFO  c.s.f.D.S.AdminDashboardService - Total employees fetched successfully. count=4
+2026-04-21 11:01:00 [http-nio-9090-exec-9] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='Employees fetched successfully', date=null, count=4
+2026-04-21 11:01:00 [http-nio-9090-exec-5] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/employees
+2026-04-21 11:01:00 [http-nio-9090-exec-5] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/employees, path=/api/admin/dashboard/employees, contentType=null
+2026-04-21 11:01:00 [http-nio-9090-exec-5] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /employees , scope=total, date=null
+2026-04-21 11:01:00 [http-nio-9090-exec-5] INFO  c.s.f.D.S.AdminDashboardService - Fetching employee list by scope='total', date=null
+2026-04-21 11:01:00 [http-nio-9090-exec-5] INFO  c.s.f.D.S.AdminDashboardService - Fetching total employee list
+2026-04-21 11:01:00 [http-nio-9090-exec-6] INFO  c.s.f.D.S.AdminDashboardService - Total employees fetched successfully. count=4
+2026-04-21 11:01:00 [http-nio-9090-exec-6] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='Employees fetched successfully', date=null, count=4
+2026-04-21 11:01:01 [http-nio-9090-exec-5] INFO  c.s.f.D.S.AdminDashboardService - Total employees fetched successfully. count=4
+2026-04-21 11:01:01 [http-nio-9090-exec-5] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='Employees fetched successfully', date=null, count=4
+2026-04-21 11:01:22 [http-nio-9090-exec-1] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/employees
+2026-04-21 11:01:22 [http-nio-9090-exec-1] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/employees, path=/api/admin/dashboard/employees, contentType=null
+2026-04-21 11:01:22 [http-nio-9090-exec-1] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /employees , scope=total, date=null
+2026-04-21 11:01:22 [http-nio-9090-exec-1] INFO  c.s.f.D.S.AdminDashboardService - Fetching employee list by scope='total', date=null
+2026-04-21 11:01:22 [http-nio-9090-exec-1] INFO  c.s.f.D.S.AdminDashboardService - Fetching total employee list
+2026-04-21 11:01:22 [http-nio-9090-exec-1] INFO  c.s.f.D.S.AdminDashboardService - Total employees fetched successfully. count=4
+2026-04-21 11:01:22 [http-nio-9090-exec-1] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='Employees fetched successfully', date=null, count=4
+2026-04-21 11:01:23 [http-nio-9090-exec-1] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/total-employees
+2026-04-21 11:01:23 [http-nio-9090-exec-1] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/total-employees, path=/api/admin/dashboard/total-employees, contentType=null
+2026-04-21 11:01:23 [http-nio-9090-exec-1] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /total-employees
+2026-04-21 11:01:23 [http-nio-9090-exec-1] INFO  c.s.f.D.S.AdminDashboardService - Fetching total employee list
+2026-04-21 11:01:23 [http-nio-9090-exec-3] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/unknown-alerts
+2026-04-21 11:01:23 [http-nio-9090-exec-2] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/on-leave
+2026-04-21 11:01:23 [http-nio-9090-exec-3] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/unknown-alerts, path=/api/admin/dashboard/unknown-alerts, contentType=null
+2026-04-21 11:01:23 [http-nio-9090-exec-2] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/on-leave, path=/api/admin/dashboard/on-leave, contentType=null
+2026-04-21 11:01:23 [http-nio-9090-exec-3] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /unknown-alerts , date=2026-04-21
+2026-04-21 11:01:23 [http-nio-9090-exec-2] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /on-leave , date=2026-04-21
+2026-04-21 11:01:23 [http-nio-9090-exec-3] INFO  c.s.f.D.S.AdminDashboardService - Fetching unknown alerts. Requested date=2026-04-21
+2026-04-21 11:01:23 [http-nio-9090-exec-2] INFO  c.s.f.D.S.AdminDashboardService - Fetching on-leave employees for date=2026-04-21
+2026-04-21 11:01:23 [http-nio-9090-exec-3] WARN  c.s.f.D.S.AdminDashboardService - No attendance rows found for date=2026-04-21, fetching latest available date
+2026-04-21 11:01:23 [http-nio-9090-exec-3] INFO  c.s.f.D.S.AdminDashboardService - Resolved unknown alert date=2026-04-21
+2026-04-21 11:01:23 [http-nio-9090-exec-8] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/checkout
+2026-04-21 11:01:23 [http-nio-9090-exec-8] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/checkout, path=/api/admin/dashboard/checkout, contentType=null
+2026-04-21 11:01:23 [http-nio-9090-exec-6] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/checkin
+2026-04-21 11:01:23 [http-nio-9090-exec-6] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/checkin, path=/api/admin/dashboard/checkin, contentType=null
+2026-04-21 11:01:23 [http-nio-9090-exec-5] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/headcount
+2026-04-21 11:01:23 [http-nio-9090-exec-5] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/headcount, path=/api/admin/dashboard/headcount, contentType=null
+2026-04-21 11:01:23 [http-nio-9090-exec-6] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /checkin , date=2026-04-21
+2026-04-21 11:01:23 [http-nio-9090-exec-8] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /checkout , date=2026-04-21
+2026-04-21 11:01:23 [http-nio-9090-exec-6] INFO  c.s.f.D.S.AdminDashboardService - Fetching check-in data. Requested date=2026-04-21
+2026-04-21 11:01:23 [http-nio-9090-exec-8] INFO  c.s.f.D.S.AdminDashboardService - Fetching check-out data. Requested date=2026-04-21
+2026-04-21 11:01:23 [http-nio-9090-exec-5] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /headcount , date=2026-04-21
+2026-04-21 11:01:23 [http-nio-9090-exec-5] INFO  c.s.f.D.S.AdminDashboardService - Fetching headcount data. Requested date=2026-04-21
+2026-04-21 11:01:24 [http-nio-9090-exec-5] WARN  c.s.f.D.S.AdminDashboardService - No attendance rows found for date=2026-04-21, fetching latest available date
+2026-04-21 11:01:24 [http-nio-9090-exec-6] WARN  c.s.f.D.S.AdminDashboardService - No attendance rows found for date=2026-04-21, fetching latest available date
+2026-04-21 11:01:24 [http-nio-9090-exec-8] WARN  c.s.f.D.S.AdminDashboardService - No attendance rows found for date=2026-04-21, fetching latest available date
+2026-04-21 11:01:24 [http-nio-9090-exec-8] INFO  c.s.f.D.S.AdminDashboardService - Resolved checkout date=2026-04-21
+2026-04-21 11:01:24 [http-nio-9090-exec-6] INFO  c.s.f.D.S.AdminDashboardService - Resolved check-in date=2026-04-21
+2026-04-21 11:01:24 [http-nio-9090-exec-5] INFO  c.s.f.D.S.AdminDashboardService - Resolved headcount date=2026-04-21
+2026-04-21 11:01:24 [http-nio-9090-exec-1] INFO  c.s.f.D.S.AdminDashboardService - Total employees fetched successfully. count=4
+2026-04-21 11:01:24 [http-nio-9090-exec-1] INFO  c.s.f.D.C.AdminDashboardController - Total employees count=4
+2026-04-21 11:01:24 [http-nio-9090-exec-6] INFO  c.s.f.D.S.AdminDashboardService - Check-in records fetched successfully. date=2026-04-21, count=0
+2026-04-21 11:01:24 [http-nio-9090-exec-5] INFO  c.s.f.D.S.AdminDashboardService - Headcount records fetched successfully. date=2026-04-21, count=0
+2026-04-21 11:01:24 [http-nio-9090-exec-6] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='Check-in employees fetched successfully', date=2026-04-21, count=0
+2026-04-21 11:01:24 [http-nio-9090-exec-8] INFO  c.s.f.D.S.AdminDashboardService - Check-out records fetched successfully. date=2026-04-21, count=0
+2026-04-21 11:01:24 [http-nio-9090-exec-5] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='Headcount fetched successfully', date=2026-04-21, count=0
+2026-04-21 11:01:24 [http-nio-9090-exec-8] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='Check-out employees fetched successfully', date=2026-04-21, count=0
+2026-04-21 11:01:24 [http-nio-9090-exec-2] INFO  c.s.f.D.S.AdminDashboardService - On-leave employees calculated. date=2026-04-21, count=4
+2026-04-21 11:01:24 [http-nio-9090-exec-2] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='On-leave employees fetched successfully', date=2026-04-21, count=4
+2026-04-21 11:01:24 [http-nio-9090-exec-3] INFO  c.s.f.D.S.AdminDashboardService - Unknown alerts fetched successfully. date=2026-04-21, count=0
+2026-04-21 11:01:24 [http-nio-9090-exec-3] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='Unknown alerts fetched successfully', date=2026-04-21, count=0
+2026-04-21 11:01:51 [http-nio-9090-exec-2] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/headcount
+2026-04-21 11:01:51 [http-nio-9090-exec-2] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/headcount, path=/api/admin/dashboard/headcount, contentType=null
+2026-04-21 11:01:51 [http-nio-9090-exec-3] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/on-leave
+2026-04-21 11:01:51 [http-nio-9090-exec-10] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/unknown-alerts
+2026-04-21 11:01:51 [http-nio-9090-exec-3] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/on-leave, path=/api/admin/dashboard/on-leave, contentType=null
+2026-04-21 11:01:51 [http-nio-9090-exec-10] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/unknown-alerts, path=/api/admin/dashboard/unknown-alerts, contentType=null
+2026-04-21 11:01:51 [http-nio-9090-exec-2] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /headcount , date=2026-04-21
+2026-04-21 11:01:51 [http-nio-9090-exec-10] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /unknown-alerts , date=2026-04-21
+2026-04-21 11:01:51 [http-nio-9090-exec-3] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /on-leave , date=2026-04-21
+2026-04-21 11:01:51 [http-nio-9090-exec-2] INFO  c.s.f.D.S.AdminDashboardService - Fetching headcount data. Requested date=2026-04-21
+2026-04-21 11:01:51 [http-nio-9090-exec-10] INFO  c.s.f.D.S.AdminDashboardService - Fetching unknown alerts. Requested date=2026-04-21
+2026-04-21 11:01:51 [http-nio-9090-exec-3] INFO  c.s.f.D.S.AdminDashboardService - Fetching on-leave employees for date=2026-04-21
+2026-04-21 11:01:51 [http-nio-9090-exec-2] WARN  c.s.f.D.S.AdminDashboardService - No attendance rows found for date=2026-04-21, fetching latest available date
+2026-04-21 11:01:51 [http-nio-9090-exec-10] WARN  c.s.f.D.S.AdminDashboardService - No attendance rows found for date=2026-04-21, fetching latest available date
+2026-04-21 11:01:51 [http-nio-9090-exec-10] INFO  c.s.f.D.S.AdminDashboardService - Resolved unknown alert date=2026-04-21
+2026-04-21 11:01:51 [http-nio-9090-exec-2] INFO  c.s.f.D.S.AdminDashboardService - Resolved headcount date=2026-04-21
+2026-04-21 11:01:51 [http-nio-9090-exec-2] INFO  c.s.f.D.S.AdminDashboardService - Headcount records fetched successfully. date=2026-04-21, count=0
+2026-04-21 11:01:51 [http-nio-9090-exec-2] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='Headcount fetched successfully', date=2026-04-21, count=0
+2026-04-21 11:01:51 [http-nio-9090-exec-6] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/checkout
+2026-04-21 11:01:51 [http-nio-9090-exec-6] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/checkout, path=/api/admin/dashboard/checkout, contentType=null
+2026-04-21 11:01:51 [http-nio-9090-exec-6] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /checkout , date=2026-04-21
+2026-04-21 11:01:51 [http-nio-9090-exec-6] INFO  c.s.f.D.S.AdminDashboardService - Fetching check-out data. Requested date=2026-04-21
+2026-04-21 11:01:51 [http-nio-9090-exec-8] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/total-employees
+2026-04-21 11:01:51 [http-nio-9090-exec-5] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/admin/dashboard/checkin
+2026-04-21 11:01:51 [http-nio-9090-exec-8] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/total-employees, path=/api/admin/dashboard/total-employees, contentType=null
+2026-04-21 11:01:51 [http-nio-9090-exec-5] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/admin/dashboard/checkin, path=/api/admin/dashboard/checkin, contentType=null
+2026-04-21 11:01:51 [http-nio-9090-exec-8] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /total-employees
+2026-04-21 11:01:51 [http-nio-9090-exec-8] INFO  c.s.f.D.S.AdminDashboardService - Fetching total employee list
+2026-04-21 11:01:51 [http-nio-9090-exec-5] INFO  c.s.f.D.C.AdminDashboardController - API Request → GET /checkin , date=2026-04-21
+2026-04-21 11:01:51 [http-nio-9090-exec-5] INFO  c.s.f.D.S.AdminDashboardService - Fetching check-in data. Requested date=2026-04-21
+2026-04-21 11:01:51 [http-nio-9090-exec-6] WARN  c.s.f.D.S.AdminDashboardService - No attendance rows found for date=2026-04-21, fetching latest available date
+2026-04-21 11:01:51 [http-nio-9090-exec-5] WARN  c.s.f.D.S.AdminDashboardService - No attendance rows found for date=2026-04-21, fetching latest available date
+2026-04-21 11:01:51 [http-nio-9090-exec-6] INFO  c.s.f.D.S.AdminDashboardService - Resolved checkout date=2026-04-21
+2026-04-21 11:01:51 [http-nio-9090-exec-5] INFO  c.s.f.D.S.AdminDashboardService - Resolved check-in date=2026-04-21
+2026-04-21 11:01:51 [http-nio-9090-exec-6] INFO  c.s.f.D.S.AdminDashboardService - Check-out records fetched successfully. date=2026-04-21, count=0
+2026-04-21 11:01:51 [http-nio-9090-exec-5] INFO  c.s.f.D.S.AdminDashboardService - Check-in records fetched successfully. date=2026-04-21, count=0
+2026-04-21 11:01:51 [http-nio-9090-exec-6] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='Check-out employees fetched successfully', date=2026-04-21, count=0
+2026-04-21 11:01:51 [http-nio-9090-exec-5] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='Check-in employees fetched successfully', date=2026-04-21, count=0
+2026-04-21 11:01:51 [http-nio-9090-exec-3] INFO  c.s.f.D.S.AdminDashboardService - On-leave employees calculated. date=2026-04-21, count=4
+2026-04-21 11:01:51 [http-nio-9090-exec-3] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='On-leave employees fetched successfully', date=2026-04-21, count=4
+2026-04-21 11:01:52 [http-nio-9090-exec-10] INFO  c.s.f.D.S.AdminDashboardService - Unknown alerts fetched successfully. date=2026-04-21, count=0
+2026-04-21 11:01:52 [http-nio-9090-exec-10] INFO  c.s.f.D.C.AdminDashboardController - Dashboard response → message='Unknown alerts fetched successfully', date=2026-04-21, count=0
+2026-04-21 11:01:52 [http-nio-9090-exec-8] INFO  c.s.f.D.S.AdminDashboardService - Total employees fetched successfully. count=4
+2026-04-21 11:01:52 [http-nio-9090-exec-8] INFO  c.s.f.D.C.AdminDashboardController - Total employees count=4
+2026-04-21 11:03:56 [http-nio-9090-exec-4] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=POST, url=http://localhost:9090/api/auth/login, path=/api/auth/login, contentType=application/json
+2026-04-21 11:03:56 [http-nio-9090-exec-4] INFO  c.s.f.Auth.Controller.AuthController - Login API called
+2026-04-21 11:03:56 [http-nio-9090-exec-4] INFO  c.s.f.Auth.Controller.AuthController - Login attempt for user: mounika.y@station-s.org
+2026-04-21 11:03:56 [http-nio-9090-exec-4] INFO  c.s.f.Auth.Service.AuthService - Login service started for email: mounika.y@station-s.org
+2026-04-21 11:03:56 [http-nio-9090-exec-4] INFO  c.s.f.Auth.Service.AuthService - Authentication successful for user: mounika.y@station-s.org
+2026-04-21 11:03:56 [http-nio-9090-exec-4] INFO  c.s.f.Auth.Service.AuthService - User found in database: mounika.y@station-s.org
+2026-04-21 11:03:56 [http-nio-9090-exec-4] INFO  c.s.f.Auth.Service.AuthService - JWT token generated for user: mounika.y@station-s.org
+2026-04-21 11:03:56 [http-nio-9090-exec-4] INFO  c.s.f.Auth.Service.AuthService - Roles assigned to user: [EMPLOYEE, ADMIN]
+2026-04-21 11:03:56 [http-nio-9090-exec-4] INFO  c.s.f.Auth.Service.AuthService - Primary role resolved: ADMIN
+2026-04-21 11:03:56 [http-nio-9090-exec-4] INFO  c.s.f.Auth.Controller.AuthController - Login successful for user: mounika.y@station-s.org
