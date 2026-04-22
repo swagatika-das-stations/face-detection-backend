@@ -78,6 +78,8 @@ public class EmployeeCheckinCheckoutService {
 
         return new EmployeeCheckinCheckoutDashboardDto(
                 employeeName,
+            employee.getEmployeeId(),
+            user.getEmail(),
                 resolvedStartDate,
                 resolvedEndDate,
                 summary,
