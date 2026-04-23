@@ -63,9 +63,39 @@ public class EmployeeCheckinCheckoutService {
 
         log.info("Attendance records fetched. employeeName={}, recordCount={}", employeeName, entities.size());
 
-        List<CheckinCheckoutRecordDto> records = entities.stream()
-                .map(this::toRecordDto)
-                .toList();
+        // Group by date and merge check-in / check-out into one record per day
+        java.util.Map<LocalDate, CheckinCheckoutRecordDto> recordsByDate = new java.util.LinkedHashMap<>();
+
+        for (EmployeeCheckinCheckoutEntity entity : entities) {
+            LocalDate date = entity.getTimestamp().toLocalDate();
+            LocalTime time = entity.getTimestamp().toLocalTime();
+            boolean isIn = "in".equalsIgnoreCase(entity.getDirection());
+
+            UserEntity recUser = userRepository.findByEmail(entity.getEmail()).orElse(null);
+            EmployeeEntity recEmployee = recUser == null ? null : recUser.getEmployee();
+            String recEmployeeId = recEmployee == null ? null : recEmployee.getEmployeeId();
+            String recEmail = recUser == null ? entity.getEmail() : recUser.getEmail();
+
+            recordsByDate.compute(date, (d, existing) -> {
+                if (existing == null) {
+                    existing = new CheckinCheckoutRecordDto(
+                            date, entity.getName(), recEmployeeId, recEmail,
+                            isIn ? time : null,
+                            isIn ? null : time,
+                            entity.getLocationName(), null);
+                } else {
+                    if (isIn && existing.getFirstEntryTime() == null) existing.setFirstEntryTime(time);
+                    if (!isIn && existing.getLastExitTime() == null) existing.setLastExitTime(time);
+                }
+                // Derive status
+                String status = existing.getLastExitTime() != null ? "CHECKED_OUT"
+                        : existing.getFirstEntryTime() != null ? "CHECKED_IN" : "ABSENT";
+                existing.setStatus(status);
+                return existing;
+            });
+        }
+
+        List<CheckinCheckoutRecordDto> records = new java.util.ArrayList<>(recordsByDate.values());
 
         long totalDays = records.size();
         long completedDays = records.stream().filter(record -> record.getLastExitTime() != null).count();
@@ -84,26 +114,6 @@ public class EmployeeCheckinCheckoutService {
                 resolvedEndDate,
                 summary,
                 records);
-    }
-
-    private CheckinCheckoutRecordDto toRecordDto(EmployeeCheckinCheckoutEntity entity) {
-
-        LocalTime time = entity.getTimestamp().toLocalTime();
-        String status = entity.getDirection().equals("in") ? "CHECKED_IN" : "CHECKED_OUT";
-        UserEntity user = userRepository.findByEmail(entity.getEmail()).orElse(null);
-        EmployeeEntity employee = user == null ? null : user.getEmployee();
-        String employeeId = employee == null ? null : employee.getEmployeeId();
-        String email = user == null ? entity.getEmail() : user.getEmail();
-
-        return new CheckinCheckoutRecordDto(
-                entity.getTimestamp().toLocalDate(),
-                entity.getName(),
-                employeeId,
-                email,
-                entity.getDirection().equals("in") ? time : null,
-                entity.getDirection().equals("out") ? time : null,
-                entity.getLocationName(),
-                status);
     }
 
     private String buildEmployeeName(EmployeeEntity employee) {

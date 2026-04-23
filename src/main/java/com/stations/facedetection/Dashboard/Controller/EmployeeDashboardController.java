@@ -2,6 +2,8 @@ package com.stations.facedetection.Dashboard.Controller;
 
 import java.security.Principal;
 import java.time.LocalDate;
+import java.util.Base64;
+import java.util.Map;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.stations.facedetection.Dashboard.DTO.EmployeeCheckinCheckoutDashboardDto;
 import com.stations.facedetection.Dashboard.Service.EmployeeCheckinCheckoutService;
+import com.stations.facedetection.User.Repository.EmployeeRepository;
+import com.stations.facedetection.User.Repository.FaceImageRepository;
+import com.stations.facedetection.User.Repository.UserRepository;
 import com.stations.facedetection.common.response.ApiResponse;
 
 import lombok.RequiredArgsConstructor;
@@ -24,6 +29,9 @@ import lombok.extern.slf4j.Slf4j;
 public class EmployeeDashboardController {
 
     private final EmployeeCheckinCheckoutService employeeCheckinCheckoutService;
+    private final UserRepository userRepository;
+    private final EmployeeRepository employeeRepository;
+    private final FaceImageRepository faceImageRepository;
 
     @GetMapping("/checkin-checkout")
     public ResponseEntity<ApiResponse> getCheckinCheckoutDashboard(
@@ -59,5 +67,21 @@ public class EmployeeDashboardController {
             log.error("Error fetching dashboard data for user={}", email, e);
             throw e;
         }
+    }
+
+    @GetMapping("/profile-image")
+    public ResponseEntity<ApiResponse> getProfileImage(Principal principal) {
+
+        String email = principal.getName();
+        log.info("Profile image requested for user={}", email);
+
+        String base64Image = userRepository.findByEmail(email)
+                .flatMap(user -> employeeRepository.findByUserId(user.getId()))
+                .flatMap(emp -> faceImageRepository.findFirstByEmployeeId(emp.getId()).stream().findFirst())
+                .filter(img -> img.getImageData() != null)
+                .map(img -> "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(img.getImageData()))
+                .orElse(null);
+
+        return ResponseEntity.ok(new ApiResponse(true, "Profile image fetched", Map.of("profileImage", base64Image != null ? base64Image : "")));
     }
 }

@@ -1,5 +1,6 @@
 package com.stations.facedetection.Dashboard.Service;
 
+import java.util.Base64;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Comparator;
@@ -23,6 +24,7 @@ import com.stations.facedetection.Dashboard.Entity.EmployeeCheckinCheckoutEntity
 import com.stations.facedetection.Dashboard.Repository.EmployeeCheckinCheckoutRepository;
 import com.stations.facedetection.User.Entity.EmployeeEntity;
 import com.stations.facedetection.User.Repository.EmployeeRepository;
+import com.stations.facedetection.User.Repository.FaceImageRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +36,7 @@ public class AdminDashboardService {
 
     private final EmployeeCheckinCheckoutRepository employeeCheckinCheckoutRepository;
     private final EmployeeRepository employeeRepository;
+    private final FaceImageRepository faceImageRepository;
 
     public AttendanceCardResponseDto getCheckins(LocalDate date) {
 
@@ -96,7 +99,7 @@ public class AdminDashboardService {
 
         log.info("Fetching total employee list");
 
-        List<EmployeeInfoDto> employees = employeeRepository.findAll().stream()
+        List<EmployeeInfoDto> employees = employeeRepository.findByEntityIdIsNotNull().stream()
                 .sorted(Comparator.comparing(this::buildFullName, String.CASE_INSENSITIVE_ORDER))
                 .map(this::toEmployeeInfoDto)
                 .toList();
@@ -119,7 +122,7 @@ public class AdminDashboardService {
                 .map(this::normalizeName)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
 
-        List<EmployeeInfoDto> onLeaveEmployees = employeeRepository.findAll().stream()
+        List<EmployeeInfoDto> onLeaveEmployees = employeeRepository.findByEntityIdIsNotNull().stream()
                 .filter(emp -> !checkedInNames.contains(normalizeName(buildFullName(emp))))
                 .sorted(Comparator.comparing(this::buildFullName, String.CASE_INSENSITIVE_ORDER))
                 .map(this::toEmployeeInfoDto)
@@ -141,7 +144,7 @@ public class AdminDashboardService {
 
         Map<String, EmployeeInfoDto> employeesByNormalizedName = new HashMap<>();
 
-        employeeRepository.findAll().forEach(employee -> {
+        employeeRepository.findByEntityIdIsNotNull().forEach(employee -> {
             EmployeeInfoDto dto = toEmployeeInfoDto(employee);
             employeesByNormalizedName.put(normalizeName(dto.getFullName()), dto);
         });
@@ -162,6 +165,7 @@ public class AdminDashboardService {
                             safeTrim(row.getName()),
                             safeTrim(row.getName()),
                             "",
+                            null,
                             null);
                 })
                 .collect(Collectors.collectingAndThen(
@@ -198,7 +202,7 @@ public class AdminDashboardService {
 
         log.info("Resolved unknown alert date={}", resolvedDate);
 
-        Set<String> knownEmployees = employeeRepository.findAll().stream()
+        Set<String> knownEmployees = employeeRepository.findByEntityIdIsNotNull().stream()
                 .map(this::buildFullName)
                 .map(this::normalizeName)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
@@ -292,13 +296,22 @@ public class AdminDashboardService {
 
     private EmployeeInfoDto toEmployeeInfoDto(EmployeeEntity entity) {
 
+        String profileImage = faceImageRepository.findFirstByEmployeeId(entity.getId())
+                .stream()
+                .findFirst()
+                .map(img -> img.getImageData() != null
+                        ? "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(img.getImageData())
+                        : null)
+                .orElse(null);
+
         return new EmployeeInfoDto(
                 entity.getId(),
                 entity.getEmployeeId(),
                 buildFullName(entity),
                 safeTrim(entity.getFirstName()),
                 safeTrim(entity.getLastName()),
-                entity.getUser() == null ? null : entity.getUser().getEmail());
+                entity.getUser() == null ? null : entity.getUser().getEmail(),
+                profileImage);
     }
 
     private String buildFullName(EmployeeEntity employee) {
