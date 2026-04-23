@@ -15,4 +15,5 @@ public class EmployeeInfoDto {
     private String firstName;
     private String lastName;
     private String email;
+    private String profileImage; // Base64-encoded first face image
 }

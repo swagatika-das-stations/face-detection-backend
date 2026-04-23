@@ -3,9 +3,6 @@ package com.stations.facedetection.integration.kloudspot.service;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,9 +52,6 @@ public class KloudspotFaceRegistrationService {
     private final PasswordEncoder passwordEncoder;
     private final KloudspotUploadConfig uploadConfig;
 
-    @Value("${app.media.root-dir:media}")
-    private String mediaRootDir;
-
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public RegistrationResponseDto registerPerson(List<File> images,
                                                    String firstName,
@@ -92,7 +86,6 @@ public class KloudspotFaceRegistrationService {
                 log.warn("Identity already exists in Kloudspot database for email={}", email);
 
                 RegistrationResponseDto existsResponse = new RegistrationResponseDto();
-                saveSuccessfulRegistration(firstName, lastName, email, employeeid, password, images, null, attemptHistory);
                 existsResponse.setStatus("successful");
                 existsResponse.setMessage("Identity " + email + " already exists in Kloudspot; local database synced successfully");
 
@@ -161,7 +154,16 @@ public class KloudspotFaceRegistrationService {
             if (response != null && "successful".equalsIgnoreCase(response.getStatus())) {
 
                 log.info("Kloudspot registration successful. EntityId={}", response.getEntityId());
-                saveSuccessfulRegistration(firstName, lastName, email, employeeid, password, images, response.getEntityId(), attemptHistory);
+                
+                // Only save if entityId is present
+                if (response.getEntityId() != null && !response.getEntityId().trim().isEmpty()) {
+                    saveSuccessfulRegistration(firstName, lastName, email, employeeid, password, images, response.getEntityId(), attemptHistory);
+                } else {
+                    log.warn("Kloudspot registration returned success but no entityId. Skipping database save.");
+                    tryMarkHistoryAsFailure(attemptHistory, "Registration successful but no entityId returned from Kloudspot");
+                    response.setStatus("failure");
+                    response.setMessage("Registration failed: No entity ID returned from Kloudspot");
+                }
 
             } else if (response != null && "ALREADY_EXISTS".equalsIgnoreCase(response.getStatus())) {
 
@@ -251,13 +253,10 @@ public class KloudspotFaceRegistrationService {
         }
         employee = employeeRepository.save(employee);
 
-        List<Path> copiedFilePaths = new ArrayList<>();
-
         try {
-            List<FaceImageEntity> faceImages = copyAndBuildFaceImages(images, employeeid, employee, copiedFilePaths);
+            List<FaceImageEntity> faceImages = copyAndBuildFaceImages(images, employeeid, employee);
             faceImageRepository.saveAll(faceImages);
         } catch (Exception e) {
-            cleanupCopiedFiles(copiedFilePaths);
             throw new RuntimeException("Failed to persist face images", e);
         }
 
@@ -359,67 +358,21 @@ public class KloudspotFaceRegistrationService {
 
     private List<FaceImageEntity> copyAndBuildFaceImages(List<File> images,
                                                           String employeeid,
-                                                          EmployeeEntity employee,
-                                                          List<Path> copiedFilePaths) throws IOException {
-
-        String employeeFolderName = sanitizeFolderName(employeeid);
-        Path employeeMediaDirectory = Paths.get(mediaRootDir, employeeFolderName);
-        Files.createDirectories(employeeMediaDirectory);
+                                                          EmployeeEntity employee) throws IOException {
 
         List<FaceImageEntity> faceImageEntities = new ArrayList<>();
 
-        for (int i = 0; i < images.size(); i++) {
-
-            File sourceFile = images.get(i);
-            String extension = resolveExtension(sourceFile.getName());
-            String fileName = String.format("face_%03d%s", i + 1, extension);
-
-            Path destinationFile = employeeMediaDirectory.resolve(fileName);
-            Files.copy(sourceFile.toPath(), destinationFile, StandardCopyOption.REPLACE_EXISTING);
-
-            copiedFilePaths.add(destinationFile);
-            String dbImagePath = String.format("/media/%s/%s", employeeFolderName, fileName);
+        for (File sourceFile : images) {
+            byte[] imageBytes = Files.readAllBytes(sourceFile.toPath());
 
             FaceImageEntity faceImage = new FaceImageEntity();
             faceImage.setEmployee(employee);
-            faceImage.setImagePath(dbImagePath);
+            faceImage.setImageData(imageBytes);
 
             faceImageEntities.add(faceImage);
         }
 
         return faceImageEntities;
-    }
-
-    private String sanitizeFolderName(String folderName) {
-
-        if (folderName == null || folderName.isBlank()) {
-            return "unknown_employee";
-        }
-
-        return folderName.replaceAll("[^a-zA-Z0-9_-]", "_");
-    }
-
-    private String resolveExtension(String filename) {
-
-        int dotIndex = filename.lastIndexOf('.');
-
-        if (dotIndex >= 0 && dotIndex < filename.length() - 1) {
-            return filename.substring(dotIndex).toLowerCase();
-        }
-
-        return ".jpg";
-    }
-
-    private void cleanupCopiedFiles(List<Path> copiedFilePaths) {
-
-        for (Path copiedFilePath : copiedFilePaths) {
-
-            try {
-                Files.deleteIfExists(copiedFilePath);
-            } catch (Exception e) {
-                log.warn("Failed to clean copied media file: {}", copiedFilePath);
-            }
-        }
     }
 
     private void cleanupTempFile(File file) {

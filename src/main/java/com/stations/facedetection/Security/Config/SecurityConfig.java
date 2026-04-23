@@ -92,7 +92,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         configuration.setAllowedOrigins(List.of(
-                "https://dev-3c.zdotapps.in"
+                "http://localhost:4200"
         ));
 
         configuration.setAllowedMethods(List.of(
