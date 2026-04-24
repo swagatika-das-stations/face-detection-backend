@@ -129,6 +129,15 @@ public class AdminDashboardController {
         );
     }
 
+    // ================= LATEST DATA DATE =================
+
+    @GetMapping("/latest-date")
+    public ResponseEntity<ApiResponse> getLatestDataDate() {
+        log.info("API Request → GET /latest-date");
+        return ResponseEntity.ok(new ApiResponse(true, "Latest data date fetched",
+                adminDashboardService.getLatestDataDate()));
+    }
+
     // ================= UNKNOWN ALERTS =================
 
     @GetMapping("/unknown-alerts")

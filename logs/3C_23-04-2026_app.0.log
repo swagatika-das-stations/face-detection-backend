@@ -3381,3 +3381,96 @@ org.springframework.web.servlet.resource.NoResourceFoundException: No static res
 2026-04-23 17:29:40 [http-nio-9090-exec-9] INFO  c.s.f.D.S.EmployeeCheckinCheckoutService - Attendance records fetched. employeeName=Mounika Yamarthi, recordCount=2
 2026-04-23 17:29:40 [http-nio-9090-exec-9] INFO  c.s.f.D.S.EmployeeCheckinCheckoutService - Attendance summary calculated: totalDays=1, completedDays=1, openDays=0
 2026-04-23 17:29:40 [http-nio-9090-exec-9] INFO  c.s.f.D.C.EmployeeDashboardController - Dashboard data fetched successfully for user=mounika.y@station-s.org
+2026-04-23 18:13:11 [main] INFO  c.s.f.FaceDetectionServicesApplication - Starting FaceDetectionServicesApplication using Java 21.0.10 with PID 9152 (D:\FaceDetectionApplication\Backend\spring3c\3c-backend\target\classes started by HP in D:\FaceDetectionApplication\Backend\spring3c\3c-backend)
+2026-04-23 18:13:11 [main] INFO  c.s.f.FaceDetectionServicesApplication - The following 1 profile is active: "kloudspot"
+2026-04-23 18:13:12 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-04-23 18:13:12 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 122 ms. Found 7 JPA repository interfaces.
+2026-04-23 18:13:13 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 9090 (http)
+2026-04-23 18:13:13 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9090"]
+2026-04-23 18:13:13 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-04-23 18:13:13 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.31]
+2026-04-23 18:13:13 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-04-23 18:13:13 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1251 ms
+2026-04-23 18:13:13 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-04-23 18:13:13 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-04-23 18:13:13 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-04-23 18:13:13 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-04-23 18:13:13 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-04-23 18:13:14 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@13f2d42c
+2026-04-23 18:13:14 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-04-23 18:13:14 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-04-23 18:13:15 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-04-23 18:13:16 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-04-23 18:13:16 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-04-23 18:13:16 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2026-04-23 18:13:16 [main] INFO  c.s.f.S.Config.WebClientConfig - Initializing WebClient for Kloudspot APIs. Base URL=https://3c.zdotapps.in
+2026-04-23 18:13:17 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-04-23 18:13:17 [main] INFO  c.s.f.Security.Config.SecurityConfig - CORS configuration loaded for Angular frontend
+2026-04-23 18:13:17 [main] INFO  c.s.f.Security.Config.SecurityConfig - Security configuration loaded
+2026-04-23 18:13:17 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-9090"]
+2026-04-23 18:13:17 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 9090 (http) with context path '/'
+2026-04-23 18:13:17 [main] INFO  c.s.f.FaceDetectionServicesApplication - Started FaceDetectionServicesApplication in 6.174 seconds (process running for 6.473)
+2026-04-23 18:13:17 [main] INFO  c.s.f.Security.Config.RoleSeeder - Role seeding completed
+2026-04-23 18:13:51 [http-nio-9090-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-04-23 18:13:51 [http-nio-9090-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-04-23 18:13:51 [http-nio-9090-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2026-04-23 18:13:51 [http-nio-9090-exec-4] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=POST, url=http://localhost:9090/api/auth/login, path=/api/auth/login, contentType=application/json
+2026-04-23 18:13:51 [http-nio-9090-exec-4] INFO  c.s.f.Auth.Controller.AuthController - Login API called
+2026-04-23 18:13:51 [http-nio-9090-exec-4] INFO  c.s.f.Auth.Controller.AuthController - Login attempt for user: mounika.y@station-s.org
+2026-04-23 18:13:51 [http-nio-9090-exec-4] INFO  c.s.f.Auth.Service.AuthService - Login service started for email: mounika.y@station-s.org
+2026-04-23 18:13:51 [http-nio-9090-exec-4] INFO  c.s.f.Auth.Service.AuthService - Authentication successful for user: mounika.y@station-s.org
+2026-04-23 18:13:51 [http-nio-9090-exec-4] INFO  c.s.f.Auth.Service.AuthService - User found in database: mounika.y@station-s.org
+2026-04-23 18:13:51 [http-nio-9090-exec-4] INFO  c.s.f.Auth.Service.AuthService - JWT token generated for user: mounika.y@station-s.org
+2026-04-23 18:13:51 [http-nio-9090-exec-4] INFO  c.s.f.Auth.Service.AuthService - Roles assigned to user: [EMPLOYEE, ADMIN]
+2026-04-23 18:13:51 [http-nio-9090-exec-4] INFO  c.s.f.Auth.Service.AuthService - Primary role resolved: ADMIN
+2026-04-23 18:13:51 [http-nio-9090-exec-4] INFO  c.s.f.Auth.Controller.AuthController - Login successful for user: mounika.y@station-s.org
+2026-04-23 18:13:53 [http-nio-9090-exec-6] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/employee/dashboard/profile-image
+2026-04-23 18:13:53 [http-nio-9090-exec-5] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/employee/dashboard/checkin-checkout
+2026-04-23 18:13:53 [http-nio-9090-exec-5] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/employee/dashboard/checkin-checkout, path=/api/employee/dashboard/checkin-checkout, contentType=null
+2026-04-23 18:13:53 [http-nio-9090-exec-6] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/employee/dashboard/profile-image, path=/api/employee/dashboard/profile-image, contentType=null
+2026-04-23 18:13:53 [http-nio-9090-exec-6] INFO  c.s.f.D.C.EmployeeDashboardController - Profile image requested for user=mounika.y@station-s.org
+2026-04-23 18:13:53 [http-nio-9090-exec-5] INFO  c.s.f.D.C.EmployeeDashboardController - Employee dashboard API called → /checkin-checkout
+2026-04-23 18:13:53 [http-nio-9090-exec-5] INFO  c.s.f.D.C.EmployeeDashboardController - Request details → user=mounika.y@station-s.org, startDate=null, endDate=null
+2026-04-23 18:13:53 [http-nio-9090-exec-5] INFO  c.s.f.D.S.EmployeeCheckinCheckoutService - Employee dashboard requested for email=mounika.y@station-s.org, startDate=null, endDate=null
+2026-04-23 18:13:53 [http-nio-9090-exec-5] INFO  c.s.f.D.S.EmployeeCheckinCheckoutService - Resolved date range: startDate=2026-04-17, endDate=2026-04-23
+2026-04-23 18:13:54 [http-nio-9090-exec-5] INFO  c.s.f.D.S.EmployeeCheckinCheckoutService - Fetching attendance records for employeeName=Mounika Yamarthi, dateRange=2026-04-17 to 2026-04-23
+2026-04-23 18:13:54 [http-nio-9090-exec-5] INFO  c.s.f.D.S.EmployeeCheckinCheckoutService - Attendance records fetched. employeeName=Mounika Yamarthi, recordCount=2
+2026-04-23 18:13:54 [http-nio-9090-exec-5] INFO  c.s.f.D.S.EmployeeCheckinCheckoutService - Attendance summary calculated: totalDays=1, completedDays=1, openDays=0
+2026-04-23 18:13:54 [http-nio-9090-exec-5] INFO  c.s.f.D.C.EmployeeDashboardController - Dashboard data fetched successfully for user=mounika.y@station-s.org
+2026-04-23 18:15:45 [http-nio-9090-exec-10] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=POST, url=http://localhost:9090/api/auth/login, path=/api/auth/login, contentType=application/json
+2026-04-23 18:15:45 [http-nio-9090-exec-10] INFO  c.s.f.Auth.Controller.AuthController - Login API called
+2026-04-23 18:15:45 [http-nio-9090-exec-10] INFO  c.s.f.Auth.Controller.AuthController - Login attempt for user: mounika.y@station-s.org
+2026-04-23 18:15:45 [http-nio-9090-exec-10] INFO  c.s.f.Auth.Service.AuthService - Login service started for email: mounika.y@station-s.org
+2026-04-23 18:15:46 [http-nio-9090-exec-10] INFO  c.s.f.Auth.Service.AuthService - Authentication successful for user: mounika.y@station-s.org
+2026-04-23 18:15:46 [http-nio-9090-exec-10] INFO  c.s.f.Auth.Service.AuthService - User found in database: mounika.y@station-s.org
+2026-04-23 18:15:46 [http-nio-9090-exec-10] INFO  c.s.f.Auth.Service.AuthService - JWT token generated for user: mounika.y@station-s.org
+2026-04-23 18:15:46 [http-nio-9090-exec-10] INFO  c.s.f.Auth.Service.AuthService - Roles assigned to user: [EMPLOYEE, ADMIN]
+2026-04-23 18:15:46 [http-nio-9090-exec-10] INFO  c.s.f.Auth.Service.AuthService - Primary role resolved: ADMIN
+2026-04-23 18:15:46 [http-nio-9090-exec-10] INFO  c.s.f.Auth.Controller.AuthController - Login successful for user: mounika.y@station-s.org
+2026-04-23 18:15:47 [http-nio-9090-exec-7] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/employee/dashboard/checkin-checkout
+2026-04-23 18:15:47 [http-nio-9090-exec-9] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/employee/dashboard/profile-image
+2026-04-23 18:15:47 [http-nio-9090-exec-7] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/employee/dashboard/checkin-checkout, path=/api/employee/dashboard/checkin-checkout, contentType=null
+2026-04-23 18:15:47 [http-nio-9090-exec-9] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/employee/dashboard/profile-image, path=/api/employee/dashboard/profile-image, contentType=null
+2026-04-23 18:15:47 [http-nio-9090-exec-9] INFO  c.s.f.D.C.EmployeeDashboardController - Profile image requested for user=mounika.y@station-s.org
+2026-04-23 18:15:47 [http-nio-9090-exec-7] INFO  c.s.f.D.C.EmployeeDashboardController - Employee dashboard API called → /checkin-checkout
+2026-04-23 18:15:47 [http-nio-9090-exec-7] INFO  c.s.f.D.C.EmployeeDashboardController - Request details → user=mounika.y@station-s.org, startDate=null, endDate=null
+2026-04-23 18:15:47 [http-nio-9090-exec-7] INFO  c.s.f.D.S.EmployeeCheckinCheckoutService - Employee dashboard requested for email=mounika.y@station-s.org, startDate=null, endDate=null
+2026-04-23 18:15:47 [http-nio-9090-exec-7] INFO  c.s.f.D.S.EmployeeCheckinCheckoutService - Resolved date range: startDate=2026-04-17, endDate=2026-04-23
+2026-04-23 18:15:47 [http-nio-9090-exec-7] INFO  c.s.f.D.S.EmployeeCheckinCheckoutService - Fetching attendance records for employeeName=Mounika Yamarthi, dateRange=2026-04-17 to 2026-04-23
+2026-04-23 18:15:47 [http-nio-9090-exec-7] INFO  c.s.f.D.S.EmployeeCheckinCheckoutService - Attendance records fetched. employeeName=Mounika Yamarthi, recordCount=2
+2026-04-23 18:15:47 [http-nio-9090-exec-7] INFO  c.s.f.D.S.EmployeeCheckinCheckoutService - Attendance summary calculated: totalDays=1, completedDays=1, openDays=0
+2026-04-23 18:15:47 [http-nio-9090-exec-7] INFO  c.s.f.D.C.EmployeeDashboardController - Dashboard data fetched successfully for user=mounika.y@station-s.org
+2026-04-23 18:34:44 [http-nio-9090-exec-10] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/employee/dashboard/checkin-checkout
+2026-04-23 18:34:44 [http-nio-9090-exec-2] INFO  c.s.f.S.Jwt.JwtAuthenticationFilter - Request Path: /api/employee/dashboard/profile-image
+2026-04-23 18:34:44 [http-nio-9090-exec-2] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/employee/dashboard/profile-image, path=/api/employee/dashboard/profile-image, contentType=null
+2026-04-23 18:34:44 [http-nio-9090-exec-10] INFO  c.s.f.S.Config.RequestLoggingFilter - Incoming request: method=GET, url=http://localhost:9090/api/employee/dashboard/checkin-checkout, path=/api/employee/dashboard/checkin-checkout, contentType=null
+2026-04-23 18:34:44 [http-nio-9090-exec-2] INFO  c.s.f.D.C.EmployeeDashboardController - Profile image requested for user=mounika.y@station-s.org
+2026-04-23 18:34:44 [http-nio-9090-exec-10] INFO  c.s.f.D.C.EmployeeDashboardController - Employee dashboard API called → /checkin-checkout
+2026-04-23 18:34:44 [http-nio-9090-exec-10] INFO  c.s.f.D.C.EmployeeDashboardController - Request details → user=mounika.y@station-s.org, startDate=null, endDate=null
+2026-04-23 18:34:44 [http-nio-9090-exec-10] INFO  c.s.f.D.S.EmployeeCheckinCheckoutService - Employee dashboard requested for email=mounika.y@station-s.org, startDate=null, endDate=null
+2026-04-23 18:34:44 [http-nio-9090-exec-10] INFO  c.s.f.D.S.EmployeeCheckinCheckoutService - Resolved date range: startDate=2026-04-17, endDate=2026-04-23
+2026-04-23 18:34:44 [http-nio-9090-exec-10] INFO  c.s.f.D.S.EmployeeCheckinCheckoutService - Fetching attendance records for employeeName=Mounika Yamarthi, dateRange=2026-04-17 to 2026-04-23
+2026-04-23 18:34:44 [http-nio-9090-exec-10] INFO  c.s.f.D.S.EmployeeCheckinCheckoutService - Attendance records fetched. employeeName=Mounika Yamarthi, recordCount=2
+2026-04-23 18:34:44 [http-nio-9090-exec-10] INFO  c.s.f.D.S.EmployeeCheckinCheckoutService - Attendance summary calculated: totalDays=1, completedDays=1, openDays=0
+2026-04-23 18:34:44 [http-nio-9090-exec-10] INFO  c.s.f.D.C.EmployeeDashboardController - Dashboard data fetched successfully for user=mounika.y@station-s.org
+2026-04-23 18:35:01 [HikariPool-1 housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=3m47s184ms110µs100ns).

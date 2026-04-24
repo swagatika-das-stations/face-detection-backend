@@ -95,6 +95,13 @@ public class AdminDashboardService {
         return new AttendanceCardResponseDto(resolvedDate, records.size(), records);
     }
 
+    public String getLatestDataDate() {
+        return employeeCheckinCheckoutRepository
+                .findTopByOrderByTimestampDesc()
+                .map(entity -> entity.getTimestamp().toLocalDate().toString())
+                .orElse(LocalDate.now().toString());
+    }
+
     public EmployeeCardResponseDto getTotalEmployees() {
 
         log.info("Fetching total employee list");
@@ -240,23 +247,7 @@ public class AdminDashboardService {
     }
 
     private LocalDate resolveAttendanceDate(LocalDate requestedDate) {
-
-        LocalDate resolvedDate = resolveDate(requestedDate);
-
-        boolean hasRows = !employeeCheckinCheckoutRepository
-                .findByDateOrderByNameAsc(resolvedDate)
-                .isEmpty();
-
-        if (hasRows) {
-            return resolvedDate;
-        }
-
-        log.warn("No attendance rows found for date={}, fetching latest available date", resolvedDate);
-
-        return employeeCheckinCheckoutRepository
-                .findTopByOrderByTimestampDesc()
-                .map(entity -> entity.getTimestamp().toLocalDate())
-                .orElse(resolvedDate);
+        return resolveDate(requestedDate);
     }
 
     private CheckinCheckoutRecordDto toRecordDto(EmployeeCheckinCheckoutEntity entity) {
