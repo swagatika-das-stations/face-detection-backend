@@ -34,6 +34,7 @@ public class EmployeeEntity {
     @Column(name = "employee_id", unique = true)
     private String employeeId;
 
+    @Column(name = "entity_id", nullable = false)
     private String entityId;
 
     @OneToOne

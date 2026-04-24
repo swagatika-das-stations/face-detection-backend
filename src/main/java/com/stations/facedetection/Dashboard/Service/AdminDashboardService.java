@@ -209,20 +209,28 @@ public class AdminDashboardService {
 
         log.info("Resolved unknown alert date={}", resolvedDate);
 
-        Set<String> knownEmployees = employeeRepository.findByEntityIdIsNotNull().stream()
-                .map(this::buildFullName)
-                .map(this::normalizeName)
+        // Use entityId for matching — reliable, name-independent
+        Set<String> knownEntityIds = employeeRepository.findByEntityIdIsNotNull().stream()
+                .map(EmployeeEntity::getEntityId)
+                .map(String::trim)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
 
-        Map<String, UnknownAlertDto> unknownByName = new LinkedHashMap<>();
+        Map<String, UnknownAlertDto> unknownByEntityId = new LinkedHashMap<>();
 
         employeeCheckinCheckoutRepository.findByDateOrderByNameAsc(resolvedDate)
                 .forEach(entity -> {
 
-                    String normalizedName = normalizeName(entity.getName());
+                    String entityId = entity.getEntityId() == null ? "" : entity.getEntityId().trim();
 
-                    if (knownEmployees.contains(normalizedName)
-                            || unknownByName.containsKey(normalizedName)) {
+                    // Skip if entityId matches a registered employee
+                    if (!entityId.isEmpty() && knownEntityIds.contains(entityId)) {
+                        return;
+                    }
+
+                    // Deduplicate by entityId (or name if entityId is blank)
+                    String dedupeKey = entityId.isEmpty() ? normalizeName(entity.getName()) : entityId;
+
+                    if (unknownByEntityId.containsKey(dedupeKey)) {
                         return;
                     }
 
@@ -232,10 +240,10 @@ public class AdminDashboardService {
                             entity.getTimestamp().toLocalTime(),
                             entity.getLocationName());
 
-                    unknownByName.put(normalizedName, alert);
+                    unknownByEntityId.put(dedupeKey, alert);
                 });
 
-        List<UnknownAlertDto> unknownPersons = unknownByName.values().stream().toList();
+        List<UnknownAlertDto> unknownPersons = unknownByEntityId.values().stream().toList();
 
         log.info("Unknown alerts fetched successfully. date={}, count={}", resolvedDate, unknownPersons.size());
 

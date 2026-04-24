@@ -63,154 +63,147 @@ public class KloudspotFaceRegistrationService {
         File imageZipFile = null;
         File humanJsonFile = null;
         List<File> cleanedImages = new ArrayList<>();
-        FaceRegistryEntity attemptHistory = buildAttemptHistory(firstName, lastName, email, employeeid);
+
+        // Build audit record — always saved regardless of outcome
+        FaceRegistryEntity audit = buildAttemptHistory(firstName, lastName, email, employeeid);
 
         try {
+            log.info("Starting face registration for employeeId={}, email={}", employeeid, email);
 
-            // Persist attempt history later when all relation fields are available.
-            // This avoids early FK failures from partially populated rows.
-
-            log.info("Starting Kloudspot face registration for employeeId={}, email={}", employeeid, email);
-
-            log.info("Upload configuration: minImages={}, maxImages={}, maxImageSizeMB={}, formats={}",
-                    uploadConfig.getMinImages(),
-                    uploadConfig.getMaxImages(),
-                    uploadConfig.getMaxImageSizeMb(),
-                    uploadConfig.getSupportedFormats());
-
-            // Check if identity exists
-            log.info("Checking if identity exists in Kloudspot for email={}", email);
-
+            // ── Already exists in Kloudspot ──────────────────────────────────────
             if (searchService.checkIdentityExists(email)) {
+                log.warn("Identity already exists in Kloudspot for email={}", email);
+                audit.setRegistrationStatus("ALREADY_EXISTS");
+                audit.setFailureReason("Identity already exists in Kloudspot");
+                tryPersistAudit(audit);
 
-                log.warn("Identity already exists in Kloudspot database for email={}", email);
-
-                RegistrationResponseDto existsResponse = new RegistrationResponseDto();
-                existsResponse.setStatus("successful");
-                existsResponse.setMessage("Identity " + email + " already exists in Kloudspot; local database synced successfully");
-
-                return existsResponse;
+                RegistrationResponseDto resp = new RegistrationResponseDto();
+                resp.setStatus("successful");
+                resp.setMessage("Identity already exists in Kloudspot");
+                return resp;
             }
 
-            log.info("Identity not found. Proceeding with registration.");
-
-            // 1️ Validate images
-            log.info("Validating {} uploaded images", images.size());
+            // ── Validate & clean images ──────────────────────────────────────────
             imageValidator.validateImages(images);
-
-            // 2️ Clean images
-            log.info("Cleaning uploaded images");
-
-            for (int i = 0; i < images.size(); i++) {
-
-                log.debug("Cleaning image {} of {}", i + 1, images.size());
-
-                File cleaned = imageCleaner.cleanImage(images.get(i));
-                cleanedImages.add(cleaned);
+            for (File img : images) {
+                cleanedImages.add(imageCleaner.cleanImage(img));
             }
 
-            log.info("Image cleaning completed. Cleaned images={}", cleanedImages.size());
-
-            // 3️ Build human data
-            KloudspotRegistrationRequestDTO humanData =
-                    buildRequest(firstName, lastName, email, employeeid);
-
-            // 4️ Create human.json file
-            humanJsonFile = zipBuilder.createHumanJson(humanData);
-
-            // 5️ Create image ZIP
-            imageZipFile = zipBuilder.createImageZip(cleanedImages);
+            // ── Build zip & json ─────────────────────────────────────────────────
+            humanJsonFile = zipBuilder.createHumanJson(buildRequest(firstName, lastName, email, employeeid));
+            imageZipFile  = zipBuilder.createImageZip(cleanedImages);
 
             long zipSize = imageZipFile.length();
-
-            log.info("Image ZIP created successfully. Size={} KB ({} MB), images={}",
-                    zipSize / 1024,
-                    String.format("%.2f", zipSize / (1024.0 * 1024.0)),
-                    cleanedImages.size());
-            
-            // Validate ZIP size
             long maxZipSize = uploadConfig.getMaxTotalZipSizeBytes();
             if (zipSize > maxZipSize) {
-                throw new RuntimeException(
-                    String.format("Image ZIP file exceeds max size. Current: %d KB, Max: %d KB",
-                        zipSize / 1024, maxZipSize / 1024)
-                );
+                throw new RuntimeException(String.format(
+                    "Image ZIP exceeds max size. Current: %d KB, Max: %d KB",
+                    zipSize / 1024, maxZipSize / 1024));
             }
 
-            // 6️ Send request
-            log.info("Sending face registration request to Kloudspot (human.json + image.zip)");
-
+            // ── Call Kloudspot ───────────────────────────────────────────────────
             RegistrationResponseDto response = registrationService.register(humanJsonFile, imageZipFile);
 
             if (response == null) {
-                RegistrationResponseDto emptyResponse = new RegistrationResponseDto();
-                emptyResponse.setStatus("failure");
-                emptyResponse.setMessage("Kloudspot registration failed with empty response");
-                tryMarkHistoryAsFailure(attemptHistory, emptyResponse.getMessage());
-                return emptyResponse;
+                audit.setRegistrationStatus("FAILED");
+                audit.setFailureReason("No response from Kloudspot");
+                tryPersistAudit(audit);
+
+                RegistrationResponseDto err = new RegistrationResponseDto();
+                err.setStatus("failure");
+                err.setMessage("Registration failed: no response from Kloudspot");
+                return err;
             }
 
-            // 8️ Handle response
-            if (response != null && "successful".equalsIgnoreCase(response.getStatus())) {
+            String entityId = response.getEntityId();
+            boolean hasEntityId = StringUtils.hasText(entityId);
 
-                log.info("Kloudspot registration successful. EntityId={}", response.getEntityId());
-                
-                // Only save if entityId is present
-                if (response.getEntityId() != null && !response.getEntityId().trim().isEmpty()) {
-                    saveSuccessfulRegistration(firstName, lastName, email, employeeid, password, images, response.getEntityId(), attemptHistory);
-                } else {
-                    log.warn("Kloudspot registration returned success but no entityId. Skipping database save.");
-                    tryMarkHistoryAsFailure(attemptHistory, "Registration successful but no entityId returned from Kloudspot");
-                    response.setStatus("failure");
-                    response.setMessage("Registration failed: No entity ID returned from Kloudspot");
-                }
-
-            } else if (response != null && "ALREADY_EXISTS".equalsIgnoreCase(response.getStatus())) {
-
-                log.warn("Person already exists in Kloudspot");
-                saveSuccessfulRegistration(firstName, lastName, email, employeeid, password, images, null, attemptHistory);
-                response.setStatus("successful");
-                response.setMessage("Identity already exists in Kloudspot; local database synced successfully");
-
-            } else {
-
-                log.error("Kloudspot registration failed. Response={}", response);
-                if (response != null) {
-                    response.setStatus("failure");
-                    tryMarkHistoryAsFailure(attemptHistory, response.getMessage());
-                } else {
-                    tryMarkHistoryAsFailure(attemptHistory, "Kloudspot registration failed with empty response");
-                }
+            // ── Success WITH entityId → save employee ────────────────────────────
+            if ("successful".equalsIgnoreCase(response.getStatus()) && hasEntityId) {
+                log.info("Registration successful. EntityId={}", entityId);
+                saveEmployee(firstName, lastName, email, employeeid, password, images, entityId, audit);
+                return response;
             }
 
+            // ── Success WITHOUT entityId → audit only, no employee record ────────
+            if ("successful".equalsIgnoreCase(response.getStatus())) {
+                log.warn("Kloudspot returned success but no entityId — not saving employee record");
+                audit.setRegistrationStatus("FAILED");
+                audit.setFailureReason("No entityId returned from Kloudspot");
+                tryPersistAudit(audit);
+
+                response.setStatus("failure");
+                response.setMessage("Registration failed: no entity ID returned");
+                return response;
+            }
+
+            // ── Any other failure ────────────────────────────────────────────────
+            log.error("Kloudspot registration failed. Response={}", response);
+            audit.setRegistrationStatus("FAILED");
+            audit.setFailureReason(response.getMessage());
+            tryPersistAudit(audit);
+            response.setStatus("failure");
             return response;
 
         } catch (IllegalArgumentException e) {
+            log.error("Validation failed: {}", e.getMessage());
+            audit.setRegistrationStatus("FAILED");
+            audit.setFailureReason(e.getMessage());
+            tryPersistAudit(audit);
 
-            log.error("Image validation failed: {}", e.getMessage());
-            tryMarkHistoryAsFailure(attemptHistory, e.getMessage());
-            RegistrationResponseDto errorResponse = new RegistrationResponseDto();
-            errorResponse.setStatus("failure");
-            errorResponse.setMessage(e.getMessage());
-            return errorResponse;
+            RegistrationResponseDto err = new RegistrationResponseDto();
+            err.setStatus("failure");
+            err.setMessage(e.getMessage());
+            return err;
 
         } catch (Exception e) {
+            log.error("Registration process failed", e);
+            audit.setRegistrationStatus("FAILED");
+            audit.setFailureReason(e.getMessage());
+            tryPersistAudit(audit);
 
-            log.error("Face registration process failed", e);
-            tryMarkHistoryAsFailure(attemptHistory, e.getMessage());
-            RegistrationResponseDto errorResponse = new RegistrationResponseDto();
-            errorResponse.setStatus("failure");
-            errorResponse.setMessage("Registration failed: " + e.getMessage());
-            return errorResponse;
+            RegistrationResponseDto err = new RegistrationResponseDto();
+            err.setStatus("failure");
+            err.setMessage("Registration failed: " + e.getMessage());
+            return err;
 
         } finally {
-
-            log.debug("Cleaning temporary files");
-
             cleanupTempFile(imageZipFile);
             cleanupTempFile(humanJsonFile);
             cleanedImages.forEach(this::cleanupTempFile);
         }
+    }
+
+    /**
+     * Saves employee, user, face images to DB.
+     * Only called when entityId is confirmed non-null.
+     */
+    private void saveEmployee(String firstName, String lastName, String email,
+                               String employeeid, String password, List<File> images,
+                               String entityId, FaceRegistryEntity audit) {
+
+        UserEntity user = userRepository.findByEmail(email)
+                .orElseGet(() -> createUserWithRole(email, password));
+
+        EmployeeEntity employee = resolveEmployeeForUser(user, firstName, lastName, employeeid);
+        employee.setEntityId(entityId);
+        employee = employeeRepository.save(employee);
+
+        try {
+            List<FaceImageEntity> faceImages = copyAndBuildFaceImages(images, employee);
+            faceImageRepository.saveAll(faceImages);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to persist face images", e);
+        }
+
+        audit.setUser(user);
+        audit.setEmployee(employee);
+        audit.setEntityId(entityId);
+        audit.setRegistrationStatus("SUCCESS");
+        audit.setFailureReason(null);
+        tryPersistAudit(audit);
+
+        log.info("Employee saved: email={}, entityId={}", email, entityId);
     }
 
     private KloudspotRegistrationRequestDTO buildRequest(
@@ -234,41 +227,6 @@ public class KloudspotFaceRegistrationService {
                 email, firstName, lastName, employeeid);
 
         return request;
-    }
-    private void saveSuccessfulRegistration(String firstName,
-                                            String lastName,
-                                            String email,
-                                            String employeeid,
-                                            String password,
-                                            List<File> images,
-                                            String entityId,
-                                            FaceRegistryEntity attemptHistory) {
-
-        UserEntity user = userRepository.findByEmail(email)
-                .orElseGet(() -> createUserWithRole(email, password));
-
-        EmployeeEntity employee = resolveEmployeeForUser(user, firstName, lastName, employeeid);
-        if (StringUtils.hasText(entityId)) {
-            employee.setEntityId(entityId);
-        }
-        employee = employeeRepository.save(employee);
-
-        try {
-            List<FaceImageEntity> faceImages = copyAndBuildFaceImages(images, employeeid, employee);
-            faceImageRepository.saveAll(faceImages);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to persist face images", e);
-        }
-
-        attemptHistory.setUser(user);
-        attemptHistory.setEmployee(employee);
-        attemptHistory.setEntityId(entityId);
-        attemptHistory.setRegistrationStatus("SUCCESS");
-        attemptHistory.setFailureReason(null);
-        faceRegistryRepository.save(attemptHistory);
-
-        log.info("Registration success persisted for email={}, entityId={}, employeeRegisterId={}",
-            email, entityId, employee.getId());
     }
 
     private UserEntity createUserWithRole(String email, String password) {
@@ -357,7 +315,6 @@ public class KloudspotFaceRegistrationService {
     }
 
     private List<FaceImageEntity> copyAndBuildFaceImages(List<File> images,
-                                                          String employeeid,
                                                           EmployeeEntity employee) throws IOException {
 
         List<FaceImageEntity> faceImageEntities = new ArrayList<>();
@@ -373,6 +330,14 @@ public class KloudspotFaceRegistrationService {
         }
 
         return faceImageEntities;
+    }
+
+    private void tryPersistAudit(FaceRegistryEntity audit) {
+        try {
+            faceRegistryRepository.save(audit);
+        } catch (Exception ex) {
+            log.warn("Failed to persist audit record: {}", ex.getMessage());
+        }
     }
 
     private void cleanupTempFile(File file) {
